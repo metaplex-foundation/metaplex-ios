@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "secp256k1.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Boilertalk/secp256k1.swift.git",
+      "state" : {
+        "revision" : "45e458ec3be46cf0a6eb68bc947f797852dc65d8",
+        "version" : "0.1.6"
+      }
+    },
+    {
+      "identity" : "solana.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ajamaica/Solana.Swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "bd979f9bc1bf8d02fe713f567b050751af68a489"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+        "version" : "4.0.4"
+      }
+    },
+    {
+      "identity" : "tweetnacl-swiftwrap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
+      "state" : {
+        "revision" : "f8fd111642bf2336b11ef9ea828510693106e954",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 2
+}
