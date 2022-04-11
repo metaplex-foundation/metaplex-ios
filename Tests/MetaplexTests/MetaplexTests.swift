@@ -9,14 +9,14 @@ final class MetaplexTests: XCTestCase {
     
     override func setUpWithError() throws {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let solanaIdentityDriver = SolanaIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
         let storageDriver = MemoryStorageDriver()
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }
     
     func testSetUpMetaplex() {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let solanaIdentityDriver = SolanaIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
         let storageDriver = MemoryStorageDriver()
         let metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
         XCTAssertNotNil(metaplex)

@@ -36,7 +36,7 @@ public class Metaplex {
         return self.connection.getMultipleAccountsInfo(accounts: accounts, onComplete: onComplete)
     }
     
-    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, Error>) -> Void){
+    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void){
         self.identityDriver.sendTransaction(serializedTransaction: serializedTransaction, onComplete: onComplete)
     }
     
