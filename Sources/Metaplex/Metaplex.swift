@@ -28,12 +28,12 @@ public class Metaplex {
         return self.storageDriver
     }
     
-    func getAccountInfo(account: String, onComplete: @escaping (Result<BufferInfo<AccountInfo>, Error>) -> Void){
-        return self.connection.getAccountInfo(account: account, onComplete: onComplete)
+    func getAccountInfo<T>(account: String, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void){
+        return self.connection.getAccountInfo(account: account, decodedTo: T.self, onComplete: onComplete)
     }
     
-    func getMultipleAccounts(accounts: [String], onComplete: @escaping (Result<[BufferInfo<AccountInfo>], Error>) -> Void){
-        return self.connection.getMultipleAccountsInfo(accounts: accounts, onComplete: onComplete)
+    func getMultipleAccounts<T>(accounts: [String], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
+        return self.connection.getMultipleAccountsInfo(accounts: accounts, decodedTo: T.self, onComplete: onComplete)
     }
     
     func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void){
