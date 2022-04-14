@@ -8,9 +8,10 @@
 import Foundation
 
 public enum OperationError: Error {
-    case other
+    case nilDataOnAccount
     case couldNotFindPDA
-    case getAccountInfoError(Error)
+    case getMasterEditionAccountInfoError(Error)
+    case getMetadataAccountInfoError(Error)
 }
 
 protocol OperationHandler {

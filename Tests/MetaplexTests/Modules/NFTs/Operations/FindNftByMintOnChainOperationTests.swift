@@ -20,15 +20,6 @@ final class FindNftByMintOnChainOperationTests: XCTestCase {
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }
     
-    func testFindAddress() {
-        let seedMetadata = ["metadata".bytes,
-                            PublicKey(string: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")!.bytes,
-                            PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!.bytes].map { Data($0) }
-        
-        let metadatakey = try! PublicKey.findProgramAddress(seeds: seedMetadata, programId: PublicKey(string: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")!).get()
-        XCTAssertEqual(metadatakey.0.base58EncodedString, "Hxi2SYmviCkzDF3NY1Ph3gUhwPiN4iGGTg2wK2PS2haQ")
-    }
-    
     func testFindNftByMintOnChainOperation(){
         var result: Result<NFT, OperationError>?
         let lock = RunLoopSimpleLock()
@@ -40,8 +31,19 @@ final class FindNftByMintOnChainOperationTests: XCTestCase {
             }
         }
         lock.run()
+        
         let nft = try! result?.get()
         XCTAssertNotNil(nft)
-        XCTAssertEqual(nft?.mint.base58EncodedString, "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")
+        XCTAssertEqual(nft!.metadataAccount.data.name, "Aurorian #628")
+        XCTAssertEqual(nft!.metadataAccount.mint.base58EncodedString, "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")
+        XCTAssertEqual(nft!.metadataAccount.data.creators.count, 3)
+        XCTAssertEqual(nft!.masterEditionAccount.type, 6)
+        
+        switch nft!.masterEditionAccount.masterEditionVersion {
+        case .masterEditionV1(_):
+            XCTFail()
+        case .masterEditionV2(let masterEditionV1):
+            XCTAssertEqual(masterEditionV1.maxSupply, 1)
+        }
     }
 }

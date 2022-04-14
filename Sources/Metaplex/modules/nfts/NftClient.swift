@@ -6,9 +6,19 @@
 //
 
 import Foundation
+import Solana
 
 class NftClient {
-    func findNftByMint(mint: String, onComplete: @escaping (Result<NFT, Error>) -> Void) {
-        
+    let metaplex: Metaplex
+    
+    init(metaplex: Metaplex){
+        self.metaplex = metaplex
+    }
+    
+    func findNftByMint(mintKey: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
+        let operation = FindNftByMintOnChainOperation(metaplex: self.metaplex)
+        operation.handle(operation: FindNftByMintOperation.pure(.success(mintKey))).run {
+            onComplete($0)
+        }
     }
 }
