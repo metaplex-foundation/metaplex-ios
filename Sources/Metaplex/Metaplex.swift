@@ -4,6 +4,9 @@ public class Metaplex {
     private let connection: Connection
     private var identityDriver: IdentityDriver
     private var storageDriver: StorageDriver
+    
+    lazy var nft: NftClient = NftClient(metaplex: self)
+    
     public init(connection: Connection, identityDriver: IdentityDriver, storageDriver: StorageDriver) {
         self.connection = connection
         self.identityDriver = identityDriver
