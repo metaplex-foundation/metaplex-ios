@@ -36,13 +36,13 @@ class FindNftsByMintListOnChainOperation: OperationHandler {
             return .pure(.success(pdas))
         }
         
-        let r: OperationResult<[MaybeAccountInfoWithPublicKey], OperationError> = result.flatMap { publicKeys in
+        let resultAccounts: OperationResult<[MaybeAccountInfoWithPublicKey], OperationError> = result.flatMap { publicKeys in
             self.gmaBuilder.setPublicKeys(publicKeys: publicKeys)
-            return self.gmaBuilder.get()
+                .get()
                 .mapError {  OperationError.gmaBuilderError($0) }
         }
         
-        return r.flatMap { accountInfos in
+        return resultAccounts.flatMap { accountInfos in
             var nfts: [NFT?] = []
             for accountInfo in accountInfos {
                 if accountInfo.exists, let metadataAccount = accountInfo.metadata{
