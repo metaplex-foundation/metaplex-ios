@@ -13,7 +13,6 @@ public protocol IdentityDriver {
     func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void)
     func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void)
     func signAllTransactions(transactions: [Transaction], onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void)
-    func `is`(that: IdentityDriver) -> Bool
 }
 
 extension IdentityDriver {

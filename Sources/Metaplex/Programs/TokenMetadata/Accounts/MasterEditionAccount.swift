@@ -12,7 +12,7 @@ extension String {
     static let editionKeyword = "edition"
 }
 
-enum MetadataKey {
+public enum MetadataKey {
     case Uninitialized // 0
     case EditionV1 // 1
     case MasterEditionV1 // 2
@@ -45,7 +45,7 @@ enum MetadataKey {
     }
 }
 
-class MasterEditionV1: BufferLayout {
+public class MasterEditionV1: BufferLayout {
     public let supply: UInt64?
     public let maxSupply: UInt64?
     public let printingMint: PublicKey
@@ -75,7 +75,7 @@ class MasterEditionV1: BufferLayout {
     }
 }
 
-class MasterEditionV2: BufferLayout {
+public class MasterEditionV2: BufferLayout {
     public let supply: UInt64
     public let maxSupply: UInt64?
     
@@ -97,11 +97,12 @@ class MasterEditionV2: BufferLayout {
     }
 }
 
-enum MasterEditionVersion: Codable {
+public enum MasterEditionVersion: Codable {
     case masterEditionV1(MasterEditionV1)
     case masterEditionV2(MasterEditionV2)
 }
-class MasterEditionAccount: BufferLayout {
+
+public class MasterEditionAccount: BufferLayout {
     
     static func pda(mintKey: PublicKey) -> Result<PublicKey, Error>{
         let seedMetadata = [String.metadataPrefix.bytes,
