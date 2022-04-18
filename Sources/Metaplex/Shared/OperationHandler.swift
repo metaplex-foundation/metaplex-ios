@@ -10,6 +10,7 @@ import Foundation
 public enum OperationError: Error {
     case nilDataOnAccount
     case couldNotFindPDA
+    case gmaBuilderError(Error)
     case getMasterEditionAccountInfoError(Error)
     case getMetadataAccountInfoError(Error)
 }

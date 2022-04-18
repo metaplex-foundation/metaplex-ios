@@ -16,11 +16,13 @@ public enum MetadataKey {
     case Uninitialized // 0
     case EditionV1 // 1
     case MasterEditionV1 // 2
-    case UNKOWN3 // 3
+    case ReservationListV1 // 3
     case MetadataV1 //4,
-    case UNKOWN5 // 5
+    case ReservationListV2 // 5
     case MasterEditionV2 //6,
     case EditionMarker //7
+    case UseAuthorityRecord //8
+    case CollectionAuthorityRecord // 9
     
     func value() -> UInt8 {
         switch self {
@@ -31,16 +33,20 @@ public enum MetadataKey {
             return 1
         case .MasterEditionV1:
             return 2
-        case .UNKOWN3:
+        case .ReservationListV1:
             return 3
         case .MetadataV1:
             return 4
-        case .UNKOWN5:
+        case .ReservationListV2:
             return 5
         case .MasterEditionV2:
             return 6
         case .EditionMarker:
             return 7
+        case .UseAuthorityRecord:
+            return 8
+        case .CollectionAuthorityRecord:
+            return 9
         }
     }
 }

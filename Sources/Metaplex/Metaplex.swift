@@ -1,7 +1,7 @@
 import Solana
 
 public class Metaplex {
-    private let connection: Connection
+    let connection: Connection
     private var identityDriver: IdentityDriver
     private var storageDriver: StorageDriver
     
@@ -31,11 +31,11 @@ public class Metaplex {
         return self.storageDriver
     }
     
-    func getAccountInfo<T>(account: String, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void){
+    func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void){
         return self.connection.getAccountInfo(account: account, decodedTo: T.self, onComplete: onComplete)
     }
     
-    func getMultipleAccounts<T>(accounts: [String], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
+    func getMultipleAccounts<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
         return self.connection.getMultipleAccountsInfo(accounts: accounts, decodedTo: T.self, onComplete: onComplete)
     }
     
