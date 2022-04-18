@@ -29,8 +29,9 @@ class GmaBuilder {
         self.publicKeys = publicKeys
     }
     
-    func setPublicKeys(publicKeys: [PublicKey]) {
-        self.publicKeys = publicKeys
+    func setPublicKeys(publicKeys: [PublicKey]) -> GmaBuilder{
+        self.publicKeys.append(contentsOf: publicKeys)
+        return self
     }
     
     func get() -> OperationResult<[MaybeAccountInfoWithPublicKey], Error> {
