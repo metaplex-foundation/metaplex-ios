@@ -1,8 +1,8 @@
 //
-//  FindNftByMintOnChainOperationTests.swift
+//  FindNftsByMintListOnChainOperationHandler.swift
 //  
 //
-//  Created by Arturo Jamaica on 4/13/22.
+//  Created by Arturo Jamaica on 4/18/22.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import XCTest
 import Solana
 @testable import Metaplex
 
-final class FindNftByMintOnChainOperationTests: XCTestCase {
+class FindNftsByMintListOnChainOperationHandlerTests: XCTestCase {
     var metaplex: Metaplex!
     
     override func setUpWithError() throws {
@@ -20,30 +20,24 @@ final class FindNftByMintOnChainOperationTests: XCTestCase {
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }
     
-    func testFindNftByMintOnChainOperation(){
-        var result: Result<NFT, OperationError>?
+    func testFindNftByMintListOnChainOperation(){
+        var result: Result<[NFT?], OperationError>?
         let lock = RunLoopSimpleLock()
+        
         lock.dispatch { [weak self] in
-            let operation = FindNftByMintOnChainOperation(metaplex: self!.metaplex)
-            operation.handle(operation: FindNftByMintOperation.pure(.success(PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!))).run {
+            let operation = FindNftsByMintListOnChainOperation(metaplex: self!.metaplex)
+            operation.handle(operation: FindNftsByMintListOperation.pure(.success(
+                [PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!]
+            ))).run {
                 result = $0
                 lock.stop()
             }
         }
         lock.run()
         
-        let nft = try! result?.get()
+        let nft = try! result?.get().first!
         XCTAssertNotNil(nft)
         XCTAssertEqual(nft!.metadataAccount.data.name, "Aurorian #628")
         XCTAssertEqual(nft!.metadataAccount.mint.base58EncodedString, "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")
-        XCTAssertEqual(nft!.metadataAccount.data.creators.count, 3)
-        XCTAssertEqual(nft!.masterEditionAccount?.type, 6)
-        
-        switch nft!.masterEditionAccount!.masterEditionVersion {
-        case .masterEditionV1(_):
-            XCTFail()
-        case .masterEditionV2(let masterEditionV1):
-            XCTAssertEqual(masterEditionV1.maxSupply, 1)
-        }
     }
 }

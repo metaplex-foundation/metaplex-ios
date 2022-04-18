@@ -27,7 +27,7 @@ class FindNftByMintOnChainOperation: OperationHandler {
             let metaDataResult = OperationResult.pure(MetadataAccount.pda(mintKey: mintKey))
                 .flatMap { (publicKey) in
                     OperationResult<BufferInfo<MetadataAccount>, Error>.init { cb in
-                        self.metaplex.getAccountInfo(account: publicKey.base58EncodedString, decodedTo: MetadataAccount.self) {
+                        self.metaplex.getAccountInfo(account: publicKey, decodedTo: MetadataAccount.self) {
                             cb($0)
                         }
                     }
@@ -37,7 +37,7 @@ class FindNftByMintOnChainOperation: OperationHandler {
             let masterEditionResult = OperationResult.pure(MasterEditionAccount.pda(mintKey: mintKey))
                 .flatMap { (publicKey) in
                     OperationResult<BufferInfo<MasterEditionAccount>, Error>.init { cb in
-                        self.metaplex.getAccountInfo(account: publicKey.base58EncodedString, decodedTo: MasterEditionAccount.self) {
+                        self.metaplex.getAccountInfo(account: publicKey, decodedTo: MasterEditionAccount.self) {
                             cb($0)
                         }
                     }

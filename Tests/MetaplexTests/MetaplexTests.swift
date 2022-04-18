@@ -2,21 +2,21 @@ import XCTest
 import Solana
 @testable import Metaplex
 
-let TEST_PUBLICKEY = "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7"
+let TEST_PUBLICKEY = PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!
 final class MetaplexTests: XCTestCase {
     
     var metaplex: Metaplex!
     
     override func setUpWithError() throws {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: TEST_PUBLICKEY)
         let storageDriver = MemoryStorageDriver()
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }
     
     func testSetUpMetaplex() {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: PublicKey(string: TEST_PUBLICKEY)!)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: TEST_PUBLICKEY)
         let storageDriver = MemoryStorageDriver()
         let metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
         XCTAssertNotNil(metaplex)
