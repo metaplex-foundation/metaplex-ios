@@ -27,7 +27,8 @@ class FindNftsByMintListOnChainOperationHandlerTests: XCTestCase {
         lock.dispatch { [weak self] in
             let operation = FindNftsByMintListOnChainOperation(metaplex: self!.metaplex)
             operation.handle(operation: FindNftsByMintListOperation.pure(.success(
-                [PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!]
+                [PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!,
+                 PublicKey(string: "B3n4QMZWCfsTZxC6bgJh9YGWFjESmExSYp8NGfJ8DQvF")!]
             ))).run {
                 result = $0
                 lock.stop()
@@ -39,5 +40,10 @@ class FindNftsByMintListOnChainOperationHandlerTests: XCTestCase {
         XCTAssertNotNil(nft)
         XCTAssertEqual(nft!.metadataAccount.data.name, "Aurorian #628")
         XCTAssertEqual(nft!.metadataAccount.mint.base58EncodedString, "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")
+        
+        let nft2 = try! result?.get()[1]
+        XCTAssertNotNil(nft2)
+        XCTAssertEqual(nft2!.metadataAccount.data.name, "Degen Ape #2031")
+        XCTAssertEqual(nft2!.metadataAccount.mint.base58EncodedString, "B3n4QMZWCfsTZxC6bgJh9YGWFjESmExSYp8NGfJ8DQvF")
     }
 }
