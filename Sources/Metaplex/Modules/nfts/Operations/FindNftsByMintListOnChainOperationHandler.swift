@@ -10,7 +10,7 @@ import Solana
 
 typealias FindNftsByMintListOperation = OperationResult<Array<PublicKey>, OperationError>
 
-class FindNftsByMintListOnChainOperation: OperationHandler {
+class FindNftsByMintListOnChainOperationHandler: OperationHandler {
     
     var metaplex: Metaplex
     private let gmaBuilder: GmaBuilder

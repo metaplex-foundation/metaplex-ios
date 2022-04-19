@@ -16,7 +16,7 @@ class NftClient {
     }
     
     func findNftByMint(mintKey: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
-        let operation = FindNftByMintOnChainOperation(metaplex: self.metaplex)
+        let operation = FindNftByMintOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftByMintOperation.pure(.success(mintKey))).run {
             onComplete($0)
         }
