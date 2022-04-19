@@ -15,7 +15,7 @@ struct FindNftsByCandyMachineInput {
 
 typealias FindNftsByCandyMachineOperation = OperationResult<FindNftsByCandyMachineInput, OperationError>
 
-class FindNftsByCandyMachineOnChainOperation: OperationHandler {
+class FindNftsByCandyMachineOnChainOperationHandler: OperationHandler {
     var metaplex: Metaplex
     
     typealias I = FindNftsByCandyMachineInput

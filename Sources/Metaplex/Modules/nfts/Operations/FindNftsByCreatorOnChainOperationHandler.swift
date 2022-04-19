@@ -13,9 +13,9 @@ struct FindNftsByCreatorInput {
     let position: UInt8?
 }
 
-typealias FindNftsByCreatorOnChainOperation = OperationResult<FindNftsByCreatorInput, OperationError>
+typealias FindNftsByCreatorOperation = OperationResult<FindNftsByCreatorInput, OperationError>
 
-class FindNftsByCreatorOnChainOperationHandler: OperationHandler {    
+class FindNftsByCreatorOnChainOperation: OperationHandler {
     var metaplex: Metaplex
     
     typealias I = FindNftsByCreatorInput
@@ -25,7 +25,7 @@ class FindNftsByCreatorOnChainOperationHandler: OperationHandler {
         self.metaplex = metaplex
     }
     
-    func handle(operation: FindNftsByCreatorOnChainOperation) -> OperationResult<Array<NFT>, OperationError> {
+    func handle(operation: FindNftsByCreatorOperation) -> OperationResult<Array<NFT>, OperationError> {
         fatalError("Not implemented.")
     }
 }

@@ -25,7 +25,7 @@ class FindNftsByMintListOnChainOperationHandlerTests: XCTestCase {
         let lock = RunLoopSimpleLock()
         
         lock.dispatch { [weak self] in
-            let operation = FindNftsByMintListOnChainOperation(metaplex: self!.metaplex)
+            let operation = FindNftsByMintListOnChainOperationHandler(metaplex: self!.metaplex)
             operation.handle(operation: FindNftsByMintListOperation.pure(.success(
                 [PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!,
                  PublicKey(string: "B3n4QMZWCfsTZxC6bgJh9YGWFjESmExSYp8NGfJ8DQvF")!]

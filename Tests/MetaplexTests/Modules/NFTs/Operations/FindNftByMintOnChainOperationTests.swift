@@ -24,7 +24,7 @@ final class FindNftByMintOnChainOperationTests: XCTestCase {
         var result: Result<NFT, OperationError>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            let operation = FindNftByMintOnChainOperation(metaplex: self!.metaplex)
+            let operation = FindNftByMintOnChainOperationHandler(metaplex: self!.metaplex)
             operation.handle(operation: FindNftByMintOperation.pure(.success(PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!))).run {
                 result = $0
                 lock.stop()

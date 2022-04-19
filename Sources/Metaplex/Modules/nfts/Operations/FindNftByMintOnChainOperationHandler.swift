@@ -10,7 +10,7 @@ import Solana
 
 typealias FindNftByMintOperation = OperationResult<PublicKey, OperationError>
 
-class FindNftByMintOnChainOperation: OperationHandler {
+class FindNftByMintOnChainOperationHandler: OperationHandler {
     var metaplex: Metaplex
     
     typealias I = PublicKey
