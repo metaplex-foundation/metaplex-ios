@@ -9,8 +9,6 @@ import Foundation
 import Solana
 
 extension PublicKey {
-    static let metadataProgramId =
-    PublicKey(string: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")!
     
     static let vaultProgramId = PublicKey(string:                                          "vau1zxA2LbssAUEF7Gpw91zMM1LvXrvpzJtmZ58rPsn")!
     
@@ -29,10 +27,10 @@ public struct MetadataAccount: BufferLayout {
     
     static func pda(mintKey: PublicKey) -> Result<PublicKey, Error>{
         let seedMetadata = [String.metadataPrefix.bytes,
-                            PublicKey.metadataProgramId.bytes,
+                            TokenMetadataProgram.publicKey.bytes,
                             mintKey.bytes].map { Data($0) }
         
-        return PublicKey.findProgramAddress(seeds: seedMetadata, programId: .metadataProgramId).map { (publicKey, nonce) in
+        return PublicKey.findProgramAddress(seeds: seedMetadata, programId: TokenMetadataProgram.publicKey).map { (publicKey, nonce) in
             return publicKey
         }
     }

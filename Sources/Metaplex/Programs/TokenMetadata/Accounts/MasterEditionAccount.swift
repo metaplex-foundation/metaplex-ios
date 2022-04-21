@@ -112,11 +112,11 @@ public class MasterEditionAccount: BufferLayout {
     
     static func pda(mintKey: PublicKey) -> Result<PublicKey, Error>{
         let seedMetadata = [String.metadataPrefix.bytes,
-                            PublicKey.metadataProgramId.bytes,
+                            TokenMetadataProgram.publicKey.bytes,
                             mintKey.bytes,
                             String.editionKeyword.bytes].map { Data($0) }
         
-        return PublicKey.findProgramAddress(seeds: seedMetadata, programId: .metadataProgramId).map { (publicKey, nonce) in
+        return PublicKey.findProgramAddress(seeds: seedMetadata, programId: TokenMetadataProgram.publicKey).map { (publicKey, nonce) in
             return publicKey
         }
     }

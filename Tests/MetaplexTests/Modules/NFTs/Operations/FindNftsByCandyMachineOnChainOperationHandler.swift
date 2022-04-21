@@ -1,0 +1,40 @@
+//
+//  FindNftsByCandyMachineOnChainOperationHandlerTests.swift
+//  
+//
+//  Created by Arturo Jamaica on 4/21/22.
+//
+
+import Foundation
+import XCTest
+import Solana
+@testable import Metaplex
+
+final class FindNftsByCandyMachineOnChainOperationHandlerTest: XCTestCase {
+    var metaplex: Metaplex!
+    
+    override func setUpWithError() throws {
+        let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: TEST_PUBLICKEY)
+        let storageDriver = MemoryStorageDriver()
+        metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
+    }
+    
+    func testFindNftsByCandyMachineOperation(){
+        var result: Result<[NFT?], OperationError>?
+        let lock = RunLoopSimpleLock()
+        lock.dispatch { [weak self] in
+            let operation = FindNftsByCandyMachineOnChainOperationHandler(metaplex: self!.metaplex)
+            operation.handle(operation: FindNftsByCandyMachineOperation.pure(.success(
+                FindNftsByCandyMachineInput(
+                    candyMachine: PublicKey(string: "9vwYtcJsH1MskNaixcjgNBnvBDkTBhyg25umod1rgMQL")!,
+                    version: 1
+                )))
+            ).run {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+    }
+}
