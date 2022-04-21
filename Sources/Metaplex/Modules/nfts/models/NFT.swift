@@ -8,7 +8,7 @@
 import Foundation
 import Solana
 
-struct NFT {
+public struct NFT {
     let metadataAccount: MetadataAccount
     let masterEditionAccount: MasterEditionAccount?
     
@@ -24,7 +24,7 @@ struct NFT {
     let isMutable: Bool
     let editionNonce: UInt8?
         
-    init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?){
+    public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?){
         self.metadataAccount = metadataAccount
         self.masterEditionAccount = masterEditionAccount
         
@@ -42,7 +42,7 @@ struct NFT {
 }
 
 extension NFT: Equatable {
-    static func == (lhs: NFT, rhs: NFT) -> Bool {
+    public static func == (lhs: NFT, rhs: NFT) -> Bool {
         return lhs.mint.base58EncodedString == rhs.mint.base58EncodedString
     }
 }
