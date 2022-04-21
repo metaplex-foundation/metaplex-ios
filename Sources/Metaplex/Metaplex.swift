@@ -13,37 +13,37 @@ public class Metaplex {
         self.storageDriver = storageDriver
     }
     
-    func identity() -> IdentityDriver {
+    public func identity() -> IdentityDriver {
         return self.identityDriver
     }
     
-    func setIdentity(identityDriver: IdentityDriver) -> IdentityDriver{
+    public func setIdentity(identityDriver: IdentityDriver) -> IdentityDriver{
         self.identityDriver = identityDriver
         return self.identityDriver
     }
     
-    func storage() -> StorageDriver {
+    public func storage() -> StorageDriver {
         return self.storageDriver
     }
     
-    func setStorage(storageDriver: StorageDriver) -> StorageDriver {
+    public func setStorage(storageDriver: StorageDriver) -> StorageDriver {
         self.storageDriver = storageDriver
         return self.storageDriver
     }
     
-    func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void){
+    public func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void){
         return self.connection.getAccountInfo(account: account, decodedTo: T.self, onComplete: onComplete)
     }
     
-    func getMultipleAccounts<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
+    public func getMultipleAccounts<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
         return self.connection.getMultipleAccountsInfo(accounts: accounts, decodedTo: T.self, onComplete: onComplete)
     }
     
-    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void){
+    public func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void){
         self.identityDriver.sendTransaction(serializedTransaction: serializedTransaction, onComplete: onComplete)
     }
     
-    func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<SignatureStatus?, Error>) -> Void){
+    public func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<SignatureStatus?, Error>) -> Void){
         self.connection.confirmTransaction(signature: signature, configs: configs) { signatureResult in
             switch signatureResult {
             case .success(let signatures):
@@ -54,7 +54,7 @@ public class Metaplex {
         }
     }
     
-    func sendAndConfirmTransaction(serializedTransaction: String, configs: RequestConfiguration?, onComplete: @escaping (Result<SignatureStatus?, Error>) -> Void){
+    public func sendAndConfirmTransaction(serializedTransaction: String, configs: RequestConfiguration?, onComplete: @escaping (Result<SignatureStatus?, Error>) -> Void){
         self.sendTransaction(serializedTransaction: serializedTransaction) { result in
             switch result{
             case .success(let signature):
