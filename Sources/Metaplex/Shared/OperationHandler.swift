@@ -13,6 +13,7 @@ public enum OperationError: Error {
     case gmaBuilderError(Error)
     case getMasterEditionAccountInfoError(Error)
     case getMetadataAccountInfoError(Error)
+    case getFindNftsByCreatorOperation(Error)
 }
 
 protocol OperationHandler {

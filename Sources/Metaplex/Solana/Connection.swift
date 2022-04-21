@@ -11,6 +11,7 @@ import Solana
 public protocol Connection {
     func getProgramAccounts<T: BufferLayout>(publicKey: PublicKey,
                                              decodedTo: T.Type,
+                                             config: RequestConfiguration,
                                              onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void)
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void)
     func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void)
@@ -24,8 +25,8 @@ class SolanaConnectionDriver: Connection {
         self.solanaRPC = Api(router: .init(endpoint: endpoint), supportedTokens: [])
     }
     
-    func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T : BufferLayout {
-        solanaRPC.getProgramAccounts(publicKey: publicKey.base58EncodedString, decodedTo: decodedTo, onComplete: onComplete)
+    func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, config: RequestConfiguration, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T : BufferLayout {
+        solanaRPC.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
     }
     
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {

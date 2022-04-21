@@ -65,23 +65,18 @@ class GmaBuilder {
     }
     
     private func getChunk(publicKeys: [PublicKey]) -> OperationResult<[MaybeAccountInfoWithPublicKey], Error> {
-        return OperationResult.init { [weak self] cb in
-            self?.connection.getMultipleAccountsInfo(accounts: publicKeys, decodedTo: MetadataAccount.self) { result in
-                var maybeAccounts: [MaybeAccountInfoWithPublicKey] = []
-                switch result {
-                case .success(let accounts):
-                    zip(publicKeys, accounts).forEach { (publicKey, account) in
-                        if let account = account.data.value {
-                            maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: true, metadata: account))
-                        } else {
-                            maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: false, metadata: nil))
-                        }
-                    }
-                    cb(.success(maybeAccounts))
-                case .failure(let error):
-                    cb(.failure(error))
+        return OperationResult { [weak self] cb in
+            self?.connection.getMultipleAccountsInfo(accounts: publicKeys, decodedTo: MetadataAccount.self) { cb($0) }
+        }.flatMap { accounts in
+            var maybeAccounts: [MaybeAccountInfoWithPublicKey] = []
+            zip(publicKeys, accounts).forEach { (publicKey, account) in
+                if let account = account.data.value {
+                    maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: true, metadata: account))
+                } else {
+                    maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: false, metadata: nil))
                 }
             }
+            return OperationResult.success(maybeAccounts)
         }
     }
 }
