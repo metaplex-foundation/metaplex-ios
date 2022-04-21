@@ -27,7 +27,7 @@ final class FindNftsByCandyMachineOnChainOperationHandlerTest: XCTestCase {
             let operation = FindNftsByCandyMachineOnChainOperationHandler(metaplex: self!.metaplex)
             operation.handle(operation: FindNftsByCandyMachineOperation.pure(.success(
                 FindNftsByCandyMachineInput(
-                    candyMachine: PublicKey(string: "9vwYtcJsH1MskNaixcjgNBnvBDkTBhyg25umod1rgMQL")!,
+                    candyMachine: PublicKey(string: "cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ")!,
                     version: 1
                 )))
             ).run {

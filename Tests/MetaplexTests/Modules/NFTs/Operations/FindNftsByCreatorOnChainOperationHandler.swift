@@ -29,8 +29,8 @@ final class FindNftsByCreatorOnChainOperationHandlerTests: XCTestCase {
                 FindNftsByCreatorInput(
                     creator: PublicKey(string: "9vwYtcJsH1MskNaixcjgNBnvBDkTBhyg25umod1rgMQL")!,
                     position: 1
-                )))
-            ).run {
+                ))))
+            .run {
                 result = $0
                 lock.stop()
             }
