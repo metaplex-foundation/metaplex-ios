@@ -14,7 +14,7 @@ public protocol Connection {
                                              config: RequestConfiguration,
                                              onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void)
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void)
-    func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void)
+    func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void)
     func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<[SignatureStatus?], Error>) -> Void)
 }
 
@@ -33,7 +33,7 @@ class SolanaConnectionDriver: Connection {
         solanaRPC.getAccountInfo(account: account.base58EncodedString, decodedTo: T.self, onComplete: onComplete)
     }
     
-    func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void) {
+    func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void) {
         solanaRPC.getMultipleAccounts(pubkeys: accounts.map{ $0.base58EncodedString }, decodedTo: T.self, onComplete: onComplete)
     }
     

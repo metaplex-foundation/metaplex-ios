@@ -14,6 +14,7 @@ public enum OperationError: Error {
     case getMasterEditionAccountInfoError(Error)
     case getMetadataAccountInfoError(Error)
     case getFindNftsByCreatorOperation(Error)
+    case getFindNftsByOwnerOperation(Error)
 }
 
 protocol OperationHandler {

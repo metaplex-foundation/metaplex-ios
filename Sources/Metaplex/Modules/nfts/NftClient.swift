@@ -46,4 +46,9 @@ public class NftClient {
                 version: version
             )))).run{ onComplete($0) }
     }
+    
+    
+    public func findNftsByOwner(mintKeys: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        
+    }
 }

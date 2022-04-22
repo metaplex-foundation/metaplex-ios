@@ -103,12 +103,16 @@ public struct MetaplexData: BorshCodable, BufferLayout {
         self.uri = try .init(from: &reader).trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
         self.sellerFeeBasisPoints = try .init(from: &reader)
         self.hasCreators = try .init(from: &reader)
-        self.addressCount = try .init(from: &reader)
         var creatorsArray: [MetaplexCreator] = []
-        for _ in 0..<self.addressCount {
-            let creator: MetaplexCreator = try .init(from: &reader)
-            creatorsArray.append(creator)
+        if self.hasCreators {
+            let addressCount: UInt32 = try .init(from: &reader)
+            for _ in 0..<addressCount {
+                let creator: MetaplexCreator = try .init(from: &reader)
+                creatorsArray.append(creator)
+            }
+            
         }
+        self.addressCount = UInt32(creatorsArray.count)
         self.creators = creatorsArray
     }
     

@@ -35,7 +35,7 @@ public class Metaplex {
         return self.connection.getAccountInfo(account: account, decodedTo: T.self, onComplete: onComplete)
     }
     
-    public func getMultipleAccounts<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void){
+    public func getMultipleAccounts<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void){
         return self.connection.getMultipleAccountsInfo(accounts: accounts, decodedTo: T.self, onComplete: onComplete)
     }
     

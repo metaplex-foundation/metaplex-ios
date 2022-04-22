@@ -8,18 +8,18 @@
 import Foundation
 import Solana
 
-class TokenProgram {
-    let publicKey = PublicKey.tokenProgramId
+public class TokenProgram {
+    static let publicKey = PublicKey.tokenProgramId
     
-    func accounts(connection: Connection) -> TokenProgramGpaBuilder {
+    static func accounts(connection: Connection) -> TokenProgramGpaBuilder {
         return TokenProgramGpaBuilder(connection: connection, programId: publicKey)
     }
     
-    func mintAccounts(connection: Connection) -> MintGpaBuilder {
+    static func mintAccounts(connection: Connection) -> MintGpaBuilder {
         return self.accounts(connection: connection).mintAccounts()
     }
     
-    func tokenAccounts(connection: Connection) -> TokenGpaBuilder {
+    static func tokenAccounts(connection: Connection) -> TokenGpaBuilder {
         return self.accounts(connection: connection).tokenAccounts()
     }
 }
