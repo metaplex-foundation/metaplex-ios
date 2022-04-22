@@ -70,7 +70,7 @@ class GmaBuilder {
         }.flatMap { accounts in
             var maybeAccounts: [MaybeAccountInfoWithPublicKey] = []
             zip(publicKeys, accounts).forEach { (publicKey, account) in
-                if let account = account.data.value {
+                if let account = account?.data.value {
                     maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: true, metadata: account))
                 } else {
                     maybeAccounts.append(MaybeAccountInfoWithPublicKey(pubkey: publicKey, exists: false, metadata: nil))

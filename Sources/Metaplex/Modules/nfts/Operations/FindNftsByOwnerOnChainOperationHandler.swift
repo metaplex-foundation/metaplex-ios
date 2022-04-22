@@ -13,6 +13,7 @@ typealias FindNftsByOwnerOperation = OperationResult<PublicKey, OperationError>
 class FindNftsByOwnerOnChainOperationHandler: OperationHandler {
     typealias I = PublicKey
     typealias O = Array<NFT?>
+    private var tokenGpaBuilder: TokenGpaBuilder?
     
     var metaplex: Metaplex
     init(metaplex: Metaplex){
@@ -21,14 +22,16 @@ class FindNftsByOwnerOnChainOperationHandler: OperationHandler {
     
     func handle(operation: FindNftsByOwnerOperation) -> OperationResult<Array<NFT?>, OperationError> {
         operation.flatMap { owner in
-            return TokenProgram()
+            self.tokenGpaBuilder = TokenProgram
                 .tokenAccounts(connection: self.metaplex.connection)
+            
+            return self.tokenGpaBuilder!
                 .selectMint()
                 .whereOwner(owner: owner)
                 .whereAmount(amount: 1)
                 .getDataAsPublicKeys()
-                .mapError { _ in OperationError.couldNotFindPDA }
-        }.flatMap { publicKeys in
+                .mapError { OperationError.getFindNftsByOwnerOperation($0) }
+        }.flatMap { (publicKeys: [PublicKey]) in
             let operation = FindNftsByMintListOnChainOperationHandler(metaplex: self.metaplex)
             return operation.handle(operation: FindNftsByMintListOperation.pure(.success(
                 publicKeys

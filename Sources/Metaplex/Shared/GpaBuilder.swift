@@ -27,10 +27,10 @@ struct RequestMemCmpFilter : Encodable {
 }
 
 struct RequestDataSizeFilter : Encodable {
-    let dataSize: UInt
+    let dataSize: UInt64
     
     func encode(to encoder: Encoder) throws {
-        var container = encoder.unkeyedContainer()
+        var container = encoder.singleValueContainer()
         try container.encode(dataSize)
     }
 }
@@ -68,86 +68,82 @@ extension GetProgramAccountsConfig {
     }
 }
 
-class GpaBuilder {
-    private let connection: Connection
-    private let programId: PublicKey
-    private var config: GetProgramAccountsConfig = GetProgramAccountsConfig(encoding: "base64")!
-    
-    required init(connection: Connection, programId: PublicKey){
-        self.connection = connection
-        self.programId = programId
+class GpaBuilderFactory{
+    static func from<T: GpaBuilder>(instace: T.Type, builder: GpaBuilder) -> T {
+        var newBuilder = T(connection: builder.connection, programId: builder.programId)
+        return newBuilder.mergeConfig(config: builder.config)
     }
+}
+
+protocol GpaBuilder {
+    var connection: Connection { get }
+    var programId: PublicKey { get }
+    var config: GetProgramAccountsConfig { get set }
     
-    static func from<T: GpaBuilder>(builder: GpaBuilder) -> T {
-        let newBuilder = T(connection: builder.connection, programId: builder.programId)
-        return newBuilder.mergeConfig(config: builder.config) as! T
-    }
-    
-    func mergeConfig<T: GpaBuilder>(config: GetProgramAccountsConfig) -> T {
+    init(connection: Connection, programId: PublicKey)
+}
+extension GpaBuilder {    
+    mutating func mergeConfig<T: GpaBuilder>(config: GetProgramAccountsConfig) -> T {
         self.config = self.config.merge(config)
         return self as! T
     }
     
-    func slice<T: GpaBuilder>(offset: Int, length: Int) -> T {
+    mutating func slice<T: GpaBuilder>(offset: Int, length: Int) -> T {
         self.config = self.config.copyAndReplace(dataSlice: DataSlice(offset: offset, length: length))
         return self as! T
     }
     
-    func withoutData<T: GpaBuilder>() -> T {
+    mutating func withoutData<T: GpaBuilder>() -> T {
         return self.slice(offset: 0, length: 0)
     }
     
-    func addFilter<T: GpaBuilder>(filter: [String: EncodableWrapper]) -> T {
+    mutating func addFilter<T: GpaBuilder>(filter: [String: EncodableWrapper]) -> T {
         var filters = (self.config.filters ?? [])
         filters.append(filter)
         self.config = self.config.copyAndReplace(filters: filters)
         return self as! T
     }
     
-    func `where`<T: GpaBuilder>(offset: UInt, publicKey: PublicKey) -> T {
+    mutating func `where`<T: GpaBuilder>(offset: UInt, publicKey: PublicKey) -> T {
         let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: publicKey.base58EncodedString)
-        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
-        return self.addFilter(filter: ["memcmp": memcmpEncoded]) as! T
-    }
-    
-    func `where`<T: GpaBuilder>(offset: UInt, bytes: [UInt8]) -> T {
-        let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: Base58.encode(bytes))
-        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
-        return self.addFilter(filter: ["memcmp": memcmpEncoded]) as! T
-    }
-    
-    func `where`<T: GpaBuilder>(offset: UInt, string: String) -> T {
-        let memcmpParams: RequestMemCmpFilter = RequestMemCmpFilter(offset: offset, bytes: string)
-        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
-        return self.addFilter(filter: ["memcmp": memcmpEncoded]) as! T
-    }
-    
-    func `where`<T: GpaBuilder>(offset: UInt, int: Int) -> T {
-        let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: Base58.encode(byteArray(from: int)))
         let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
         return self.addFilter(filter: ["memcmp": memcmpEncoded])
     }
     
-    func `where`<T: GpaBuilder>(offset: UInt, byte: UInt8) -> T {
+    mutating func `where`<T: GpaBuilder>(offset: UInt, bytes: [UInt8]) -> T {
+        let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: Base58.encode(bytes))
+        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
+        return self.addFilter(filter: ["memcmp": memcmpEncoded])
+    }
+    
+    mutating func `where`<T: GpaBuilder>(offset: UInt, string: String) -> T {
+        let memcmpParams: RequestMemCmpFilter = RequestMemCmpFilter(offset: offset, bytes: string)
+        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
+        return self.addFilter(filter: ["memcmp": memcmpEncoded])
+    }
+    
+    mutating func `where`<T: GpaBuilder>(offset: UInt, int: UInt64) -> T {
+        let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: Base58.encode(int.bytes))
+        let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
+        return self.addFilter(filter: ["memcmp": memcmpEncoded])
+    }
+    
+    mutating func `where`<T: GpaBuilder>(offset: UInt, byte: UInt8) -> T {
         let memcmpParams = RequestMemCmpFilter(offset: offset, bytes: Base58.encode([byte]))
         let memcmpEncoded = EncodableWrapper(wrapped: memcmpParams)
         return self.addFilter(filter: ["memcmp": memcmpEncoded])
     }
     
-    func whereSize<T: GpaBuilder>(dataSize: UInt) -> T {
+    mutating func whereSize<T: GpaBuilder>(dataSize: UInt64) -> T {
         let requestDataSize = RequestDataSizeFilter(dataSize: dataSize)
         let requestEncoded = EncodableWrapper(wrapped: requestDataSize)
         return self.addFilter(filter: ["dataSize": requestEncoded])
     }
     
     func get<B: BufferLayout>() -> OperationResult<[AccountInfoWithPublicKey<B>], Error>{
-        return OperationResult<[ProgramAccount<B>], Error> { [weak self] cb in
-            if let self = self {
-                self.connection.getProgramAccounts(publicKey: self.programId, decodedTo: B.self, config: self.config) { result in
-                    cb(result)
-                }
-            } else {
-                cb(.failure(NSError(domain: "GpaBuilder instance was disposed.", code: 404)))
+        return OperationResult<[ProgramAccount<B>], Error> { cb in
+            self.connection.getProgramAccounts(publicKey: self.programId, decodedTo: B.self, config: self.config) { result in
+                cb(result)
             }
         }.map { programAccount in
             var infoAccounts: [AccountInfoWithPublicKey<B>] = []
@@ -171,12 +167,22 @@ class GpaBuilder {
     
     func getDataAsPublicKeys () -> OperationResult<[PublicKey], Error> {
         return self.getAndMap { (account: [AccountInfoWithPublicKey<AccountPublicKey>]) in
-            account.map { $0.pubkey }
+            account.map { $0.account.data.value!.publicKey }
         }
-    }
-    
-    private func byteArray<T>(from value: T) -> [UInt8] where T: FixedWidthInteger {
-        withUnsafeBytes(of: value.bigEndian, Array.init)
     }
 }
 
+
+extension FixedWidthInteger where Self: UnsignedInteger {
+
+    var bytes: [UInt8] {
+        var _endian = littleEndian
+        let bytePtr = withUnsafePointer(to: &_endian) {
+            $0.withMemoryRebound(to: UInt8.self, capacity: MemoryLayout<Self>.size) {
+                UnsafeBufferPointer(start: $0, count: MemoryLayout<Self>.size)
+            }
+        }
+        return [UInt8](bytePtr)
+    }
+
+}

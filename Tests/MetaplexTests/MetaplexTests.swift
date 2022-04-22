@@ -36,7 +36,7 @@ final class MetaplexTests: XCTestCase {
     }
     
     func testGetMultipleAccounts(){
-        var result: Result<[BufferInfo<AccountInfo>], Error>?
+        var result: Result<[BufferInfo<AccountInfo>?], Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             self?.metaplex.getMultipleAccounts(accounts: [TEST_PUBLICKEY], decodedTo: AccountInfo.self) {

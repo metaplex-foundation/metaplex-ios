@@ -8,7 +8,7 @@
 import Foundation
 import Solana
 
-class TokenMetadataProgram {
+public class TokenMetadataProgram {
     static let publicKey =
     PublicKey(string: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s")!
     

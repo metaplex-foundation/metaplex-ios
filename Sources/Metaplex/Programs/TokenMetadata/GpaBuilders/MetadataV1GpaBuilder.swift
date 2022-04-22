@@ -19,55 +19,67 @@ let URI_START = SYMBOL_START + MAX_SYMBOL_LENGTH + 4;
 let CREATORS_START = URI_START + MAX_URI_LENGTH + 2 + 1 + 4;
 
 class MetadataV1GpaBuilder: TokenMetadataGpaBuilder {
-    func selectUpdatedAuthority() -> MetadataV1GpaBuilder{
-        return self.slice(offset: 1, length: 3)
+    func selectUpdatedAuthority() -> MetadataV1GpaBuilder {
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: 1, length: 3)
     }
     
     func whereUpdateAuthority(updateAuthority: PublicKey) -> MetadataV1GpaBuilder {
-        return self.where(offset: 1, publicKey: updateAuthority)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 1, publicKey: updateAuthority)
     }
     
     func selectMint() -> MetadataV1GpaBuilder {
-        return self.slice(offset: 33, length: 32)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: 33, length: 32)
     }
     
     func whereMint(mint: PublicKey) -> MetadataV1GpaBuilder {
-        return self.where(offset: 33, publicKey: mint)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 33, publicKey: mint)
     }
     
     func selectName() -> MetadataV1GpaBuilder {
-        return self.slice(offset: NAME_START, length: MAX_NAME_LENGTH);
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: NAME_START, length: MAX_NAME_LENGTH);
     }
     
     func whereName(name: String) -> MetadataV1GpaBuilder {
-        return self.where(offset: UInt(NAME_START), string: name)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: UInt(NAME_START), string: name)
     }
     
     func selectSymbol() -> MetadataV1GpaBuilder {
-        return self.slice(offset: SYMBOL_START, length: MAX_SYMBOL_LENGTH)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: SYMBOL_START, length: MAX_SYMBOL_LENGTH)
     }
     
     func whereSymbol(symbol: String) -> MetadataV1GpaBuilder {
-        return self.where(offset: UInt(SYMBOL_START), string: symbol)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: UInt(SYMBOL_START), string: symbol)
     }
     
     func selectUri() -> MetadataV1GpaBuilder {
-        return self.slice(offset: URI_START, length: MAX_URI_LENGTH);
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: URI_START, length: MAX_URI_LENGTH);
     }
     
     func whereUri(uri: String) -> MetadataV1GpaBuilder  {
-        return self.where(offset: UInt(URI_START), string: uri);
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: UInt(URI_START), string: uri);
     }
     
     func selectCreator(nth: Int) -> MetadataV1GpaBuilder {
-        return self.slice(
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(
             offset: CREATORS_START + (nth - 1) * MAX_CREATOR_LEN,
             length: CREATORS_START + nth * MAX_CREATOR_LEN
         );
     }
     
     func whereCreator(nth: Int, creator: PublicKey) -> MetadataV1GpaBuilder {
-        return self.where(offset: UInt(CREATORS_START + (nth - 1) * MAX_CREATOR_LEN), publicKey: creator)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: UInt(CREATORS_START + (nth - 1) * MAX_CREATOR_LEN), publicKey: creator)
     }
     
     func selectFirstCreator() -> MetadataV1GpaBuilder{

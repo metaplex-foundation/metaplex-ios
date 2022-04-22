@@ -10,18 +10,23 @@ import Solana
 
 class MintGpaBuilder: TokenProgramGpaBuilder {
     func whereDoesntHaveMintAuthority() -> MintGpaBuilder {
-        return self.where(offset: 0, byte: 0)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 0, byte: 0)
     }
     
     func whereHasMintAuthority() -> MintGpaBuilder {
-        return self.where(offset:0, byte: 1);
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset:0, byte: 1)
     }
     
     func whereMintAuthority(mintAuthority: PublicKey) -> MintGpaBuilder {
-        return self.whereHasMintAuthority().where(offset: 4, publicKey: mintAuthority);
+        var mutableGpaBulder = self
+        mutableGpaBulder = mutableGpaBulder.whereHasMintAuthority()
+        return mutableGpaBulder.where(offset: 4, publicKey: mintAuthority)
     }
     
-    func whereSupply(supply: Int) -> MintGpaBuilder {
-        return self.where(offset: 36, int: supply);
+    func whereSupply(supply: UInt64) -> MintGpaBuilder {
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 36, int: supply)
     }
 }

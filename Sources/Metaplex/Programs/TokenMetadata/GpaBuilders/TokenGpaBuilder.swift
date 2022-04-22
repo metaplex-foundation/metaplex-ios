@@ -10,38 +10,48 @@ import Solana
 
 class TokenGpaBuilder: TokenProgramGpaBuilder {
     func selectMint() -> TokenGpaBuilder {
-        return self.slice(offset: 0, length: 32)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: 0, length: 32)
     }
     
     func whereMint(mint: PublicKey) -> TokenGpaBuilder {
-        return self.where(offset: 0, publicKey: mint)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 0, publicKey: mint)
     }
     
     func selectOwner() -> TokenGpaBuilder {
-        return self.slice(offset: 32, length: 32)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: 32, length: 32)
     }
     
     func whereOwner(owner: PublicKey) -> TokenGpaBuilder {
-        return self.where(offset: 32, publicKey: owner)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 32, publicKey: owner)
     }
     
     func selectAmount() -> TokenGpaBuilder {
-        return self.slice(offset: 64, length: 8)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.slice(offset: 64, length: 8)
     }
     
-    func whereAmount(amount: Int) -> TokenGpaBuilder {
-        return self.where(offset: 64, int: amount)
+    func whereAmount(amount: UInt64) -> TokenGpaBuilder {
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 64, int: amount)
     }
     
     func whereDoesntHaveDelegate() -> TokenGpaBuilder {
-        return self.where(offset:72, byte: 0)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset:72, byte: 0)
     }
     
     func whereHasDelegate() -> TokenGpaBuilder {
-        return self.where(offset: 72, byte: 1)
+        var mutableGpaBulder = self
+        return mutableGpaBulder.where(offset: 72, byte: 1)
     }
     
     func whereDelegate(delegate: PublicKey) -> TokenGpaBuilder {
-        return self.whereHasDelegate().where(offset: 76, publicKey: delegate)
+        var mutableGpaBulder = self
+        mutableGpaBulder = mutableGpaBulder.whereHasDelegate()
+        return mutableGpaBulder.where(offset: 76, publicKey: delegate)
     }
 }
