@@ -20,7 +20,7 @@ public enum OperationError: Error {
 protocol OperationHandler {
     associatedtype I
     associatedtype O
-    
+
     var metaplex: Metaplex { get }
     func handle(operation: OperationResult<I, OperationError>) -> OperationResult<O, OperationError>
 }

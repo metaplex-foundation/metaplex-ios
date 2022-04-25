@@ -8,7 +8,6 @@
 import Foundation
 import Solana
 
-
 struct GmaBuilderOptions {
     let chunkSize: Int?
 }
@@ -22,29 +21,29 @@ class GmaBuilder {
     private let connection: Connection
     private var publicKeys: [PublicKey]
     private let chunkSize: Int
-    
-    init(connection: Connection, publicKeys: [PublicKey], options: GmaBuilderOptions?){
+
+    init(connection: Connection, publicKeys: [PublicKey], options: GmaBuilderOptions?) {
         self.connection = connection
         self.chunkSize = options?.chunkSize ?? 100
         self.publicKeys = publicKeys
     }
-    
-    func setPublicKeys(publicKeys: [PublicKey]) -> GmaBuilder{
+
+    func setPublicKeys(publicKeys: [PublicKey]) -> GmaBuilder {
         self.publicKeys.append(contentsOf: publicKeys)
         return self
     }
-    
+
     func get() -> OperationResult<[MaybeAccountInfoWithPublicKey], Error> {
         return self.getChunks(publicKeys: publicKeys)
     }
-    
+
     private func getChunks( publicKeys: [PublicKey]) -> OperationResult<[MaybeAccountInfoWithPublicKey], Error> {
         return OperationResult.init { [weak self] cb in
             var results: [MaybeAccountInfoWithPublicKey] = []
-            
+
             let chunks = publicKeys.chunked(into: self!.chunkSize)
             let chunkOperations = chunks.map { self!.getChunk(publicKeys: $0) }
-            
+
             let dispatchGroup = DispatchGroup()
             for chunk in chunkOperations {
                 dispatchGroup.enter()
@@ -63,7 +62,7 @@ class GmaBuilder {
             }
         }
     }
-    
+
     private func getChunk(publicKeys: [PublicKey]) -> OperationResult<[MaybeAccountInfoWithPublicKey], Error> {
         return OperationResult { [weak self] cb in
             self?.connection.getMultipleAccountsInfo(accounts: publicKeys, decodedTo: MetadataAccount.self) { cb($0) }
