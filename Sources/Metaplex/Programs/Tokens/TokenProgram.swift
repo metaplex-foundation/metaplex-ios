@@ -10,15 +10,15 @@ import Solana
 
 public class TokenProgram {
     static let publicKey = PublicKey.tokenProgramId
-    
+
     static func accounts(connection: Connection) -> TokenProgramGpaBuilder {
         return TokenProgramGpaBuilder(connection: connection, programId: publicKey)
     }
-    
+
     static func mintAccounts(connection: Connection) -> MintGpaBuilder {
         return self.accounts(connection: connection).mintAccounts()
     }
-    
+
     static func tokenAccounts(connection: Connection) -> TokenGpaBuilder {
         return self.accounts(connection: connection).tokenAccounts()
     }

@@ -20,23 +20,23 @@ public protocol Connection {
 
 class SolanaConnectionDriver: Connection {
     public let solanaRPC: Api
-    
-    init(endpoint: RPCEndpoint){
+
+    init(endpoint: RPCEndpoint) {
         self.solanaRPC = Api(router: .init(endpoint: endpoint), supportedTokens: [])
     }
-    
-    func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, config: RequestConfiguration, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T : BufferLayout {
+
+    func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, config: RequestConfiguration, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T: BufferLayout {
         solanaRPC.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
     }
-    
+
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {
         solanaRPC.getAccountInfo(account: account.base58EncodedString, decodedTo: T.self, onComplete: onComplete)
     }
-    
+
     func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void) {
-        solanaRPC.getMultipleAccounts(pubkeys: accounts.map{ $0.base58EncodedString }, decodedTo: T.self, onComplete: onComplete)
+        solanaRPC.getMultipleAccounts(pubkeys: accounts.map { $0.base58EncodedString }, decodedTo: T.self, onComplete: onComplete)
     }
-    
+
     func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<[SignatureStatus?], Error>) -> Void) {
         solanaRPC.getSignatureStatuses(pubkeys: [signature], configs: configs, onComplete: onComplete)
     }

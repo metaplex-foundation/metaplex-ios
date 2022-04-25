@@ -11,7 +11,7 @@ import Solana
 public struct NFT {
     let metadataAccount: MetadataAccount
     let masterEditionAccount: MasterEditionAccount?
-    
+
     /** Data from the Metadata account. */
     let updateAuthority: PublicKey
     let mint: PublicKey
@@ -23,11 +23,11 @@ public struct NFT {
     let primarySaleHappened: Bool
     let isMutable: Bool
     let editionNonce: UInt8?
-        
-    public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?){
+
+    public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?) {
         self.metadataAccount = metadataAccount
         self.masterEditionAccount = masterEditionAccount
-        
+
         self.updateAuthority = metadataAccount.updateAuthority
         self.mint = metadataAccount.mint
         self.name = metadataAccount.data.name

@@ -12,19 +12,19 @@ typealias FindNftsByOwnerOperation = OperationResult<PublicKey, OperationError>
 
 class FindNftsByOwnerOnChainOperationHandler: OperationHandler {
     typealias I = PublicKey
-    typealias O = Array<NFT?>
+    typealias O = [NFT?]
     private var tokenGpaBuilder: TokenGpaBuilder?
-    
+
     var metaplex: Metaplex
-    init(metaplex: Metaplex){
+    init(metaplex: Metaplex) {
         self.metaplex = metaplex
     }
-    
-    func handle(operation: FindNftsByOwnerOperation) -> OperationResult<Array<NFT?>, OperationError> {
+
+    func handle(operation: FindNftsByOwnerOperation) -> OperationResult<[NFT?], OperationError> {
         operation.flatMap { owner in
             self.tokenGpaBuilder = TokenProgram
                 .tokenAccounts(connection: self.metaplex.connection)
-            
+
             return self.tokenGpaBuilder!
                 .selectMint()
                 .whereOwner(owner: owner)

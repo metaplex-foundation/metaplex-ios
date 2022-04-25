@@ -11,12 +11,12 @@ import Solana
 class GuestIdentityDriver: IdentityDriver {
     private let solanaRPC: Api
     internal let publicKey: PublicKey
-    init(solanaRPC: Api){
+    init(solanaRPC: Api) {
         self.solanaRPC = solanaRPC
         self.publicKey = PublicKey.default
     }
-    
-    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void){
+
+    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void) {
         self.solanaRPC.sendTransaction(serializedTransaction: serializedTransaction) { result in
             switch result {
             case .success(let transactionID):
@@ -26,11 +26,11 @@ class GuestIdentityDriver: IdentityDriver {
             }
         }
     }
-    
+
     func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void) {
         onComplete(.failure(IdentityDriverError.methodNotAvailable))
     }
-    
+
     func signAllTransactions(transactions: [Transaction], onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void) {
         onComplete(.failure(IdentityDriverError.methodNotAvailable))
     }

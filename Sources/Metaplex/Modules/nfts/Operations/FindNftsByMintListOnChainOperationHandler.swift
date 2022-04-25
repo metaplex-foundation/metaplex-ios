@@ -8,23 +8,23 @@
 import Foundation
 import Solana
 
-typealias FindNftsByMintListOperation = OperationResult<Array<PublicKey>, OperationError>
+typealias FindNftsByMintListOperation = OperationResult<[PublicKey], OperationError>
 
 class FindNftsByMintListOnChainOperationHandler: OperationHandler {
-    
+
     var metaplex: Metaplex
     private let gmaBuilder: GmaBuilder
-    
-    typealias I = Array<PublicKey>
-    typealias O = Array<NFT?>
-    
-    init(metaplex: Metaplex){
+
+    typealias I = [PublicKey]
+    typealias O = [NFT?]
+
+    init(metaplex: Metaplex) {
         self.metaplex = metaplex
         self.gmaBuilder = GmaBuilder(connection: self.metaplex.connection, publicKeys: [], options: nil)
     }
-    
-    func handle(operation: FindNftsByMintListOperation) -> OperationResult<Array<NFT?>, OperationError> {
-        
+
+    func handle(operation: FindNftsByMintListOperation) -> OperationResult<[NFT?], OperationError> {
+
         let result: OperationResult<[PublicKey], OperationError> = operation.flatMap { mintKeys in
             var pdas: [PublicKey] = []
             for mintKey in mintKeys {
@@ -35,23 +35,23 @@ class FindNftsByMintListOnChainOperationHandler: OperationHandler {
             }
             return .pure(.success(pdas))
         }
-        
+
         let resultAccounts: OperationResult<[MaybeAccountInfoWithPublicKey], OperationError> = result.flatMap { publicKeys in
             self.gmaBuilder.setPublicKeys(publicKeys: publicKeys)
                 .get()
                 .mapError {  OperationError.gmaBuilderError($0) }
         }
-        
+
         return resultAccounts.flatMap { accountInfos in
             var nfts: [NFT?] = []
             for accountInfo in accountInfos {
-                if accountInfo.exists, let metadataAccount = accountInfo.metadata{
+                if accountInfo.exists, let metadataAccount = accountInfo.metadata {
                     nfts.append(NFT(metadataAccount: metadataAccount, masterEditionAccount: nil))
                 } else {
                     nfts.append(nil)
                 }
             }
-            return OperationResult<Array<NFT?>, OperationError>.success(nfts)
+            return OperationResult<[NFT?], OperationError>.success(nfts)
         }
     }
 }
