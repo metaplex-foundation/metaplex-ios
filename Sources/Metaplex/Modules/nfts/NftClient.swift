@@ -47,7 +47,8 @@ public class NftClient {
             )))).run { onComplete($0) }
     }
 
-    public func findNftsByOwner(mintKeys: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
-
+    public func findNftsByOwner(publicKey: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        let operation = FindNftsByOwnerOnChainOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindNftsByOwnerOperation.pure(.success(publicKey))).run { onComplete($0) }
     }
 }
