@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ajamaica/Solana.Swift.git",
       "state" : {
-        "branch" : "feature/multipleAccounts-nil",
-        "revision" : "ba093b51b3854aed118ffd9f2e37bb8601457ffc"
+        "branch" : "master",
+        "revision" : "25f425ef8fb94f8501887fbe5b82f7d392d32a40"
       }
     },
     {
