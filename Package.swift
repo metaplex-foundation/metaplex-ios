@@ -13,15 +13,14 @@ let package = Package(
             targets: ["Metaplex"]),
     ],
     dependencies: [
-        // TODO: Fix the name
-        .package(name:"Solana", url: "https://github.com/ajamaica/Solana.Swift.git", branch: "feature/multipleAccounts-nil"),
+        .package(url: "https://github.com/ajamaica/Solana.Swift.git", branch: "feature/multipleAccounts-nil"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Metaplex",
-            dependencies: ["Solana"]),
+            dependencies: [.product(name: "Solana", package: "Solana.Swift")]),
         .testTarget(
             name: "MetaplexTests",
             dependencies: ["Metaplex"]),
