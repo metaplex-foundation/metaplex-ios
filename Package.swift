@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Metaplex",
-    platforms: [.iOS(.v13),.macOS(.v10_12)],
+    platforms: [.iOS(.v11),.macOS(.v10_12)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
