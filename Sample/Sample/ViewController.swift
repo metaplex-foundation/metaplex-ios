@@ -20,12 +20,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         metaplex.nft.findNftsByOwner(publicKey: PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!) { result in
-            
+            print(result)
         }
-        
-        // Do any additional setup after loading the view.
     }
     
 }
