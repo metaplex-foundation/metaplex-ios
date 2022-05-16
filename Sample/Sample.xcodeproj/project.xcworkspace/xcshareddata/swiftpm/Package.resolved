@@ -1,0 +1,50 @@
+{
+  "pins" : [
+    {
+      "identity" : "metaplex-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/metaplex-foundation/metaplex-ios",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ec888d11ca6293330166d5812663993ee98b84ba"
+      }
+    },
+    {
+      "identity" : "secp256k1.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Boilertalk/secp256k1.swift.git",
+      "state" : {
+        "revision" : "45e458ec3be46cf0a6eb68bc947f797852dc65d8",
+        "version" : "0.1.6"
+      }
+    },
+    {
+      "identity" : "solana.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ajamaica/Solana.Swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "216519b3d1805910bbf6dc25fddf55e9e64800a2"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+        "version" : "4.0.4"
+      }
+    },
+    {
+      "identity" : "tweetnacl-swiftwrap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
+      "state" : {
+        "revision" : "f8fd111642bf2336b11ef9ea828510693106e954",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 2
+}

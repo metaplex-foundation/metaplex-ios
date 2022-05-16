@@ -9,4 +9,4 @@ import Foundation
 
 public protocol StorageDriver { }
 
-class MemoryStorageDriver: StorageDriver { }
+public class MemoryStorageDriver: StorageDriver { }
