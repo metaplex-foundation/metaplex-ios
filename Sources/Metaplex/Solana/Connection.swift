@@ -18,7 +18,7 @@ public protocol Connection {
     func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<[SignatureStatus?], Error>) -> Void)
 }
 
-class SolanaConnectionDriver: Connection {
+public class SolanaConnectionDriver: Connection {
     public let solanaRPC: Api
 
     init(endpoint: RPCEndpoint) {

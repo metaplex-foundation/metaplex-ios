@@ -8,7 +8,7 @@
 import Foundation
 import Solana
 
-class GuestIdentityDriver: IdentityDriver {
+public class GuestIdentityDriver: IdentityDriver {
     private let solanaRPC: Api
     internal let publicKey: PublicKey
     init(solanaRPC: Api) {

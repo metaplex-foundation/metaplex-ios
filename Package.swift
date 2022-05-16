@@ -20,7 +20,8 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Metaplex",
-            dependencies: [.product(name: "Solana", package: "Solana.Swift")]),
+            dependencies: [.product(name: "Solana", package: "Solana.Swift")],
+            exclude: ["Sample"]),
         .testTarget(
             name: "MetaplexTests",
             dependencies: ["Metaplex"]),
