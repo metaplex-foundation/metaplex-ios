@@ -23,7 +23,7 @@ public struct JsonMetadataProperties: Decodable {
     public let files: [JsonMetadataFile]?
 }
 
-enum Value: Equatable {
+public enum Value: Equatable {
     case number(Double)
     case string(String)
     case unkown
