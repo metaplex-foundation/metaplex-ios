@@ -7,6 +7,7 @@
 
 import UIKit
 import Metaplex
+import Kingfisher
 
 class NFTCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var thumbnailImageView: UIImageView!
