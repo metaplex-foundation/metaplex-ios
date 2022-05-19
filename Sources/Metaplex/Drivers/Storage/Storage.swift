@@ -33,7 +33,7 @@ public class MemoryStorageDriver: StorageDriver {
 public class URLSharedStorageDriver: StorageDriver {
     let urlSession: URLSession
     
-    init(urlSession: URLSession){
+    public init(urlSession: URLSession){
         self.urlSession = urlSession
     }
     

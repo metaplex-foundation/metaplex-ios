@@ -17,6 +17,7 @@
 		B7968E5F2832DFC900F2F82A /* SampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7968E5E2832DFC800F2F82A /* SampleUITests.swift */; };
 		B7968E612832DFC900F2F82A /* SampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7968E602832DFC900F2F82A /* SampleUITestsLaunchTests.swift */; };
 		B7968E7A2832F7D600F2F82A /* Metaplex in Frameworks */ = {isa = PBXBuildFile; productRef = B7968E792832F7D600F2F82A /* Metaplex */; };
+		B79BF1972835C93D00E45723 /* NFTCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79BF1962835C93D00E45723 /* NFTCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		B7968E5A2832DFC800F2F82A /* SampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7968E5E2832DFC800F2F82A /* SampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUITests.swift; sourceTree = "<group>"; };
 		B7968E602832DFC900F2F82A /* SampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B79BF1962835C93D00E45723 /* NFTCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				B7968E462832DFC800F2F82A /* Assets.xcassets */,
 				B7968E482832DFC800F2F82A /* LaunchScreen.storyboard */,
 				B7968E4B2832DFC800F2F82A /* Info.plist */,
+				B79BF1962835C93D00E45723 /* NFTCollectionViewCell.swift */,
 			);
 			path = Sample;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B7968E422832DFBC00F2F82A /* ViewController.swift in Sources */,
+				B79BF1972835C93D00E45723 /* NFTCollectionViewCell.swift in Sources */,
 				B7968E3E2832DFBC00F2F82A /* AppDelegate.swift in Sources */,
 				B7968E402832DFBC00F2F82A /* SceneDelegate.swift in Sources */,
 			);
