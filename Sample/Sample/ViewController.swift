@@ -9,9 +9,7 @@ import UIKit
 import Metaplex
 import Solana
 
-public class AppStorageDriver: StorageDriver { }
-
-let NFTCollectionViewCell = "NFTCollectionViewCell"
+let NFTCollectionViewCellId = "NFTCollectionViewCell"
 class ViewController: UIViewController {
     
     private let ownerPublicKey = PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!
@@ -20,7 +18,7 @@ class ViewController: UIViewController {
         
     lazy var metaplex: Metaplex = {
         let solana = SolanaConnectionDriver(endpoint: RPCEndpoint.mainnetBetaSolana)
-        return Metaplex(connection: solana, identityDriver: GuestIdentityDriver(solanaRPC: solana.solanaRPC), storageDriver: AppStorageDriver())
+        return Metaplex(connection: solana, identityDriver: GuestIdentityDriver(solanaRPC: solana.solanaRPC), storageDriver: URLSharedStorageDriver(urlSession: URLSession.shared))
     }()
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -51,7 +49,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCell, for: indexPath)
+        let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCellId, for: indexPath)
         return collectionCell
     }
     
