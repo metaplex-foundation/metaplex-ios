@@ -8,10 +8,10 @@
 import Foundation
 import Solana
 
-public struct NFT {
+public class NFT {
     let metadataAccount: MetadataAccount
     let masterEditionAccount: MasterEditionAccount?
-
+    
     /** Data from the Metadata account. */
     let updateAuthority: PublicKey
     let mint: PublicKey
@@ -27,7 +27,7 @@ public struct NFT {
     public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?) {
         self.metadataAccount = metadataAccount
         self.masterEditionAccount = masterEditionAccount
-
+        
         self.updateAuthority = metadataAccount.updateAuthority
         self.mint = metadataAccount.mint
         self.name = metadataAccount.data.name
@@ -38,6 +38,17 @@ public struct NFT {
         self.primarySaleHappened = metadataAccount.primarySaleHappened
         self.isMutable = metadataAccount.isMutable
         self.editionNonce = metadataAccount.editionNonce
+    }
+    
+    public func metadata(metaplex: Metaplex, onComplete: @escaping (Result<JsonMetadata, Error>) -> Void) {
+        JsonMetadataTask(metaplex: metaplex, nft: self).use { result in
+            switch result {
+            case .success(let metadata):
+                onComplete(.success(metadata))
+            case .failure(let error):
+                onComplete(.failure(error))
+            }
+        }
     }
 }
 
