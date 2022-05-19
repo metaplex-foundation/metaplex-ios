@@ -49,7 +49,17 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCellId, for: indexPath)
+        let nft = nftList[indexPath.row]
+        let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCellId, for: indexPath) as! NFTCollectionViewCell
+        nft.metadata(metaplex: self.metaplex) { result in
+            switch result {
+            case .success(let metadata):
+                collectionCell.setMetadata(metadata)
+            case .failure:
+                break
+            }
+            
+        }
         return collectionCell
     }
     

@@ -9,20 +9,20 @@ import Foundation
 import Solana
 
 public class NFT {
-    let metadataAccount: MetadataAccount
-    let masterEditionAccount: MasterEditionAccount?
+    public let metadataAccount: MetadataAccount
+    public let masterEditionAccount: MasterEditionAccount?
     
     /** Data from the Metadata account. */
-    let updateAuthority: PublicKey
-    let mint: PublicKey
-    let name: String
-    let symbol: String
-    let uri: String
-    let sellerFeeBasisPoints: UInt16
-    let creators: [MetaplexCreator]
-    let primarySaleHappened: Bool
-    let isMutable: Bool
-    let editionNonce: UInt8?
+    public let updateAuthority: PublicKey
+    public let mint: PublicKey
+    public let name: String
+    public let symbol: String
+    public let uri: String
+    public let sellerFeeBasisPoints: UInt16
+    public let creators: [MetaplexCreator]
+    public let primarySaleHappened: Bool
+    public let isMutable: Bool
+    public let editionNonce: UInt8?
 
     public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?) {
         self.metadataAccount = metadataAccount
