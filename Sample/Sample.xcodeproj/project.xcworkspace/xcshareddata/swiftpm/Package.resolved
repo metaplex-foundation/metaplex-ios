@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "59eb199fdb8dd47733624e8b0277822d0232579e",
+        "version" : "7.2.2"
+      }
+    },
+    {
       "identity" : "metaplex-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/metaplex-foundation/metaplex-ios",
       "state" : {
         "branch" : "main",
-        "revision" : "ac1fe634a8cddf610b05a35e6dcec41b912bd791"
+        "revision" : "ff4410ff6964536af0b7e17c54ce52a4bb345927"
       }
     },
     {

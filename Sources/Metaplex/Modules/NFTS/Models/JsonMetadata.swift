@@ -8,31 +8,31 @@
 import Foundation
 
 public struct JsonMetadata: Decodable {
-    let name: String?
-    let symbol: String?
-    let description: String?
-    let seller_fee_basis_points: Double?
-    let image: String?
-    let external_url: String?
-    let attributes: [JsonMetadataAttribute]?
-    let properties: JsonMetadataProperties?
+    public let name: String?
+    public let symbol: String?
+    public let description: String?
+    public let seller_fee_basis_points: Double?
+    public let image: String?
+    public let external_url: String?
+    public let attributes: [JsonMetadataAttribute]?
+    public let properties: JsonMetadataProperties?
 }
 
 public struct JsonMetadataProperties: Decodable {
-    let creators: [JsonMetadataCreator]?
-    let files: [JsonMetadataFile]?
+    public let creators: [JsonMetadataCreator]?
+    public let files: [JsonMetadataFile]?
 }
 
-enum Value: Equatable {
+public enum Value: Equatable {
     case number(Double)
     case string(String)
     case unkown
 }
 
 public struct JsonMetadataAttribute: Decodable {
-    let display_type: String?
-    let trait_type: String?
-    let value: Value?
+    public let display_type: String?
+    public let trait_type: String?
+    public let value: Value?
     
     private enum CodingKeys: String, CodingKey {
         case display_type
@@ -55,11 +55,11 @@ public struct JsonMetadataAttribute: Decodable {
 }
 
 public struct JsonMetadataCreator: Decodable {
-    let address: String?
-    let share: Double?
+    public let address: String?
+    public let share: Double?
 }
 
 public struct JsonMetadataFile: Decodable {
-    let type: String
-    let uri: String?
+    public let type: String
+    public let uri: String?
 }

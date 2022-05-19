@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B77F947F28368E9A0039A904 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B77F947E28368E9A0039A904 /* Kingfisher */; };
 		B7968E3E2832DFBC00F2F82A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7968E3D2832DFBC00F2F82A /* AppDelegate.swift */; };
 		B7968E402832DFBC00F2F82A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7968E3F2832DFBC00F2F82A /* SceneDelegate.swift */; };
 		B7968E422832DFBC00F2F82A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7968E412832DFBC00F2F82A /* ViewController.swift */; };
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B77F947F28368E9A0039A904 /* Kingfisher in Frameworks */,
 				B7968E7A2832F7D600F2F82A /* Metaplex in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -158,6 +160,7 @@
 			name = Sample;
 			packageProductDependencies = (
 				B7968E792832F7D600F2F82A /* Metaplex */,
+				B77F947E28368E9A0039A904 /* Kingfisher */,
 			);
 			productName = Sample;
 			productReference = B7968E3A2832DFBC00F2F82A /* Sample.app */;
@@ -233,6 +236,7 @@
 			mainGroup = B7968E312832DFBC00F2F82A;
 			packageReferences = (
 				B7968E782832F7D600F2F82A /* XCRemoteSwiftPackageReference "metaplex-ios" */,
+				B77F947D28368E990039A904 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = B7968E3B2832DFBC00F2F82A /* Products */;
 			projectDirPath = "";
@@ -624,6 +628,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B77F947D28368E990039A904 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		B7968E782832F7D600F2F82A /* XCRemoteSwiftPackageReference "metaplex-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/metaplex-foundation/metaplex-ios";
@@ -635,6 +647,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B77F947E28368E9A0039A904 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B77F947D28368E990039A904 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		B7968E792832F7D600F2F82A /* Metaplex */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B7968E782832F7D600F2F82A /* XCRemoteSwiftPackageReference "metaplex-ios" */;
