@@ -53,6 +53,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCellId, for: indexPath) as! NFTCollectionViewCell
         collectionCell.nameLabel.text = nft.name
         collectionCell.mintLabel.text = nft.mint.base58EncodedString
+        collectionCell.thumbnailImageView.image = nil
         nft.metadata(metaplex: self.metaplex) { result in
             switch result {
             case .success(let metadata):
