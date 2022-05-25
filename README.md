@@ -59,7 +59,7 @@ The `findNftByMint` method accepts a `mint` public key and returns NFT object..
 ```swift
 let ownerPublicKey = PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!
 
-let nft = metaplex.nft.findNftByMint(publicKey: ownerPublicKey) { result in
+let nft = metaplex.nft.findNftByMint(publicKey: mintPublicKey) { result in
     switch result {
     case .success(let nft):
         ...
@@ -92,52 +92,55 @@ Depending on the MasterEditionAccount version it can return v1 or v2 enums.
 
 You can [read more about the `NFT` model below](#the-nft-model).
 
-### findAllByMintList
+### findNftByMintList
 
-The `findAllByMintList` method accepts an array of mint addresses and returns an array of `Nft`s. However, `null` values will be returned for each provided mint address that is not associated with an NFT.
+The `findNftByMintList` method accepts an array of mint addresses and returns an array of `Nft`s. However, `nil` values will be returned for each provided mint address that is not associated with an NFT.
 
-Note that this is much more efficient than calling `findByMint` for each mint in the list as the SDK can optimise the query and fetch multiple NFTs in much fewer requests.
-
-```ts
-const [nftA, nftB] = await metaplex.nfts().findAllByMintList([mintA, mintB]);
-```
-
-NFTs retrieved via `findAllByMintList` will not have their JSON metadata loaded because this would require one request per NFT and could be inefficient if you provide a long list of mint addresses. Additionally, you might want to fetch these on-demand, as the NFTs are being displayed on your web app for instance. The same goes for the `Edition` account which might be irrelevant until the user clicks on the NFT.
-
-Thus, if you want to load the JSON metadata and/or the `Edition` account of an NFT, you may do this like so.
-
-```ts
-await nft.metadataTask.run();
-await nft.EditionTask.run();
-```
-
-This will give you access to the `metadata`, `originalEdition` and `printEdition` properties of the NFT. The last two depend on whether the NFT is an original edition or a print edition.
-
-```ts
-const imageUrl = nft.metadata.image;
-
-if (nft.isOriginal()) {
-    const currentSupply = nft.originalEdition.supply;
-    const maxSupply = nft.originalEdition.maxSupply;
+```swift
+let nft = metaplex.nft.findNftByMintList(mintKeys: [mintPublicKey, mintPublicKey]) { result in
+    switch result {
+    case .success(let nfts):
+        // You can use nftList.compactMap{ $0 } to remove nils
+        ...
+    case .failure:
+        ...
+    }
 }
+```
 
-if (nft.isPrint()) {
-  const parentEdition = nft.printEdition.parent;
-  const editionNumber = nft.printEdition.edition;
+NFTs retrieved via `findNftByMintList` will not have their JSON metadata loaded because this would require one request per NFT and could be inefficient if you provide a long list of mint addresses. Additionally, you might want to fetch these on-demand, as the NFTs are being displayed on your web app for instance.
+
+Thus, if you want to load the JSON metadata of an NFT, you may do this like so.
+
+```swift
+nft.metadata(metaplex: self.metaplex) { result in
+    switch result {
+    case .success(let metadata):
+        ...
+    case .failure:
+        ...
+    }
 }
 ```
 
 We'll talk more about these tasks when documenting [the `NFT` model](#the-nft-model).
 
-### findAllByOwner
+### findNftsByOwner
 
-The `findAllByOwner` method accepts a public key and returns all `Nft`s owned by that public key.
+The `findNftsByOwner` method accepts a public key and returns all `Nft`s owned by that owner public key.
 
-```ts
-const myNfts = await metaplex.nfts().findAllByOwner(metaplex.identity().publicKey);
+```swift
+metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
+    switch result {
+    case .success(let nftList):
+        ...
+    case .failure:
+        ...
+    }
+}
 ```
 
-Similarly to `findAllByMintList`, the returned `Nft`s will not have their JSON metadata nor their edition account loaded.
+Similarly to `findNftByMintList`, the returned `Nft`s will not have their JSON metadata. This method is used on the [Sample App](https://github.com/metaplex-foundation/metaplex-ios/tree/main/Sample).
 
 
 ### The `Nft` model
