@@ -104,12 +104,23 @@
                                             <constraint firstAttribute="width" constant="80.5" id="N3Q-a0-gW1"/>
                                         </constraints>
                                     </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ID5-Dw-OD5">
+                                        <rect key="frame" x="301" y="22" width="103" height="20.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="103" id="hpj-2P-QHv"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" name="Neutral90"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="ChB-kt-FWZ"/>
                                     <constraint firstItem="T3j-Q2-AGw" firstAttribute="top" secondItem="jRd-xi-TQq" secondAttribute="top" id="Mjq-Ju-gS9"/>
                                     <constraint firstItem="T3j-Q2-AGw" firstAttribute="leading" secondItem="jRd-xi-TQq" secondAttribute="leading" id="Olu-2l-G4Z"/>
+                                    <constraint firstAttribute="trailing" secondItem="ID5-Dw-OD5" secondAttribute="trailing" constant="10" id="WGZ-dL-CX2"/>
+                                    <constraint firstItem="ID5-Dw-OD5" firstAttribute="centerY" secondItem="ndT-C1-pf5" secondAttribute="centerY" id="nJZ-ZS-cn4"/>
                                     <constraint firstAttribute="bottom" secondItem="T3j-Q2-AGw" secondAttribute="bottom" id="zh1-nh-G3a"/>
                                 </constraints>
                             </view>
@@ -130,11 +141,12 @@
                     <navigationItem key="navigationItem" id="kuu-HP-jeq"/>
                     <connections>
                         <outlet property="collectionView" destination="Bd4-vP-Hhn" id="cnY-sA-Qo4"/>
+                        <outlet property="publicKeyLabel" destination="ID5-Dw-OD5" id="4OZ-Nj-p5X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="944.92753623188412" y="81.696428571428569"/>
+            <point key="canvasLocation" x="1524.6376811594205" y="81.696428571428569"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3yx-1v-Hk5">
@@ -147,16 +159,73 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="B80-G0-4p0"/>
+                        <segue destination="Utb-uB-lVA" kind="relationship" relationship="rootViewController" id="wKE-Ku-yjA"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lhm-Mt-QEm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="34.782608695652179" y="81.696428571428569"/>
         </scene>
+        <!--Log In View Controller-->
+        <scene sceneID="fZv-dg-JXn">
+            <objects>
+                <viewController id="Utb-uB-lVA" customClass="LogInViewController" customModule="Sample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SxN-1a-eqO">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="metaplex_pdf" translatesAutoresizingMaskIntoConstraints="NO" id="QPD-x3-bi7">
+                                <rect key="frame" x="56.5" y="250" width="301" height="138"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="301" id="Uii-vM-jOh"/>
+                                    <constraint firstAttribute="height" constant="138" id="eo5-8a-pZO"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aaS-Ga-cdQ">
+                                <rect key="frame" x="82" y="423" width="250" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="hTI-xs-hfc"/>
+                                    <constraint firstAttribute="width" constant="250" id="t2s-BC-Ryv"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Login with Phantom">
+                                    <color key="baseBackgroundColor" name="Neutral800"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="onLogInWithPhantom:" destination="Utb-uB-lVA" eventType="touchUpInside" id="OEs-za-nRi"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created by Metaplex" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tqq-FH-x3r">
+                                <rect key="frame" x="128" y="841" width="158" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.37254902719999999" green="0.37254902719999999" blue="0.37254902719999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="m9s-SM-hvO"/>
+                        <color key="backgroundColor" name="Background"/>
+                        <constraints>
+                            <constraint firstItem="tqq-FH-x3r" firstAttribute="centerX" secondItem="SxN-1a-eqO" secondAttribute="centerX" id="0vJ-mS-n7M"/>
+                            <constraint firstItem="aaS-Ga-cdQ" firstAttribute="centerY" secondItem="SxN-1a-eqO" secondAttribute="centerY" id="64w-cl-ov2"/>
+                            <constraint firstItem="aaS-Ga-cdQ" firstAttribute="centerX" secondItem="SxN-1a-eqO" secondAttribute="centerX" id="Jbh-nU-gVs"/>
+                            <constraint firstItem="QPD-x3-bi7" firstAttribute="centerX" secondItem="SxN-1a-eqO" secondAttribute="centerX" id="iQ8-I5-fky"/>
+                            <constraint firstItem="aaS-Ga-cdQ" firstAttribute="top" secondItem="QPD-x3-bi7" secondAttribute="bottom" constant="35" id="kY3-Cb-bVZ"/>
+                            <constraint firstItem="tqq-FH-x3r" firstAttribute="bottom" secondItem="m9s-SM-hvO" secondAttribute="bottom" id="qYA-P9-OXZ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="hVR-Pg-8kp"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="goToWallet" id="M7W-Rg-n0o"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FHP-x7-nlW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="785.50724637681162" y="81.696428571428569"/>
+        </scene>
     </scenes>
     <resources>
         <image name="metaplex_logo" width="80.5" height="64"/>
+        <image name="metaplex_pdf" width="213" height="72"/>
         <namedColor name="Background">
             <color red="0.071000002324581146" green="0.071000002324581146" blue="0.071000002324581146" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>

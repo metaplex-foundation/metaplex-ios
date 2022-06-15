@@ -12,7 +12,8 @@ import Solana
 let NFTCollectionViewCellId = "NFTCollectionViewCell"
 class ViewController: UIViewController {
     
-    private let ownerPublicKey = PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!
+    @IBOutlet weak var publicKeyLabel: UILabel!
+    var ownerPublicKey = PublicKey(string: "5LeMDmNW6bQFWQjMhcTZnp6LVHTQQfUpY9jn6YH6RpyE")!
     
     private var nftList:[NFT] = []
         
@@ -29,6 +30,7 @@ class ViewController: UIViewController {
          * I dont recomend calling this like this. Its mixing UI and Business logic.
          * This is an example and it try to over simplifiend the arquitecture.
          */
+        publicKeyLabel.text = ownerPublicKey.base58EncodedString
         metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
             switch result {
             case .success(let nftList):
