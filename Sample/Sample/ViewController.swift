@@ -12,6 +12,7 @@ import Solana
 let NFTCollectionViewCellId = "NFTCollectionViewCell"
 class ViewController: UIViewController {
     
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var publicKeyLabel: UILabel!
     var ownerPublicKey = PublicKey(string: "5LeMDmNW6bQFWQjMhcTZnp6LVHTQQfUpY9jn6YH6RpyE")!
     
@@ -32,6 +33,7 @@ class ViewController: UIViewController {
          */
         publicKeyLabel.text = ownerPublicKey.base58EncodedString
         metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
+            self?.loadingIndicator.stopAnimating()
             switch result {
             case .success(let nftList):
                 self?.nftList = nftList.compactMap{ $0 }

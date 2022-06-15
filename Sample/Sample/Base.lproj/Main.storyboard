@@ -90,6 +90,10 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="qHt-1v-BOP"/>
                                 </connections>
                             </collectionView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="771-iK-zTU">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="tintColor" name="Green"/>
+                            </activityIndicatorView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jRd-xi-TQq">
                                 <rect key="frame" x="0.0" y="44" width="414" height="64"/>
                                 <subviews>
@@ -130,10 +134,12 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Bd4-vP-Hhn" secondAttribute="trailing" id="1jJ-cm-5zN"/>
                             <constraint firstItem="Bd4-vP-Hhn" firstAttribute="top" secondItem="jRd-xi-TQq" secondAttribute="bottom" id="E3p-Az-rPI"/>
+                            <constraint firstItem="771-iK-zTU" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="JlM-O3-s7k"/>
                             <constraint firstItem="jRd-xi-TQq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="NhP-Ng-md4"/>
                             <constraint firstItem="jRd-xi-TQq" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="TK4-Ff-h7S"/>
                             <constraint firstItem="jRd-xi-TQq" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="dJd-Nw-ka8"/>
                             <constraint firstAttribute="bottom" secondItem="Bd4-vP-Hhn" secondAttribute="bottom" id="dyO-7z-e8f"/>
+                            <constraint firstItem="771-iK-zTU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iyV-GW-gHa"/>
                             <constraint firstItem="Bd4-vP-Hhn" firstAttribute="top" secondItem="jRd-xi-TQq" secondAttribute="bottom" id="wEZ-hv-1zg"/>
                             <constraint firstItem="Bd4-vP-Hhn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="yry-iV-0zc"/>
                         </constraints>
@@ -141,6 +147,7 @@
                     <navigationItem key="navigationItem" id="kuu-HP-jeq"/>
                     <connections>
                         <outlet property="collectionView" destination="Bd4-vP-Hhn" id="cnY-sA-Qo4"/>
+                        <outlet property="loadingIndicator" destination="771-iK-zTU" id="rXs-yl-h7k"/>
                         <outlet property="publicKeyLabel" destination="ID5-Dw-OD5" id="4OZ-Nj-p5X"/>
                     </connections>
                 </viewController>
