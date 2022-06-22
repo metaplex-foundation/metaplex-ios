@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     let keyPair = try! NaclBox.keyPair()
-    lazy var phantom = PhantomDeepLink(keyPair: keyPair, cluster: Cluster.mainnetBeta)
+    lazy var phantom = PhantomDeepLink(urlSchema: "metaplex", appUrl: URL(string: "https://metaplex.com")!, keyPair: keyPair, cluster: Cluster.mainnetBeta)
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
