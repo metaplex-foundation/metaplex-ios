@@ -23,6 +23,8 @@ public class NFT {
     public let primarySaleHappened: Bool
     public let isMutable: Bool
     public let editionNonce: UInt8?
+    public let tokenStandard: MetaplexTokenStandard?
+    public let collection: MetaplexCollection?
 
     public init(metadataAccount: MetadataAccount, masterEditionAccount: MasterEditionAccount?) {
         self.metadataAccount = metadataAccount
@@ -38,6 +40,8 @@ public class NFT {
         self.primarySaleHappened = metadataAccount.primarySaleHappened
         self.isMutable = metadataAccount.isMutable
         self.editionNonce = metadataAccount.editionNonce
+        self.tokenStandard = metadataAccount.tokenStandard
+        self.collection = metadataAccount.collection
     }
     
     public func metadata(metaplex: Metaplex, onComplete: @escaping (Result<JsonMetadata, Error>) -> Void) {

@@ -23,6 +23,10 @@ extension String {
     static let metadataPrefix = "metadata"
 }
 
+public enum MetaplexTokenStandard: UInt8, Codable {
+    case NonFungible = 0, FungibleAsset = 1, Fungible = 2, NonFungibleEdition = 3
+}
+
 public struct MetadataAccount: BufferLayout {
 
     static func pda(mintKey: PublicKey) -> Result<PublicKey, Error> {
@@ -37,7 +41,17 @@ public struct MetadataAccount: BufferLayout {
 
     public static var BUFFER_LENGTH: UInt64 = 679
 
-    public init(key: UInt8, updateAuthority: PublicKey, mint: PublicKey, data: MetaplexData, primarySaleHappened: Bool, isMutable: Bool, editionNonce: UInt8? = nil) {
+    public init(
+        key: UInt8,
+        updateAuthority: PublicKey,
+        mint: PublicKey,
+        data: MetaplexData,
+        primarySaleHappened: Bool,
+        isMutable: Bool,
+        editionNonce: UInt8? = nil,
+        tokenStandard: MetaplexTokenStandard? = nil,
+        collection: MetaplexCollection? = nil
+    ) {
         self.key = key
         self.updateAuthority = updateAuthority
         self.mint = mint
@@ -45,7 +59,10 @@ public struct MetadataAccount: BufferLayout {
         self.primarySaleHappened = primarySaleHappened
         self.isMutable = isMutable
         self.editionNonce = editionNonce
+        self.tokenStandard = tokenStandard
+        self.collection = collection
     }
+    
 
     public let key: UInt8
     public let updateAuthority: PublicKey
@@ -54,6 +71,8 @@ public struct MetadataAccount: BufferLayout {
     public let primarySaleHappened: Bool
     public let isMutable: Bool
     public let editionNonce: UInt8?
+    public let tokenStandard: MetaplexTokenStandard?
+    public let collection: MetaplexCollection?
 
     public init(from reader: inout BinaryReader) throws {
         self.key = try .init(from: &reader)
@@ -62,7 +81,19 @@ public struct MetadataAccount: BufferLayout {
         self.data = try .init(from: &reader)
         self.primarySaleHappened = try .init(from: &reader)
         self.isMutable = try .init(from: &reader)
-        self.editionNonce = try? .init(from: &reader)
+        let hasEditionNonce: Bool = try .init(from: &reader)
+        if hasEditionNonce {
+            self.editionNonce = try? .init(from: &reader)
+        } else {
+            self.editionNonce = nil
+        }
+        self.tokenStandard = try? MetaplexTokenStandard(rawValue: UInt8.init(from: &reader))
+        let hasCollection: Bool = try .init(from: &reader)
+        if hasCollection {
+            self.collection = try? .init(from: &reader)
+        } else {
+            self.collection = nil
+        }
     }
 
     public func serialize(to writer: inout Data) throws {
@@ -73,6 +104,30 @@ public struct MetadataAccount: BufferLayout {
         try primarySaleHappened.serialize(to: &writer)
         try isMutable.serialize(to: &writer)
         try editionNonce?.serialize(to: &writer)
+        try tokenStandard?.rawValue.serialize(to: &writer)
+        try collection?.serialize(to: &writer)
+    }
+}
+
+public struct MetaplexCollection: BorshCodable, BufferLayout {
+    public static var BUFFER_LENGTH: UInt64 = 10
+    
+    public let verified: Bool
+    public let key: PublicKey
+    
+    public init(verified: Bool, key: PublicKey){
+        self.verified = verified
+        self.key = key
+    }
+    
+    public init(from reader: inout BinaryReader) throws {
+        self.verified = try .init(from: &reader)
+        self.key = try .init(from: &reader)
+    }
+    
+    public func serialize(to writer: inout Data) throws {
+        try verified.serialize(to: &writer)
+        try key.serialize(to: &writer)
     }
 }
 
