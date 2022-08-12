@@ -12,7 +12,7 @@
     {
       "identity" : "solana.swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ajamaica/Solana.Swift.git",
+      "location" : "https://github.com/metaplex-foundation/Solana.Swift.git",
       "state" : {
         "branch" : "master",
         "revision" : "216519b3d1805910bbf6dc25fddf55e9e64800a2"
