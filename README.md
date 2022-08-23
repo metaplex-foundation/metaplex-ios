@@ -42,24 +42,24 @@ Once properly configured, that `Metaplex` instance can be used to access modules
 Lets dive in nfts module. 
 
 ## NFTs
-The NFT module can be accessed via `Metaplex.nfts()` and provide the following methods. Currently we only support readding methods. Writing and creating NFTs will be suported on the future.
+The NFT module can be accessed via `Metaplex.nfts()` and provide the following methods. Currently we only support reading methods. Writing and creating NFTs will be suported in the future.
 
-- [`findNftByMint(mint, callback)`](#findNftByMint)
-- [`findNftByMintList(mints, callback)`](#findNftByMintList)
-- [`findNftsByOwner(owner, callback)`](#findNftsByOwner)
-- [`findNftsByCreator(creator, position = 1, callback)`](#findNftsByCreator)
-- [`findNftsByCandyMachine(candyMachine, version = 2, callback)`](#findNftsByCandyMachine)
+- [`findByMint(mint, callback)`](#findByMint)
+- [`findAllByMintList(mints, callback)`](#findAllByMintList)
+- [`findAllByOwner(owner, callback)`](#findAllByOwner)
+- [`findAllByCreator(creator, position = 1, callback)`](#findAllByCreator)
+- [`findAllByCandyMachine(candyMachine, version = 2, callback)`](#findAllByCandyMachine)
 
 All the methods return a callback. Its also posible to wrap them inside either RX, and async Result or Combine. We only provide this interface since is the most compatible without forcing any specific framework. 
 
-### findNftByMint
+### findByMint
 
-The `findNftByMint` method accepts a `mint` public key and returns NFT object..
+The `findByMint` method accepts a `mint` public key and returns NFT object..
 
 ```swift
 let ownerPublicKey = PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!
 
-let nft = metaplex.nft.findNftByMint(publicKey: mintPublicKey) { result in
+let nft = metaplex.nft.findByMint(publicKey: mintPublicKey) { result in
     switch result {
     case .success(let nft):
         ...
@@ -92,12 +92,12 @@ Depending on the MasterEditionAccount version it can return v1 or v2 enums.
 
 You can [read more about the `NFT` model below](#the-nft-model).
 
-### findNftByMintList
+### findAllByMintList
 
-The `findNftByMintList` method accepts an array of mint addresses and returns an array of `Nft`s. However, `nil` values will be returned for each provided mint address that is not associated with an NFT.
+The `findAllByMintList` method accepts an array of mint addresses and returns an array of `Nft`s. However, `nil` values will be returned for each provided mint address that is not associated with an NFT.
 
 ```swift
-let nft = metaplex.nft.findNftByMintList(mintKeys: [mintPublicKey, mintPublicKey]) { result in
+let nft = metaplex.nft.findAllByMintList(mintKeys: [mintPublicKey, mintPublicKey]) { result in
     switch result {
     case .success(let nfts):
         // You can use nftList.compactMap{ $0 } to remove nils
@@ -108,7 +108,7 @@ let nft = metaplex.nft.findNftByMintList(mintKeys: [mintPublicKey, mintPublicKey
 }
 ```
 
-NFTs retrieved via `findNftByMintList` will not have their JSON metadata loaded because this would require one request per NFT and could be inefficient if you provide a long list of mint addresses. Additionally, you might want to fetch these on-demand, as the NFTs are being displayed on your web app for instance.
+NFTs retrieved via `findAllByMintList` will not have their JSON metadata loaded because this would require one request per NFT and could be inefficient if you provide a long list of mint addresses. Additionally, you might want to fetch these on-demand, as the NFTs are being displayed on your web app for instance.
 
 Thus, if you want to load the JSON metadata of an NFT, you may do this like so.
 
@@ -125,12 +125,12 @@ nft.metadata(metaplex: self.metaplex) { result in
 
 We'll talk more about these tasks when documenting [the `NFT` model](#the-nft-model).
 
-### findNftsByOwner
+### findAllByOwner
 
-The `findNftsByOwner` method accepts a public key and returns all `Nft`s owned by that owner public key.
+The `findAllByOwner` method accepts a public key and returns all `Nft`s owned by that owner public key.
 
 ```swift
-metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
+metaplex.nft.findAllByOwner(publicKey: ownerPublicKey) { [weak self] result in
     switch result {
     case .success(let nftList):
         ...
@@ -140,7 +140,7 @@ metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
 }
 ```
 
-Similarly to `findNftByMintList`, the returned `Nft`s will not have their JSON metadata. This method is used on the [Sample App](https://github.com/metaplex-foundation/metaplex-ios/tree/main/Sample).
+Similarly to `findAllByMintList`, the returned `Nft`s will not have their JSON metadata. This method is used on the [Sample App](https://github.com/metaplex-foundation/metaplex-ios/tree/main/Sample).
 
 
 ### The `Nft` model

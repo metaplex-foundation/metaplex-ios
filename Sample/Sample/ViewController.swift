@@ -32,7 +32,7 @@ class ViewController: UIViewController {
          * This is an example and it try to over simplifiend the arquitecture.
          */
         publicKeyLabel.text = ownerPublicKey.base58EncodedString
-        metaplex.nft.findNftsByOwner(publicKey: ownerPublicKey) { [weak self] result in
+        metaplex.nft.findAllByOwner(publicKey: ownerPublicKey) { [weak self] result in
             self?.loadingIndicator.stopAnimating()
             switch result {
             case .success(let nftList):
