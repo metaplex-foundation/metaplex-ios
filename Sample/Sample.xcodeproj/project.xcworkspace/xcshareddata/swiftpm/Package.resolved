@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "59eb199fdb8dd47733624e8b0277822d0232579e",
-        "version" : "7.2.2"
+        "revision" : "be1a1acb283a702b99b630f586877ba02234b4cb",
+        "version" : "7.3.2"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/metaplex-foundation/metaplex-ios",
       "state" : {
         "branch" : "main",
-        "revision" : "7939cd14fba6c52fbe3a03d0caab3a50bdef54ff"
+        "revision" : "e5be182d95161f0717d68008038440840a503586"
       }
     },
     {
@@ -30,10 +30,10 @@
     {
       "identity" : "solana.swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ajamaica/Solana.Swift.git",
+      "location" : "https://github.com/metaplex-foundation/Solana.Swift.git",
       "state" : {
         "branch" : "master",
-        "revision" : "216519b3d1805910bbf6dc25fddf55e9e64800a2"
+        "revision" : "f487b256658634d7bdc178c6e6e7abf7fd905580"
       }
     },
     {
