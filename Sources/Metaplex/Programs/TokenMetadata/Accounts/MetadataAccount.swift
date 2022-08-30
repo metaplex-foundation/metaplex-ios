@@ -103,9 +103,25 @@ public struct MetadataAccount: BufferLayout {
         try data.serialize(to: &writer)
         try primarySaleHappened.serialize(to: &writer)
         try isMutable.serialize(to: &writer)
-        try editionNonce?.serialize(to: &writer)
-        try tokenStandard?.rawValue.serialize(to: &writer)
-        try collection?.serialize(to: &writer)
+
+        let hasEditionNonce = editionNonce != nil
+        try hasEditionNonce.serialize(to: &writer)
+        if hasEditionNonce { try editionNonce?.serialize(to: &writer) }
+
+        if let tokenStandard = tokenStandard {
+            try tokenStandard.rawValue.serialize(to: &writer)
+        } else {
+            try UInt8(0).serialize(to: &writer)
+        }
+
+        let hasCollection = collection != nil
+        try hasCollection.serialize(to: &writer)
+        if hasCollection { try collection?.serialize(to: &writer) }
+
+        let padding = MetadataAccount.BUFFER_LENGTH - UInt64(writer.bytes.count)
+        try (0..<padding).forEach { _ in
+            try UInt8(0).serialize(to: &writer)
+        }
     }
 }
 
@@ -135,27 +151,38 @@ public struct MetaplexData: BorshCodable, BufferLayout {
     public static var BUFFER_LENGTH: UInt64 = 10
 
     public init(name: String, symbol: String, uri: String, sellerFeeBasisPoints: UInt16, hasCreators: Bool, addressCount: UInt32, creators: [MetaplexCreator]) {
-        self.name = name
-        self.symbol = symbol
-        self.uri = uri
+        self._name = name
+        self._symbol = symbol
+        self._uri = uri
         self.sellerFeeBasisPoints = sellerFeeBasisPoints
         self.hasCreators = hasCreators
         self.addressCount = addressCount
         self.creators = creators
     }
 
-    public let name: String
-    public let symbol: String
-    public let uri: String
+    private let _name: String
+    private let _symbol: String
+    private let _uri: String
+
+    public var name: String {
+        _name.trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
+    }
+    public var symbol: String {
+        _symbol.trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
+    }
+    public var uri: String {
+        _uri.trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
+    }
+
     public let sellerFeeBasisPoints: UInt16
     public let hasCreators: Bool
     public let addressCount: UInt32
     public let creators: [MetaplexCreator]
 
     public init(from reader: inout BinaryReader) throws {
-        self.name = try .init(from: &reader).trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
-        self.symbol = try .init(from: &reader).trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
-        self.uri = try .init(from: &reader).trimmingCharacters(in: CharacterSet(charactersIn: "\0").union(.whitespacesAndNewlines))
+        self._name = try .init(from: &reader)
+        self._symbol = try .init(from: &reader)
+        self._uri = try .init(from: &reader)
         self.sellerFeeBasisPoints = try .init(from: &reader)
         self.hasCreators = try .init(from: &reader)
         var creatorsArray: [MetaplexCreator] = []
@@ -172,14 +199,16 @@ public struct MetaplexData: BorshCodable, BufferLayout {
     }
 
     public func serialize(to writer: inout Data) throws {
-        try name.serialize(to: &writer)
-        try symbol.serialize(to: &writer)
-        try uri.serialize(to: &writer)
+        try _name.serialize(to: &writer)
+        try _symbol.serialize(to: &writer)
+        try _uri.serialize(to: &writer)
         try sellerFeeBasisPoints.serialize(to: &writer)
-        try creators.isEmpty.serialize(to: &writer)
-        try creators.count.serialize(to: &writer)
-        for creator in creators {
-            try creator.serialize(to: &writer)
+        try hasCreators.serialize(to: &writer)
+        if hasCreators {
+            try UInt32(creators.count).serialize(to: &writer)
+            for creator in creators {
+                try creator.serialize(to: &writer)
+            }
         }
     }
 }
