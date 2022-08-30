@@ -3,8 +3,8 @@ import Solana
 @testable import Metaplex
 
 let TEST_PUBLICKEY = PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!
+
 final class MetaplexTests: XCTestCase {
-    
     var metaplex: Metaplex!
     
     override func setUpWithError() throws {
@@ -22,7 +22,7 @@ final class MetaplexTests: XCTestCase {
         XCTAssertNotNil(metaplex)
     }
     
-    func testGetAccountInfo(){
+    func testGetAccountInfo() {
         var result: Result<BufferInfo<AccountInfo>, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
@@ -35,7 +35,7 @@ final class MetaplexTests: XCTestCase {
         XCTAssertNotNil(result)
     }
     
-    func testGetMultipleAccounts(){
+    func testGetMultipleAccounts() {
         var result: Result<[BufferInfo<AccountInfo>?], Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
