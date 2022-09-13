@@ -43,7 +43,7 @@ final class FindNftByMintOnChainOperationTests: XCTestCase {
         case .masterEditionV1(_):
             XCTFail()
         case .masterEditionV2(let masterEditionV1):
-            XCTAssertEqual(masterEditionV1.maxSupply, 1)
+            XCTAssertEqual(masterEditionV1.maxSupply, 0)
         }
     }
 }

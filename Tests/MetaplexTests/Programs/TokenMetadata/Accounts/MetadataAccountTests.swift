@@ -46,7 +46,7 @@ final class MetadataAccountTests: XCTestCase {
     }
 
     func testMetadataAccountSerialization() {
-        let connection = Api(router: .init(endpoint: .mainnetBetaSolana), supportedTokens: [])
+        let connection = Api(router: NetworkingRouter(endpoint: .mainnetBetaSolana), supportedTokens: [])
 
         var result: Result<BufferInfoPureData, Error>?
         let lock = RunLoopSimpleLock()
