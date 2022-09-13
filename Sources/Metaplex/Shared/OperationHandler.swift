@@ -9,12 +9,17 @@ import Foundation
 
 public enum OperationError: Error {
     case nilDataOnAccount
+    case nilSignatureStatus
     case couldNotFindPDA
     case gmaBuilderError(Error)
     case getMasterEditionAccountInfoError(Error)
     case getMetadataAccountInfoError(Error)
     case getFindNftsByCreatorOperation(Error)
     case getFindNftsByOwnerOperation(Error)
+    case buildInstructionsError(Error)
+    case serializeTransactionError(Error)
+    case sendTransactionError(Error)
+    case confirmTransactionError(Error)
 }
 
 protocol OperationHandler {

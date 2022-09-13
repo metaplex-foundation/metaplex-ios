@@ -22,7 +22,7 @@ class FindNftsByOwnerOnChainOperationHandler: OperationHandler {
 
     func handle(operation: FindNftsByOwnerOperation) -> OperationResult<[NFT?], OperationError> {
         operation.flatMap { owner in
-            self.tokenGpaBuilder = TokenProgram
+            self.tokenGpaBuilder = MetaplexTokenProgram
                 .tokenAccounts(connection: self.metaplex.connection)
 
             return self.tokenGpaBuilder!

@@ -8,7 +8,7 @@
 import Foundation
 import Solana
 
-public class TokenProgram {
+public class MetaplexTokenProgram {
     static let publicKey = PublicKey.tokenProgramId
 
     static func accounts(connection: Connection) -> TokenProgramGpaBuilder {
