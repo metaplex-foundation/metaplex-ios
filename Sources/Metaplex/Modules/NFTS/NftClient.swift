@@ -77,31 +77,7 @@ public class NftClient {
         findAllByOwner(publicKey: publicKey, onComplete: onComplete)
     }
 
-    public func createNft(
-        name: String,
-        symbol: String?,
-        uri: String,
-        sellerFeeBasisPoints: UInt16,
-        hasCreators: Bool,
-        addressCount: UInt32,
-        creators: [MetaplexCreator],
-        isMutable: Bool,
-        mintAccountState: AccountState,
-        account: Account,
-        onComplete: @escaping (Result<NFT, OperationError>) -> Void
-    ) {
-        let input = CreateNftInput(
-            mintAccountState: mintAccountState,
-            account: account,
-            name: name,
-            symbol: symbol,
-            uri: uri,
-            sellerFeeBasisPoints: sellerFeeBasisPoints,
-            hasCreators: hasCreators,
-            addressCount: addressCount,
-            creators: creators,
-            isMutable: isMutable
-        )
+    public func createNft(input: CreateNftInput, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = CreateNftOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: CreateNftOperation.pure(.success(input))).run { onComplete($0) }
     }

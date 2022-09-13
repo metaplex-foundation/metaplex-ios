@@ -37,20 +37,21 @@ let metaplex Metaplex(connection: solana, identityDriver: identityDriver, storag
 ```
 
 # Usage
-Once properly configured, that `Metaplex` instance can be used to access modules providing different sets of features. Currently, there is only one NFT module that can be accessed via the `nfts()` method. From that module, you will be able to find, create and update NFTs with more features to come.
+Once properly configured, that `Metaplex` instance can be used to access modules providing different sets of features. Currently, there is only one NFT module that can be accessed via the `nft()` method. From that module, you will be able to find, create and update NFTs with more features to come.
 
 Lets dive in nfts module. 
 
 ## NFTs
-The NFT module can be accessed via `Metaplex.nfts()` and provide the following methods. Currently we only support reading methods. Writing and creating NFTs will be suported in the future.
+The NFT module can be accessed via `Metaplex.nfts()` and provide the following methods.
 
 - [`findByMint(mint, callback)`](#findByMint)
 - [`findAllByMintList(mints, callback)`](#findAllByMintList)
 - [`findAllByOwner(owner, callback)`](#findAllByOwner)
 - [`findAllByCreator(creator, position = 1, callback)`](#findAllByCreator)
 - [`findAllByCandyMachine(candyMachine, version = 2, callback)`](#findAllByCandyMachine)
+- [`createNft(input, callback)`](#createNft)
 
-All the methods return a callback. Its also posible to wrap them inside either RX, and async Result or Combine. We only provide this interface since is the most compatible without forcing any specific framework. 
+All the methods return a callback. It's also posible to wrap them inside either RX, an async Result or Combine. We only provide this interface since it's the most compatible without forcing any specific framework. 
 
 ### findByMint
 
@@ -142,6 +143,22 @@ metaplex.nft.findAllByOwner(publicKey: ownerPublicKey) { [weak self] result in
 
 Similarly to `findAllByMintList`, the returned `Nft`s will not have their JSON metadata. This method is used on the [Sample App](https://github.com/metaplex-foundation/metaplex-ios/tree/main/Sample).
 
+### createNft
+
+The `createNft` method accepts an input and returns the `Nft` minted from the input. When creating the input, `createNftInput` requires a `uri`. This is where the off-chain json lives and can be a personal storage, aws, arweave, nftstorage, etc. You will need to have this `uri` before minting your `Nft` with `createNft`.
+
+You may mint the `Nft` with a new or existing `Account`. If you are generating a new account for the mint you use `AccountState.new(mintAccount)` or you can use an existing account `AccountState.existing(existingMintAccount)`. This tells the program whether or not to create and initialize a mint account or not.
+
+```swift
+metaplex.nft.createNft(input: createNftInput) { result in
+    switch result {
+    case .success(let nft):
+    case .failure:
+    }
+}
+```
+
+Currently collections and verifying creators are not supported, but will be added in a future release. 
 
 ### The `Nft` model
 

@@ -22,7 +22,7 @@ public enum AccountState {
     }
 }
 
-struct CreateNftInput {
+public struct CreateNftInput {
     let mintAccountState: AccountState
     let account: Account
     let name: String
