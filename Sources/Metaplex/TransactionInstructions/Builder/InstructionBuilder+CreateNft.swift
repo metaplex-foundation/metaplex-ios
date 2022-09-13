@@ -39,7 +39,7 @@ extension InstructionBuilder {
             )
             instructions.append(createInstruction)
 
-            let initMintInstruction = TokenProgram.initializeMintInstruction(
+            let initMintInstruction = SolanaTokenProgram.initializeMintInstruction(
                 tokenProgramId: PublicKey.tokenProgramId,
                 mint: mint,
                 decimals: 0,
@@ -64,8 +64,8 @@ extension InstructionBuilder {
             )
             instructions.append(associatedInstruction)
 
-            let toMintInstruction = TokenProgram.mintToInstruction(
-                tokenProgramId: MetaplexTokenProgram.publicKey,
+            let toMintInstruction = SolanaTokenProgram.mintToInstruction(
+                tokenProgramId: TokenProgram.publicKey,
                 mint: mint,
                 destination: associatedAccount,
                 authority: metaplex.identity().publicKey,

@@ -75,6 +75,8 @@ class CreateNftOnChainOperationHandler: OperationHandler {
             }.flatMap { signature in
                 let operation: () -> OperationResult<SignatureStatus, Retry<Error>> = {
                     OperationResult<SignatureStatus, Error>.init { callback in
+                        // We are sleeping here in order to wait for the transaction to finalize on the chain.
+                        #warning("This needs to be refactored into something more elegant.")
                         sleep(3)
                         self.metaplex.confirmTransaction(
                             signature: signature,
@@ -92,7 +94,12 @@ class CreateNftOnChainOperationHandler: OperationHandler {
                             }
                         }
                     }
-                    .mapError { Retry.retry($0) }
+                    .mapError { error in
+                        if case OperationError.nilSignatureStatus = error {
+                            return Retry.retry(error)
+                        }
+                        return Retry.doNotRetry(error)
+                    }
                 }
                 let retry = OperationResult<SignatureStatus, Error>.retry(attempts: 5, operation: operation)
                     .mapError { OperationError.confirmTransactionError($0) }
