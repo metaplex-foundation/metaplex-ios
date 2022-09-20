@@ -21,7 +21,7 @@ final class CreateNftOnChainOperationTests: XCTestCase {
         mintAccount = Account(network: .devnet)
 
         let solanaConnection = SolanaConnectionDriver(endpoint: .devnetSolana)
-        let solanaIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.solanaRPC, account: account)
+        let solanaIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: account)
         let storageDriver = MemoryStorageDriver()
 
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)

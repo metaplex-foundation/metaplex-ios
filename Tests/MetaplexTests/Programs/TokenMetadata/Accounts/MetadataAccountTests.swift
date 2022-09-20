@@ -5,9 +5,11 @@
 //  Created by Arturo Jamaica on 4/14/22.
 //
 
+import Beet
 import Foundation
-import XCTest
 import Solana
+import XCTest
+
 @testable import Metaplex
 
 final class MetadataAccountTests: XCTestCase {
