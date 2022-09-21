@@ -41,6 +41,11 @@ public protocol Connection {
 }
 
 public class SolanaConnectionDriver: Connection {
+    @available(*, deprecated)
+    public var solanaRPC: Api {
+        api
+    }
+
     public let api: Api
     public let action: Action
 
