@@ -15,7 +15,7 @@
       "location" : "https://github.com/metaplex-foundation/metaplex-swift-program-library",
       "state" : {
         "branch" : "feature/update-auctionhouse",
-        "revision" : "919b1eac1f34879581b7587bc20e0a46a7505922"
+        "revision" : "91989589a84107210e402c51b176a514f5f69304"
       }
     },
     {
@@ -51,7 +51,7 @@
       "location" : "https://github.com/metaplex-foundation/solita-swift.git",
       "state" : {
         "branch" : "main",
-        "revision" : "db7fadedac73a241b6228107ce9c04805b9bc0a0"
+        "revision" : "eb36c8343870bc760c7e84ba3781a7f0c32af1a4"
       }
     },
     {
