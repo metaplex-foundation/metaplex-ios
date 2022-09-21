@@ -12,7 +12,7 @@ import Solana
 extension Auctionhouse {
     static func pda(creator: PublicKey, treasuryMint: PublicKey) -> Result<PublicKey, Error> {
         let seeds = [
-            "aution_house".bytes,
+            "auction_house".bytes,
             creator.bytes,
             treasuryMint.bytes
         ].map { Data($0) }
