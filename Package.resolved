@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/metaplex-foundation/metaplex-swift-program-library",
       "state" : {
-        "branch" : "feature/update-auctionhouse",
-        "revision" : "91989589a84107210e402c51b176a514f5f69304"
+        "branch" : "main",
+        "revision" : "4684d1b6a7a9e491adcc600c9cdd3cb73aec783d"
       }
     },
     {
