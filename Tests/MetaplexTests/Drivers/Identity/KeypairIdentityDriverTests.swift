@@ -20,12 +20,12 @@ final class KeypairIdentityDriverTests: XCTestCase {
     var keypairIdentityDriver: KeypairIdentityDriver!
     
     override func setUp() async throws {
-        keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.solanaRPC, account: account)
+        keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: account)
     }
     
     func testSetUpKeypairIdentityDriver() {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.solanaRPC, account: Account(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!)
+        let keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: Account(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!)
         XCTAssertEqual(keypairIdentityDriver.publicKey.base58EncodedString, "FJyTK5ggCyWaZoJoQ9YAeRokNZtHbN4UwzeSWa2HxNyy")
     }
     

@@ -9,6 +9,8 @@ import Foundation
 import Solana
 
 public protocol Connection {
+    var api: Api { get }
+    
     func getProgramAccounts<T: BufferLayout>(publicKey: PublicKey,
                                              decodedTo: T.Type,
                                              config: RequestConfiguration,
@@ -39,29 +41,34 @@ public protocol Connection {
 }
 
 public class SolanaConnectionDriver: Connection {
-    public let solanaRPC: Api
+    @available(*, deprecated)
+    public var solanaRPC: Api {
+        api
+    }
+
+    public let api: Api
     public let action: Action
 
     public init(endpoint: RPCEndpoint) {
         let router = NetworkingRouter(endpoint: endpoint)
-        self.solanaRPC = Api(router: router, supportedTokens: [])
-        self.action = Action(api: solanaRPC, router: router, supportedTokens: [])
+        self.api = Api(router: router, supportedTokens: [])
+        self.action = Action(api: api, router: router, supportedTokens: [])
     }
 
     public func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, config: RequestConfiguration, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T: BufferLayout {
-        solanaRPC.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
+        api.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
     }
 
     public func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {
-        solanaRPC.getAccountInfo(account: account.base58EncodedString, decodedTo: T.self, onComplete: onComplete)
+        api.getAccountInfo(account: account.base58EncodedString, decodedTo: T.self, onComplete: onComplete)
     }
 
     public func getMultipleAccountsInfo<T>(accounts: [PublicKey], decodedTo: T.Type, onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void) {
-        solanaRPC.getMultipleAccounts(pubkeys: accounts.map { $0.base58EncodedString }, decodedTo: T.self, onComplete: onComplete)
+        api.getMultipleAccounts(pubkeys: accounts.map { $0.base58EncodedString }, decodedTo: T.self, onComplete: onComplete)
     }
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
-        solanaRPC.getMinimumBalanceForRentExemption(dataLength: MINT_SIZE, onComplete: onComplete)
+        api.getMinimumBalanceForRentExemption(dataLength: MINT_SIZE, onComplete: onComplete)
     }
 
     public func createTokenAccount(
@@ -82,6 +89,6 @@ public class SolanaConnectionDriver: Connection {
     }
 
     public func confirmTransaction(signature: String, configs: RequestConfiguration?, onComplete: @escaping (Result<[SignatureStatus?], Error>) -> Void) {
-        solanaRPC.getSignatureStatuses(pubkeys: [signature], configs: configs, onComplete: onComplete)
+        api.getSignatureStatuses(pubkeys: [signature], configs: configs, onComplete: onComplete)
     }
 }

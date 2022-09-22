@@ -5,6 +5,7 @@
 //  Created by Arturo Jamaica on 4/14/22.
 //
 
+import Beet
 import Foundation
 import Solana
 

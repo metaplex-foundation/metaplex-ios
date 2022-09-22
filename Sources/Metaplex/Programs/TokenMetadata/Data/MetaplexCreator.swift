@@ -5,6 +5,7 @@
 //  Created by Michael J. Huber Jr. on 9/12/22.
 //
 
+import Beet
 import Foundation
 import Solana
 

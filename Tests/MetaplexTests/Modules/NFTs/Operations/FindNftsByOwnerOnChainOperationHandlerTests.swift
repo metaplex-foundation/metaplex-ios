@@ -15,7 +15,7 @@ final class FindNftsByOwnerOnChainOperationHandlerTests: XCTestCase {
     
     override func setUpWithError() throws {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.solanaRPC, publicKey: TEST_PUBLICKEY)
+        let solanaIdentityDriver = ReadOnlyIdentityDriver(solanaRPC: solanaConnection.api, publicKey: TEST_PUBLICKEY)
         let storageDriver = MemoryStorageDriver()
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }

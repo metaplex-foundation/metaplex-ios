@@ -20,6 +20,8 @@ public enum OperationError: Error {
     case serializeTransactionError(Error)
     case sendTransactionError(Error)
     case confirmTransactionError(Error)
+    case findAuctionHouseByAddressError(Error)
+    case findAuctionHouseByCreatorAndMintError(Error)
 }
 
 protocol OperationHandler {
