@@ -15,7 +15,7 @@ let mnemonic = ["across", "start", "ancient", "solid", "bid", "sentence", "visit
 
 final class KeypairIdentityDriverTests: XCTestCase {
     
-    let account = Account(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!
+    let account = HotAccount(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!
     let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
     var keypairIdentityDriver: KeypairIdentityDriver!
     
@@ -25,7 +25,7 @@ final class KeypairIdentityDriverTests: XCTestCase {
     
     func testSetUpKeypairIdentityDriver() {
         let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
-        let keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: Account(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!)
+        let keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: HotAccount(phrase: mnemonic, network: .mainnetBeta, derivablePath: .default)!)
         XCTAssertEqual(keypairIdentityDriver.publicKey.base58EncodedString, "FJyTK5ggCyWaZoJoQ9YAeRokNZtHbN4UwzeSWa2HxNyy")
     }
     
@@ -57,7 +57,4 @@ final class KeypairIdentityDriverTests: XCTestCase {
         let serialized = try! transactionResult.serialize().get()
         XCTAssertEqual(serialized.base64EncodedString(), expedtedSignedTransaction)
     }
-    
-    
-    
 }

@@ -12,9 +12,10 @@ class KeypairIdentityDriver: IdentityDriver {
 
     internal var publicKey: PublicKey
     private let secretKey: Data
-    private let account: Account
+    private let account: HotAccount
     private let solanaRPC: Api
-    init(solanaRPC: Api, account: Account) {
+    
+    init(solanaRPC: Api, account: HotAccount) {
         self.solanaRPC = solanaRPC
         self.publicKey = account.publicKey
         self.secretKey = account.secretKey

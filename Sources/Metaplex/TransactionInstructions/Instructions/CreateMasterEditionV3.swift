@@ -35,15 +35,15 @@ public struct CreateMasterEditionV3 {
         programId: PublicKey = TokenMetadataProgram.publicKey
     ) -> TransactionInstruction {
         let keys = [
-            Account.Meta(publicKey: accounts.edition, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: accounts.mint, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: accounts.updateAuthority, isSigner: true, isWritable: false),
-            Account.Meta(publicKey: accounts.mintAuthority, isSigner: true, isWritable: false),
-            Account.Meta(publicKey: accounts.payer, isSigner: true, isWritable: true),
-            Account.Meta(publicKey: accounts.metadata, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: accounts.tokenProgram ?? PublicKey.tokenProgramId, isSigner: false, isWritable: false),
-            Account.Meta(publicKey: accounts.systemProgram ?? PublicKey.systemProgramId, isSigner: false, isWritable: false),
-            Account.Meta(publicKey: accounts.rent ?? PublicKey.sysvarRent, isSigner: false, isWritable: false)
+            AccountMeta(publicKey: accounts.edition, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: accounts.mint, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: accounts.updateAuthority, isSigner: true, isWritable: false),
+            AccountMeta(publicKey: accounts.mintAuthority, isSigner: true, isWritable: false),
+            AccountMeta(publicKey: accounts.payer, isSigner: true, isWritable: true),
+            AccountMeta(publicKey: accounts.metadata, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: accounts.tokenProgram ?? PublicKey.tokenProgramId, isSigner: false, isWritable: false),
+            AccountMeta(publicKey: accounts.systemProgram ?? PublicKey.systemProgramId, isSigner: false, isWritable: false),
+            AccountMeta(publicKey: accounts.rent ?? PublicKey.sysvarRent, isSigner: false, isWritable: false)
         ]
 
         var data = [Index.create]
