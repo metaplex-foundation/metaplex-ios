@@ -8,17 +8,18 @@
 import Foundation
 import XCTest
 import Solana
+
 @testable import Metaplex
 
 final class CreateNftOnChainOperationTests: XCTestCase {
-    var account: Account!
-    var mintAccount: Account!
+    var account: HotAccount!
+    var mintAccount: HotAccount!
     var metaplex: Metaplex!
 
     override func setUpWithError() throws {
         let phrase: [String] = "siege amazing camp income refuse struggle feed kingdom lawn champion velvet crystal stomach trend hen uncover roast nasty until hidden crumble city bag minute".components(separatedBy: " ")
-        account = Account(phrase: phrase, network: .devnet)!
-        mintAccount = Account(network: .devnet)
+        account = HotAccount(phrase: phrase, network: .devnet)!
+        mintAccount = HotAccount(network: .devnet)
 
         let solanaConnection = SolanaConnectionDriver(endpoint: .devnetSolana)
         let solanaIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: account)
