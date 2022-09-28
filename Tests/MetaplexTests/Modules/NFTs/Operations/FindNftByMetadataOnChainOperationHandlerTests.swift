@@ -1,8 +1,8 @@
 //
-//  FindNftByTokenOnChainOperationHandlerTests.swift
+//  FindNftByMetadataOnChainOperationHandlerTests.swift
 //  
 //
-//  Created by Michael J. Huber Jr. on 9/27/22.
+//  Created by Michael J. Huber Jr. on 9/28/22.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Metaplex
 
-final class FindNftByTokenOnChainOperationTests: XCTestCase {
+final class FindNftByMetadataOnChainOperationHandlerTests: XCTestCase {
     var metaplex: Metaplex!
 
     override func setUpWithError() throws {
@@ -21,13 +21,13 @@ final class FindNftByTokenOnChainOperationTests: XCTestCase {
         metaplex = Metaplex(connection: solanaConnection, identityDriver: solanaIdentityDriver, storageDriver: storageDriver)
     }
 
-    func testFindNftByTokenOnChainOperation() {
+    func testFindNftByMetadataOnChainOperation() {
         var result: Result<NFT, OperationError>?
 
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            let operation = FindNftByTokenOnChainOperationHandler(metaplex: self!.metaplex)
-            operation.handle(operation: FindNftByTokenOperation.pure(.success(PublicKey(string: "9UDegF55fXmxYXiaPcrJWvonGepfLewiY4cr8CjouhLQ")!))).run {
+            let operation = FindNftByMetadataOnChainOperationHandler(metaplex: self!.metaplex)
+            operation.handle(operation: FindNftByMetadataOperation.pure(.success(PublicKey(string: "DM5HwF7mxCcqrphBxC2AYoZTdzWg4BMxQthpDRy5Pjyj")!))).run {
                 result = $0
                 lock.stop()
             }

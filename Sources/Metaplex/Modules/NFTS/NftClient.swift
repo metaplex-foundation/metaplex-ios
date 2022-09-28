@@ -17,23 +17,22 @@ public class NftClient {
 
     public func findByMint(mintKey: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = FindNftByMintOnChainOperationHandler(metaplex: self.metaplex)
-        operation.handle(operation: FindNftByMintOperation.pure(.success(mintKey))).run {
-            onComplete($0)
-        }
+        operation.handle(operation: FindNftByMintOperation.pure(.success(mintKey))).run { onComplete($0) }
+    }
+
+    public func findByMetadata(_ metadata: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
+        let operation = FindNftByMetadataOnChainOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindNftByMetadataOperation.pure(.success(metadata))).run { onComplete($0) }
     }
 
     public func findByToken(address: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = FindNftByTokenOnChainOperationHandler(metaplex: self.metaplex)
-        operation.handle(operation: FindNftByTokenOperation.pure(.success(address))).run {
-            onComplete($0)
-        }
+        operation.handle(operation: FindNftByTokenOperation.pure(.success(address))).run { onComplete($0) }
     }
 
     public func findAllByMintList(mintKeys: [PublicKey], onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByMintListOnChainOperationHandler(metaplex: self.metaplex)
-        operation.handle(operation: FindNftsByMintListOperation.pure(.success(
-            mintKeys
-        ))).run { onComplete($0) }
+        operation.handle(operation: FindNftsByMintListOperation.pure(.success(mintKeys))).run { onComplete($0) }
     }
 
     public func findAllByCreator(creator: PublicKey, position: Int? = 1, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
