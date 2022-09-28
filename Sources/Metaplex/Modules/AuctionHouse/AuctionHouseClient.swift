@@ -16,6 +16,8 @@ public class AuctionHouseClient {
         self.metaplex = metaplex
     }
 
+    // MARK: - Auction House
+
     func findByAddress(_ address: PublicKey, onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void) {
         let operation = FindAuctionHouseByAddressOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindAuctionHouseByAddressOperation.pure(.success(address))).run { onComplete($0) }
@@ -26,5 +28,25 @@ public class AuctionHouseClient {
         operation.handle(operation: FindAuctionHouseByCreatorAndMintOperation.pure(.success(
             FindAuctionHouseByCreatorAndMintInput(creator: creator, treasuryMint: treasuryMint)
         ))).run { onComplete($0) }
+    }
+
+    // MARK: - Bid
+
+    func findBidByReceipt(_ address: PublicKey, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
+        let operation = FindBidByReceiptOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindBidByReceiptOperation.pure(.success(address))).run { onComplete($0) }
+    }
+
+    func findBidByTradeState() {
+
+    }
+
+    func findBidsBy() {
+
+    }
+
+    func loadBid(_ bid: Bidreceipt, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
+        let operation = LoadBidOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: LoadBidOperation.pure(.success(bid))).run { onComplete($0) }
     }
 }
