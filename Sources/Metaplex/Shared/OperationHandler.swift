@@ -12,6 +12,7 @@ public enum OperationError: Error {
     case nilSignatureStatus
     case couldNotFindPDA
     case gmaBuilderError(Error)
+    case getAccountInfoError(Error)
     case getMasterEditionAccountInfoError(Error)
     case getMetadataAccountInfoError(Error)
     case getFindNftsByCreatorOperation(Error)

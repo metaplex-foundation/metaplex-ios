@@ -22,9 +22,11 @@ public class NftClient {
         }
     }
 
-    @available(*, deprecated, renamed: "findByMint")
-    public func findNftByMint(mintKey: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
-        findByMint(mintKey: mintKey, onComplete: onComplete)
+    public func findByToken(address: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
+        let operation = FindNftByTokenOnChainOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindNftByTokenOperation.pure(.success(address))).run {
+            onComplete($0)
+        }
     }
 
     public func findAllByMintList(mintKeys: [PublicKey], onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
@@ -32,11 +34,6 @@ public class NftClient {
         operation.handle(operation: FindNftsByMintListOperation.pure(.success(
             mintKeys
         ))).run { onComplete($0) }
-    }
-
-    @available(*, deprecated, renamed: "findAllByMintList")
-    public func findNftByMintList(mintKeys: [PublicKey], onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
-        findAllByMintList(mintKeys: mintKeys, onComplete: onComplete)
     }
 
     public func findAllByCreator(creator: PublicKey, position: Int? = 1, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
@@ -48,11 +45,6 @@ public class NftClient {
             )))).run { onComplete($0) }
     }
 
-    @available(*, deprecated, renamed: "findAllByCreator")
-    public func findNftsByCreator(creator: PublicKey, position: Int? = 1, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
-        findAllByCreator(creator: creator, position: position, onComplete: onComplete)
-    }
-
     public func findAllByCandyMachine(candyMachine: PublicKey, version: UInt8? = 2, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByCandyMachineOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftsByCandyMachineOperation.pure(.success(
@@ -62,23 +54,40 @@ public class NftClient {
             )))).run { onComplete($0) }
     }
 
-    @available(*, deprecated, renamed: "findAllByCandyMachine")
-    public func findNftsByCandyMachine(candyMachine: PublicKey, version: UInt8? = 2, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
-        findAllByCandyMachine(candyMachine: candyMachine, version: version, onComplete: onComplete)
-    }
-
     public func findAllByOwner(publicKey: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByOwnerOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftsByOwnerOperation.pure(.success(publicKey))).run { onComplete($0) }
     }
 
-    @available(*, deprecated, renamed: "findAllByOwner")
-    public func findNftsByOwner(publicKey: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
-        findAllByOwner(publicKey: publicKey, onComplete: onComplete)
-    }
-
     public func createNft(input: CreateNftInput, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = CreateNftOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: CreateNftOperation.pure(.success(input))).run { onComplete($0) }
+    }
+
+    // MARK: - Deprecated
+
+    @available(*, deprecated, renamed: "findByMint")
+    public func findNftByMint(mintKey: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
+        findByMint(mintKey: mintKey, onComplete: onComplete)
+    }
+
+    @available(*, deprecated, renamed: "findAllByMintList")
+    public func findNftByMintList(mintKeys: [PublicKey], onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        findAllByMintList(mintKeys: mintKeys, onComplete: onComplete)
+    }
+
+    @available(*, deprecated, renamed: "findAllByCreator")
+    public func findNftsByCreator(creator: PublicKey, position: Int? = 1, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        findAllByCreator(creator: creator, position: position, onComplete: onComplete)
+    }
+
+    @available(*, deprecated, renamed: "findAllByCandyMachine")
+    public func findNftsByCandyMachine(candyMachine: PublicKey, version: UInt8? = 2, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        findAllByCandyMachine(candyMachine: candyMachine, version: version, onComplete: onComplete)
+    }
+
+    @available(*, deprecated, renamed: "findAllByOwner")
+    public func findNftsByOwner(publicKey: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
+        findAllByOwner(publicKey: publicKey, onComplete: onComplete)
     }
 }

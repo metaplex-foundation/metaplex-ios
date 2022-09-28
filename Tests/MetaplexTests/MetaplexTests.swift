@@ -2,7 +2,7 @@ import XCTest
 import Solana
 @testable import Metaplex
 
-let TEST_PUBLICKEY = PublicKey(string: "CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7")!
+let TEST_PUBLICKEY = PublicKey(string: "Geh5Ss5knQGym81toYGXDbH3MFU2JCMK7E4QyeBHor1b")!
 
 final class MetaplexTests: XCTestCase {
     var metaplex: Metaplex!
