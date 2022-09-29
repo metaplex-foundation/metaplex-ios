@@ -24,6 +24,7 @@ public enum OperationError: Error {
     case findAuctionHouseByAddressError(Error)
     case findAuctionHouseByCreatorAndMintError(Error)
     case findBidByReceiptError(Error)
+    case findBidByTradeStateError(Error)
 }
 
 protocol OperationHandler {

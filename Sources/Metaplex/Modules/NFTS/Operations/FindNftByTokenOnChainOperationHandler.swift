@@ -24,7 +24,7 @@ class FindNftByTokenOnChainOperationHandler: OperationHandler {
     func handle(operation: FindNftByTokenOperation) -> OperationResult<NFT, OperationError> {
         operation.flatMap { account in
             OperationResult<PublicKey, OperationError>.init { callback in
-                self.metaplex.getAccountInfo(account: account, decodedTo: RawAccount.self) { buffer in
+                self.metaplex.getAccountInfo(account: account, decodedTo: AccountInfo.self) { buffer in
                     switch buffer {
                     case .success(let buffer):
                         guard let mintKey = buffer.data.value?.mint else {

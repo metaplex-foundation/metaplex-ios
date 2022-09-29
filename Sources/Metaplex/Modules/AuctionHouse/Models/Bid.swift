@@ -23,4 +23,14 @@ extension Bidreceipt {
             return nil
         }
     }
+
+    static func pda(tradeStateAddress: PublicKey) -> Result<PublicKey, Error> {
+        let seeds = [
+            "bid_receipt".bytes,
+            tradeStateAddress.bytes
+        ].map { Data($0) }
+        return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map {
+            return $0.0
+        }
+    }
 }

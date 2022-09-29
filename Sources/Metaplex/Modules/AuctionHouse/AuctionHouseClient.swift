@@ -37,8 +37,9 @@ public class AuctionHouseClient {
         operation.handle(operation: FindBidByReceiptOperation.pure(.success(address))).run { onComplete($0) }
     }
 
-    func findBidByTradeState() {
-
+    func findBidByTradeState(_ address: PublicKey, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
+        let operation = FindBidByTradeStateOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindBidByTradeStateOperation.pure(.success(address))).run { onComplete($0) }
     }
 
     func findBidsBy() {
