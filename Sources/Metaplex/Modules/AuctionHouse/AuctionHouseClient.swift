@@ -42,8 +42,20 @@ public class AuctionHouseClient {
         operation.handle(operation: FindBidByTradeStateOperation.pure(.success(address))).run { onComplete($0) }
     }
 
-    func findBidsBy() {
-
+    func findBidsBy(
+        type: FindBidsByPublicKeyFieldInput.Field,
+        auctionHouse: Auctionhouse,
+        publicKey: PublicKey,
+        onComplete: @escaping (Result<[Bid], OperationError>) -> Void
+    ) {
+        let operation = FindBidsByPublicKeyFieldOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindBidsByPublicKeyFieldOperation.pure(.success(
+            FindBidsByPublicKeyFieldInput(
+                field: type,
+                auctionHouse: auctionHouse,
+                publicKey: publicKey
+            )
+        ))).run { onComplete($0) }
     }
 
     func loadBid(_ bid: Bidreceipt, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
