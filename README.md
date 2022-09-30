@@ -8,12 +8,13 @@ Please check the [Sample App](https://github.com/metaplex-foundation/metaplex-io
 
 ## Installation
 
-From Xcode 11, you can use [Swift Package Manager](https://swift.org/package-manager/) to add Solana.swift to your project.
+From Xcode 14, you can use [Swift Package Manager](https://swift.org/package-manager/) to add Solana.swift to your project.
 
-- File > Swift Packages > Add Package Dependency
-- Add `https://github.com/metaplex-foundation/metaplex-ios`
-- Select "brach" with "master"
-- Select Metaplex
+- File > Add Packages
+- Search `https://github.com/metaplex-foundation/metaplex-ios`
+- Select metaplex-ios
+- Select "branch" with "main"
+- Add package
 
 If you encounter any problem or have a question on adding the package to an Xcode project, I suggest reading the [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)  guide article from Apple.
 
