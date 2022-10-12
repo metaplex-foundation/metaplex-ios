@@ -41,6 +41,11 @@ struct AccountInfoWithPublicKey<B: BufferLayout> {
     public let account: BufferInfo<B>
 }
 
+struct AccountInfoWithPureData {
+    public let pubKey: PublicKey
+    public let account: BufferInfoPureData
+}
+
 typealias GetProgramAccountsConfig = RequestConfiguration
 
 extension GetProgramAccountsConfig {
@@ -156,8 +161,27 @@ extension GpaBuilder {
         }
     }
 
+    func getPureData() -> OperationResult<[AccountInfoWithPureData], Error> {
+        return OperationResult<[ProgramAccountPureData], Error> { cb in
+            self.connection.getProgramAccounts(publicKey: self.programId, config: self.config) { result in
+                cb(result)
+            }
+        }.map { programAccount in
+            var infoAccounts: [AccountInfoWithPureData] = []
+            programAccount.forEach { programAccount in
+                let infoAccount = AccountInfoWithPureData(pubKey: PublicKey(string: programAccount.publicKey)!, account: programAccount.account)
+                infoAccounts.append(infoAccount)
+            }
+            return infoAccounts
+        }
+    }
+
     func getAndMap<B: BufferLayout, T>(_ callback: @escaping (_ account: [AccountInfoWithPublicKey<B>]) -> T) -> OperationResult<T, Error> {
         return self.get().map(callback)
+    }
+
+    func getAndMap<T>(_ callback: @escaping (_ account: [AccountInfoWithPureData]) -> T) -> OperationResult<T, Error> {
+        return self.getPureData().map(callback)
     }
 
     func getPublicKeys() -> OperationResult<[PublicKey], Error> {

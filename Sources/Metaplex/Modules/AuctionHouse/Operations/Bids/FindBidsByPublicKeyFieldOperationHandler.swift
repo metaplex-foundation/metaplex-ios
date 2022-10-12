@@ -25,13 +25,13 @@ class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {
     var metaplex: Metaplex
 
     typealias I = FindBidsByPublicKeyFieldInput
-    typealias O = [Bid]
+    typealias O = [Bidreceipt]
 
     init(metaplex: Metaplex) {
         self.metaplex = metaplex
     }
 
-    func handle(operation: FindBidsByPublicKeyFieldOperation) -> OperationResult<[Bid], OperationError> {
+    func handle(operation: FindBidsByPublicKeyFieldOperation) -> OperationResult<[Bidreceipt], OperationError> {
         operation.flatMap { input in
             OperationResult.pure(
                 Auctionhouse.pda(
@@ -39,16 +39,22 @@ class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {
                     treasuryMint: input.auctionHouse.treasuryMint
                 )
             ).flatMap { address in
-                OperationResult<[Bid], Error>.init { callback in
-                    let accounts = AuctionHouseProgram.bidAccounts(connection: self.metaplex.connection)
-                    var query = accounts.whereAuctionHouse(address: address)
-                    switch input.field {
-                    case .buyer:
-                        query = query.whereBuyer(address: input.publicKey)
-                    case .metadata:
-                        query = query.whereBuyer(address: input.publicKey)
-                    case .mint:
-                        query = query.whereBuyer(address: input.publicKey)
+                let accounts = AuctionHouseProgram.bidAccounts(connection: self.metaplex.connection)
+                var query = accounts.whereAuctionHouse(address: address)
+                switch input.field {
+                case .buyer:
+                    query = query.whereBuyer(address: input.publicKey)
+                case .metadata:
+                    query = query.whereBuyer(address: input.publicKey)
+                case .mint:
+                    query = query.whereBuyer(address: input.publicKey)
+                }
+                return query.getAndMap { (accounts: [AccountInfoWithPureData]) in
+                    accounts.compactMap { (accountInfo: AccountInfoWithPureData) -> Bidreceipt? in
+                        guard let data = accountInfo.account.data?.value else {
+                            return nil
+                        }
+                        return Bidreceipt.fromAccountInfo(accountInfo: data).0
                     }
                 }
             }.mapError { OperationError.findAuctionHouseByCreatorAndMintError($0) }

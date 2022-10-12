@@ -38,7 +38,13 @@ final class CreateNftOnChainOperationTests: XCTestCase {
             sellerFeeBasisPoints: 660,
             hasCreators: true,
             addressCount: 1,
-            creators: [.init(address: PublicKey(string: "Cf6C3xpvYNFx5qwq9Q7BczKcxTL5fRY5r3czg2sNDBfe")!, verified: 0, share: 100)],
+            creators: [
+                .init(
+                    address: PublicKey(string: "Cf6C3xpvYNFx5qwq9Q7BczKcxTL5fRY5r3czg2sNDBfe")!,
+                    verified: 0,
+                    share: 100
+                )
+            ],
             isMutable: true
         )
 

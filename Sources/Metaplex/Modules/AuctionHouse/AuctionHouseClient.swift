@@ -46,7 +46,7 @@ public class AuctionHouseClient {
         type: FindBidsByPublicKeyFieldInput.Field,
         auctionHouse: Auctionhouse,
         publicKey: PublicKey,
-        onComplete: @escaping (Result<[Bid], OperationError>) -> Void
+        onComplete: @escaping (Result<[Bidreceipt], OperationError>) -> Void
     ) {
         let operation = FindBidsByPublicKeyFieldOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindBidsByPublicKeyFieldOperation.pure(.success(
@@ -61,5 +61,20 @@ public class AuctionHouseClient {
     func loadBid(_ bid: Bidreceipt, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
         let operation = LoadBidOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: LoadBidOperation.pure(.success(bid))).run { onComplete($0) }
+    }
+
+    func cancelBid(
+        auctioneerAuthority: Account? = nil,
+        auctionHouse: Auctionhouse,
+        bid: Bid,
+        onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void
+    ) {
+        let operation = CancelBidOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: CancelBidOperation.pure(.success(
+            CancelBidInput(
+                auctioneerAuthority: auctioneerAuthority,
+                auctionHouse: auctionHouse,
+                bid: bid)
+        ))).run { onComplete($0) }
     }
 }
