@@ -1,4 +1,4 @@
-# Metaplex IOS SDK
+# Metaplex iOS SDK
 
 This SDK helps developers get started with the on-chain tools provided by Metaplex. It focuses its API on common use-cases to provide a smooth developer experience. 
 
@@ -8,7 +8,7 @@ Please check the [Sample App](https://github.com/metaplex-foundation/metaplex-io
 
 ## Installation
 
-From Xcode 14, you can use [Swift Package Manager](https://swift.org/package-manager/) to add Solana.swift to your project.
+From Xcode 14, you can use [Swift Package Manager](https://swift.org/package-manager/) to add Metaplex-iOS to your project.
 
 - File > Add Packages
 - Search `https://github.com/metaplex-foundation/metaplex-ios`
