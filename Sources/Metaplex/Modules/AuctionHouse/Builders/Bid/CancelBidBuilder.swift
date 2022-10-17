@@ -21,72 +21,73 @@ struct CancelBidBuilderParameters {
 
 extension TransactionBuilder {
     static func cancelBidBuilder(parameters: CancelBidBuilderParameters) -> TransactionBuilder {
-        let accounts = CancelInstructionAccounts(
+        let accounts = CancelAccounts(
             wallet: parameters.wallet,
             tokenAccount: parameters.tokenAccount,
             tokenMint: parameters.mint,
             authority: parameters.auctionHouse.authority,
             auctionHouse: parameters.auctionHouseAddress,
             auctionHouseFeeAccount: parameters.auctionHouse.auctionHouseFeeAccount,
-            tradeState: parameters.bid.bidReceipt.tradeState,
-            tokenProgram: nil
+            tradeState: parameters.bid.bidReceipt.tradeState.publicKey
         )
-        let args = CancelInstructionArgs(
+        let args = CancelArgs(
             buyerPrice: parameters.bid.bidReceipt.price,
             tokenSize: parameters.bid.bidReceipt.tokenSize
         )
 
-        var cancelBidInstruction = createCancelInstruction(accounts: accounts, args: args)
+        var cancelBidInstruction = createCancelInstruction(
+            accounts: CancelInstructionAccounts(accounts: accounts),
+            args: CancelInstructionArgs(args: args)
+        )
         var cancelSigners: [Account] = []
+
         if let auctioneerAuthority = parameters.auctioneerAuthority,
            let auctioneerPda = try? Auctionhouse.auctioneerPda(
             auctionHouse: parameters.auctionHouseAddress,
             auctioneerAuthority: auctioneerAuthority.publicKey
            ).get() {
-            let auctioneerAccounts = AuctioneerCancelInstructionAccounts(
-                wallet: parameters.wallet,
-                tokenAccount: parameters.tokenAccount,
-                tokenMint: parameters.mint,
-                authority: parameters.auctionHouse.authority,
-                auctioneerAuthority: auctioneerAuthority.publicKey,
-                auctionHouse: parameters.auctionHouseAddress,
-                auctionHouseFeeAccount: parameters.auctionHouse.auctionHouseFeeAccount,
-                tradeState: parameters.bid.bidReceipt.tradeState,
-                ahAuctioneerPda: auctioneerPda,
-                tokenProgram: nil
+            cancelBidInstruction = createAuctioneerCancelInstruction(
+                accounts: AuctioneerCancelInstructionAccounts(
+                    auctioneerAuthority: auctioneerAuthority.publicKey,
+                    ahAuctioneerPda: auctioneerPda,
+                    accounts: accounts
+                ),
+                args: AuctioneerCancelInstructionArgs(args: args)
             )
-            let auctioneeerArgs = AuctioneerCancelInstructionArgs(
-                buyerPrice: parameters.bid.bidReceipt.price,
-                tokenSize: parameters.bid.bidReceipt.tokenSize
-            )
-            cancelBidInstruction = createAuctioneerCancelInstruction(accounts: auctioneerAccounts, args: auctioneeerArgs)
             cancelSigners.append(auctioneerAuthority)
         }
 
-        var bidReceiptAccounts: CancelBidReceiptInstructionAccounts?
-        if case let .some(purchaseReceipt) = parameters.bid.bidReceipt.purchaseReceipt {
-            bidReceiptAccounts = CancelBidReceiptInstructionAccounts(
+        let bidReceipt: (addBidReceipt: Bool, instruction: InstructionWithSigner?) = {
+            guard let purchaseReceipt = parameters.bid.bidReceipt.purchaseReceipt else {
+                return (false, nil)
+            }
+
+            let accounts = CancelBidReceiptInstructionAccounts(
                 receipt: purchaseReceipt,
                 instruction: PublicKey.sysvarInstructionsPublicKey
             )
-        }
+
+            let instruction = InstructionWithSigner(
+                instruction: createCancelBidReceiptInstruction(accounts: accounts),
+                signers: [],
+                key: "cancelBidReceipt"
+            )
+
+            return (true, instruction)
+        }()
 
         return TransactionBuilder
             .build()
             .add(
-                .init(
+                InstructionWithSigner(
                     instruction: cancelBidInstruction,
                     signers: cancelSigners,
                     key: "cancelBid"
                 )
             )
             .when(
-                bidReceiptAccounts != nil,
-                instruction: .init(
-                    instruction: createCancelBidReceiptInstruction(accounts: bidReceiptAccounts!),
-                    signers: [],
-                    key: "cancelBidReceipt"
-                )
+                bidReceipt.addBidReceipt,
+                instruction: bidReceipt.instruction
             )
     }
 }

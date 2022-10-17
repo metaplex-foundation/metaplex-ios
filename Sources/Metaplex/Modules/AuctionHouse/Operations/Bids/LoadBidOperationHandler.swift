@@ -5,16 +5,15 @@
 //  Created by Michael J. Huber Jr. on 9/27/22.
 //
 
-import AuctionHouse
 import Foundation
 import Solana
 
-typealias LoadBidOperation = OperationResult<Bidreceipt, OperationError>
+typealias LoadBidOperation = OperationResult<LazyBid, OperationError>
 
 class LoadBidOperationHandler: OperationHandler {
     var metaplex: Metaplex
 
-    typealias I = Bidreceipt
+    typealias I = LazyBid
     typealias O = Bid
 
     init(metaplex: Metaplex) {
@@ -22,22 +21,22 @@ class LoadBidOperationHandler: OperationHandler {
     }
 
     func handle(operation: LoadBidOperation) -> OperationResult<Bid, OperationError> {
-        operation.flatMap { bidReceipt in
+        operation.flatMap { lazyBid in
             OperationResult<Bid, OperationError>.init { callback in
-                if let tokenAddress = bidReceipt.tokenAddress {
+                if let tokenAddress = lazyBid.tokenAddress {
                     self.metaplex.nft.findByToken(address: tokenAddress) { result in
                         switch result {
                         case .success(let nft):
-                            callback(.success(Bid(bidReceipt: bidReceipt, nft: nft)))
+                            callback(.success(Bid(bidReceipt: lazyBid, nft: nft)))
                         case .failure(let error):
                             callback(.failure(error))
                         }
                     }
                 } else {
-                    self.metaplex.nft.findByMetadata(bidReceipt.metadata) { result in
+                    self.metaplex.nft.findByMetadata(lazyBid.metadata) { result in
                         switch result {
                         case .success(let nft):
-                            callback(.success(Bid(bidReceipt: bidReceipt, nft: nft)))
+                            callback(.success(Bid(bidReceipt: lazyBid, nft: nft)))
                         case .failure(let error):
                             callback(.failure(error))
                         }

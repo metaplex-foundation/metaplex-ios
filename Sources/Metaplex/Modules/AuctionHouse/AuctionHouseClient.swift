@@ -32,14 +32,61 @@ public class AuctionHouseClient {
 
     // MARK: - Bid
 
-    func findBidByReceipt(_ address: PublicKey, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
-        let operation = FindBidByReceiptOperationHandler(metaplex: self.metaplex)
-        operation.handle(operation: FindBidByReceiptOperation.pure(.success(address))).run { onComplete($0) }
+    func bid(
+        _ auctionHouse: Auctionhouse,
+        buyer: Account? = nil,
+        authority: Account? = nil,
+        auctioneerAuthority: Account? = nil,
+        mintAccount: PublicKey,
+        seller: PublicKey?,
+        tokenAccount: PublicKey?,
+        price: UInt64? = nil,
+        tokens: UInt64? = nil,
+        printReceipt: Bool = true,
+        bookkeeper: Account? = nil,
+        onComplete: @escaping (Result<Bid, OperationError>) -> Void
+    ) {
+        let operation = CreateBidOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: CreateBidOperation.pure(.success(
+            CreateBidInput(
+                auctionHouse: auctionHouse,
+                buyer: buyer,
+                authority: authority,
+                auctioneerAuthority: auctioneerAuthority,
+                mintAccount: mintAccount,
+                seller: seller,
+                tokenAccount: tokenAccount,
+                price: price,
+                tokens: tokens,
+                printReceipt: printReceipt,
+                bookkeeper: bookkeeper
+            )
+        ))).run { onComplete($0) }
     }
 
-    func findBidByTradeState(_ address: PublicKey, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
+    func findBidByReceipt(
+        _ address: PublicKey,
+        auctionHouse: Auctionhouse,
+        onComplete: @escaping (Result<Bid, OperationError>) -> Void
+    ) {
+        let operation = FindBidByReceiptOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindBidByReceiptOperation.pure(.success(
+            FindBidByReceiptInput(
+                address: address,
+                auctionHouse: auctionHouse
+            )
+        ))).run { onComplete($0) }
+    }
+
+    func findBidByTradeState(
+        _ address: PublicKey,
+        auctionHouse: Auctionhouse,
+        onComplete: @escaping (Result<Bid, OperationError>) -> Void
+    ) {
         let operation = FindBidByTradeStateOperationHandler(metaplex: self.metaplex)
-        operation.handle(operation: FindBidByTradeStateOperation.pure(.success(address))).run { onComplete($0) }
+        operation.handle(operation: FindBidByTradeStateOperation.pure(.success(
+            FindBidByTradeStateInput(address: address, auctionHouse: auctionHouse)
+        ))).run { onComplete($0) }
     }
 
     func findBidsBy(
@@ -58,7 +105,7 @@ public class AuctionHouseClient {
         ))).run { onComplete($0) }
     }
 
-    func loadBid(_ bid: Bidreceipt, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
+    func loadBid(_ bid: LazyBid, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
         let operation = LoadBidOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: LoadBidOperation.pure(.success(bid))).run { onComplete($0) }
     }
@@ -74,7 +121,25 @@ public class AuctionHouseClient {
             CancelBidInput(
                 auctioneerAuthority: auctioneerAuthority,
                 auctionHouse: auctionHouse,
-                bid: bid)
+                bid: bid
+            )
+        ))).run { onComplete($0) }
+    }
+
+    // MARK: - Listing
+
+    func cancelListing(
+        auctioneerAuthority: Account? = nil,
+        auctionHouse: Auctionhouse,
+        listing: Listing,
+        onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void) {
+        let operation = CancelListingOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: CancelListingOperation.pure(.success(
+            CancelListingInput(
+                auctioneerAuthority: auctioneerAuthority,
+                auctionHouse: auctionHouse,
+                listing: listing
+            )
         ))).run { onComplete($0) }
     }
 }

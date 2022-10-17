@@ -39,7 +39,7 @@ class CancelBidOperationHandler: OperationHandler {
                 creator: input.auctionHouse.creator,
                 treasuryMint: input.auctionHouse.treasuryMint
             ).get() else {
-                return OperationResult.failure(.couldNotFindPDA)
+                return .failure(.couldNotFindPDA)
             }
 
             let parameters = CancelBidBuilderParameters(
@@ -51,6 +51,7 @@ class CancelBidOperationHandler: OperationHandler {
                 bid: input.bid,
                 auctioneerAuthority: input.auctioneerAuthority
             )
+            
             let cancelBidBuilder = TransactionBuilder.cancelBidBuilder(parameters: parameters)
             return OperationResult<SignatureStatus, OperationError>.init { callback in
                 cancelBidBuilder.sendAndConfirm(metaplex: self.metaplex) { result in

@@ -9,12 +9,17 @@ import AuctionHouse
 import Foundation
 import Solana
 
-typealias FindBidByReceiptOperation = OperationResult<PublicKey, OperationError>
+struct FindBidByReceiptInput {
+    let address: PublicKey
+    let auctionHouse: Auctionhouse
+}
+
+typealias FindBidByReceiptOperation = OperationResult<FindBidByReceiptInput, OperationError>
 
 class FindBidByReceiptOperationHandler: OperationHandler {
     var metaplex: Metaplex
 
-    typealias I = PublicKey
+    typealias I = FindBidByReceiptInput
     typealias O = Bid
 
     init(metaplex: Metaplex) {
@@ -22,16 +27,17 @@ class FindBidByReceiptOperationHandler: OperationHandler {
     }
 
     func handle(operation: FindBidByReceiptOperation) -> OperationResult<Bid, OperationError> {
-        operation.flatMap { address in
+        operation.flatMap { input in
             OperationResult<Bidreceipt, Error>.init { callback in
-                Bidreceipt.fromAccountAddress(connection: self.metaplex.connection.api, address: address) {
+                Bidreceipt.fromAccountAddress(connection: self.metaplex.connection.api, address: input.address) {
                     callback($0)
                 }
             }
             .mapError { OperationError.findBidByReceiptError($0) }
             .flatMap { bidReceipt in
                 OperationResult<Bid, OperationError>.init { callback in
-                    self.metaplex.auctionHouse.loadBid(bidReceipt) {
+                    let lazyBid = LazyBid(auctionHouse: input.auctionHouse, bidReceipt: bidReceipt, publicKey: input.address)
+                    self.metaplex.auctionHouse.loadBid(lazyBid) {
                         callback($0)
                     }
                 }

@@ -9,7 +9,6 @@ import Foundation
 import Solana
 
 class KeypairIdentityDriver: IdentityDriver {
-
     internal var publicKey: PublicKey
     private let secretKey: Data
     private let account: HotAccount
@@ -22,15 +21,10 @@ class KeypairIdentityDriver: IdentityDriver {
         self.account = account
     }
 
-    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void) {
-        self.solanaRPC.sendTransaction(serializedTransaction: serializedTransaction) { result in
-            switch result {
-            case .success(let transactionID):
-                onComplete(.success(transactionID))
-            case .failure(let error):
-                onComplete(.failure(.sendTransactionError(error)))
-            }
-        }
+    // MARK: - Sign
+
+    func sign(serializedMessage: Data) throws -> Data {
+        try account.sign(serializedMessage: serializedMessage)
     }
 
     func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void) {
@@ -50,5 +44,18 @@ class KeypairIdentityDriver: IdentityDriver {
             }
         }
         onComplete(.success(mutableTransactions))
+    }
+
+    // MARK: - Send
+
+    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void) {
+        self.solanaRPC.sendTransaction(serializedTransaction: serializedTransaction) { result in
+            switch result {
+            case .success(let transactionID):
+                onComplete(.success(transactionID))
+            case .failure(let error):
+                onComplete(.failure(.sendTransactionError(error)))
+            }
+        }
     }
 }

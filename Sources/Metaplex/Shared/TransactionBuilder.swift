@@ -42,8 +42,8 @@ class TransactionBuilder {
         return self
     }
 
-    func when(_ condition: Bool, instruction: InstructionWithSigner) -> TransactionBuilder {
-        if condition {
+    func when(_ condition: Bool, instruction: InstructionWithSigner?) -> TransactionBuilder {
+        if condition, let instruction {
             return add(instruction)
         }
         return self

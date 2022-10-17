@@ -53,7 +53,7 @@ class FindNftByMintOnChainOperationHandler: OperationHandler {
             if let metadataAccount = buffer.0.data.value, let masterEditionAccount = buffer.1.data.value {
                 return OperationResult.success(NFT(metadataAccount: metadataAccount, masterEditionAccount: masterEditionAccount))
             } else {
-                return OperationResult.failure(OperationError.nilDataOnAccount)
+                return .failure(OperationError.nilDataOnAccount)
             }
         }
     }
