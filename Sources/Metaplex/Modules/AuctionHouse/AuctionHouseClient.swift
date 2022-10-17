@@ -144,6 +144,21 @@ public class AuctionHouseClient {
         ))).run { onComplete($0) }
     }
 
+
+    func findListingByReceipt(
+        _ address: PublicKey,
+        auctionHouse: Auctionhouse,
+        onComplete: @escaping (Result<Bid, OperationError>) -> Void
+    ) {
+        let operation = FindListingByReceiptOperationHandler(metaplex: self.metaplex)
+        operation.handle(operation: FindListingByReceiptOperation.pure(.success(
+            FindListingByReceiptInput(
+                address: address,
+                auctionHouse: auctionHouse
+            )
+        ))).run { onComplete($0) }
+    }
+
     func cancelListing(
         auctioneerAuthority: Account? = nil,
         auctionHouse: Auctionhouse,
