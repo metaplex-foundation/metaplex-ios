@@ -17,8 +17,9 @@ struct Listing {
 struct LazyListing {
     let auctionHouse: Auctionhouse
     let tradeState: Pda
-    let seller: PublicKey
     let bookkeeper: PublicKey?
+    let seller: PublicKey
+    let metadata: PublicKey
     let receipt: Pda?
     let purchaseReceipt: PublicKey?
     let price: UInt64
@@ -29,8 +30,9 @@ struct LazyListing {
     init(
         auctionHouse: Auctionhouse,
         tradeState: Pda,
-        seller: PublicKey,
         bookkeeper: PublicKey?,
+        seller: PublicKey,
+        metadata: PublicKey,
         receipt: Pda?,
         purchaseReceipt: PublicKey?,
         price: UInt64,
@@ -40,8 +42,9 @@ struct LazyListing {
     ) {
         self.auctionHouse = auctionHouse
         self.tradeState = tradeState
-        self.seller = seller
         self.bookkeeper = bookkeeper
+        self.seller = seller
+        self.metadata = metadata
         self.receipt = receipt
         self.purchaseReceipt = purchaseReceipt
         self.price = price
@@ -53,8 +56,9 @@ struct LazyListing {
     init(auctionHouse: Auctionhouse, listingReceipt: Listingreceipt, publicKey: PublicKey) {
         self.auctionHouse = auctionHouse
         self.tradeState = Pda(publicKey: listingReceipt.tradeState, bump: listingReceipt.tradeStateBump)
-        self.seller = listingReceipt.seller
         self.bookkeeper = listingReceipt.bookkeeper
+        self.seller = listingReceipt.seller
+        self.metadata = listingReceipt.metadata
         self.receipt = Pda(publicKey: publicKey, bump: listingReceipt.bump)
         self.purchaseReceipt = listingReceipt.purchaseReceipt
         self.price = listingReceipt.price

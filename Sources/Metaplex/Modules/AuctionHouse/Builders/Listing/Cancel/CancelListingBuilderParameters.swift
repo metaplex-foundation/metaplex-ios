@@ -10,9 +10,13 @@ import Foundation
 import Solana
 
 struct CancelListingBuilderParameters {
+    // MARK: - Initialization
+
     let cancelListingInput: CancelListingInput
     let auctionHouseAddress: PublicKey
     let tokenAccount: PublicKey
+
+    // MARK: - Getters
 
     var wallet: PublicKey {
         cancelListingInput.listing.listingReceipt.seller

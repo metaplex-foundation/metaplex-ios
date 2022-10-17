@@ -125,7 +125,7 @@ class CreateBidOperationHandler: OperationHandler {
 
     private func createOperationResult(_ parameters: CreateBidBuilderParameters) -> OperationResult<Bid, OperationError> {
         let createBidBuilder = TransactionBuilder.createBidBuilder(parameters: parameters)
-        let operation: OperationResult<Bid, OperationError> = OperationResult<SignatureStatus, OperationError>.init { callback in
+        let operation = OperationResult<SignatureStatus, OperationError>.init { callback in
             createBidBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
                 switch result {
                 case .success(let status):

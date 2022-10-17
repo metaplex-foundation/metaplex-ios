@@ -57,6 +57,7 @@ extension TransactionBuilder {
 
         let buyInstruction: TransactionInstruction
         var buySigners = [parameters.buyer]
+        #warning("This is incorrect and does not consider auctionHouse.authority sense it is not an Account")
         if let authority = parameters.authority {
             buySigners.append(authority)
         }

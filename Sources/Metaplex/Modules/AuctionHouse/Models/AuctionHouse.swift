@@ -10,6 +10,8 @@ import Foundation
 import Solana
 
 extension Auctionhouse {
+    static let PROGRAM = "auction_house"
+
     var isNative: Bool {
         treasuryMint == PublicKey(string: "So11111111111111111111111111111111111111112")!
     }
@@ -20,7 +22,7 @@ extension Auctionhouse {
 
     static func pda(creator: PublicKey, treasuryMint: PublicKey) -> Result<PublicKey, Error> {
         let seeds = [
-            "auction_house".bytes,
+            PROGRAM.bytes,
             creator.bytes,
             treasuryMint.bytes
         ].map { Data($0) }
@@ -40,7 +42,7 @@ extension Auctionhouse {
 
     static func buyerEscrowPda(auctionHouse: PublicKey, buyer: PublicKey) -> Result<Pda, Error> {
         let seeds = [
-            "auction_house".bytes,
+            PROGRAM.bytes,
             auctionHouse.bytes,
             buyer.bytes
         ].map { Data($0) }
@@ -58,7 +60,7 @@ extension Auctionhouse {
     ) -> Result<Pda, Error> {
         let tokenAccountBytes = tokenAccount?.bytes ?? []
         let seeds = [
-            "auction_house".bytes,
+            PROGRAM.bytes,
             wallet.bytes,
             auctionHouse.bytes,
             tokenAccountBytes,
@@ -66,6 +68,14 @@ extension Auctionhouse {
             mintAccount.bytes,
             buyerPrice.bytes,
             tokenSize.bytes
+        ].map { Data($0) }
+        return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map { Pda(publicKey: $0.0, bump: $0.1) }
+    }
+
+    static func programAsSignerPda() -> Result<Pda, Error> {
+        let seeds = [
+            PROGRAM.bytes,
+            "signer".bytes
         ].map { Data($0) }
         return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map { Pda(publicKey: $0.0, bump: $0.1) }
     }
