@@ -19,7 +19,7 @@ public struct CreateListingInput {
     let price: UInt64 = 0
     let tokens: UInt64 = 1
     let printReceipt: Bool = true
-    let bookkeeper: Account?
+    let bookkeeper: Account? = nil
 }
 
 typealias CreateListingOperation = OperationResult<CreateListingInput, OperationError>

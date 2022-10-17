@@ -128,6 +128,22 @@ public class AuctionHouseClient {
 
     // MARK: - Listing
 
+    func list(
+        _ auctionHouse: Auctionhouse,
+        auctioneerAuthority: Account?,
+        mintAccount: PublicKey,
+        onComplete: @escaping (Result<Listing, OperationError>) -> Void
+    ) {
+        let operation = CreateListingOperationHandler(metaplex: metaplex)
+        operation.handle(operation: CreateListingOperation.pure(.success(
+            CreateListingInput(
+                auctionHouse: auctionHouse,
+                auctioneerAuthority: auctioneerAuthority,
+                mintAccount: mintAccount
+            )
+        ))).run { onComplete($0) }
+    }
+
     func cancelListing(
         auctioneerAuthority: Account? = nil,
         auctionHouse: Auctionhouse,
