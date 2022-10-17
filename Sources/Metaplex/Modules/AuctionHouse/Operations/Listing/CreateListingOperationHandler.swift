@@ -115,27 +115,29 @@ class CreateListingOperationHandler: OperationHandler {
         }.flatMap { status in
             OperationResult<Listing, OperationError>.init { callback in
                 let auctionHouse = parameters.createListingInput.auctionHouse
-//                if let receipt = parameters.printReceipt.receipt {
-//                    self.metaplex.auctionHouse.findListingByReceipt(
-//                        receipt.publicKey,
-//                        auctionHouse: auctionHouse
-//                    ) { callback($0) }
-//                } else {
-//                    let listing = LazyListing(
-//                        auctionHouse: auctionHouse,
-//                        tradeState: parameters.sellerTradeStatePda,
-//                        seller: parameters.seller.publicKey,
-//                        bookkeeper: parameters.bookkeeper.publicKey,
-//                        receipt: parameters.printReceipt.receipt,
-//                        purchaseReceipt: nil,
-//                        price: parameters.buyerPrice,
-//                        tokenSize: parameters.tokenSize,
-//                        createdAt: Int64(Date().timeIntervalSinceNow),
-//                        canceledAt: nil
-//                    )
-//                    self.metaplex.auctionHouse.loadListing(listing) { callback($0) }
-//                }
+                if let receipt = parameters.printReceipt.receipt {
+                    self.metaplex.auctionHouse.findListingByReceipt(
+                        receipt.publicKey,
+                        auctionHouse: auctionHouse
+                    ) { callback($0) }
+                } else {
+                    let listing = LazyListing(
+                        auctionHouse: auctionHouse,
+                        tradeState: parameters.sellerTradeStatePda,
+                        bookkeeper: parameters.bookkeeper.publicKey,
+                        seller: parameters.seller.publicKey,
+                        metadata: parameters.metadata,
+                        receipt: parameters.printReceipt.receipt,
+                        purchaseReceipt: nil,
+                        price: parameters.buyerPrice,
+                        tokenSize: parameters.tokenSize,
+                        createdAt: Int64(Date().timeIntervalSinceNow),
+                        canceledAt: nil
+                    )
+                    self.metaplex.auctionHouse.loadListing(listing) { callback($0) }
+                }
             }
         }
+        return operation
     }
 }
