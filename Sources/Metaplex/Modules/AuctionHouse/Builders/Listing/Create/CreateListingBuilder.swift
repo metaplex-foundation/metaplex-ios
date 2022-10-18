@@ -11,8 +11,8 @@ import Solana
 
 extension TransactionBuilder {
     static func createListingBuilder(parameters: CreateListingBuilderParameters) -> TransactionBuilder {
-        // MARK: - Sell Instruction
-
+        // MARK: - Accounts
+        
         let sellAccounts = SellAccounts(
             wallet: parameters.wallet,
             tokenAccount: parameters.tokenAccount,
@@ -31,6 +31,8 @@ extension TransactionBuilder {
             programAsSignerBump: parameters.programAsSignerBump,
             tokenSize: parameters.tokenSize
         )
+
+        // MARK: - Sell Instruction
 
         var sellInstruction = createSellInstruction(
             accounts: SellInstructionAccounts(accounts: sellAccounts),
@@ -51,7 +53,7 @@ extension TransactionBuilder {
             sellSigners.append(auctioneerAuthority)
         }
 
-        // MARK: - Print Receipt Instruction
+        // MARK: - Receipt Instruction
 
         let printReceipt: (shouldPrintReceipt: Bool, instruction: InstructionWithSigner?) = {
             guard let receipt = parameters.printReceipt.receipt else {
@@ -77,6 +79,8 @@ extension TransactionBuilder {
 
             return (shouldPrintReciept, instruction)
         }()
+
+        // MARK: - Transaction Builder
 
         return TransactionBuilder
             .build()

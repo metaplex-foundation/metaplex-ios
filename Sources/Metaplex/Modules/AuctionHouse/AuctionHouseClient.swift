@@ -19,12 +19,12 @@ public class AuctionHouseClient {
     // MARK: - Auction House
 
     func findByAddress(_ address: PublicKey, onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void) {
-        let operation = FindAuctionHouseByAddressOperationHandler(metaplex: self.metaplex)
+        let operation = FindAuctionHouseByAddressOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindAuctionHouseByAddressOperation.pure(.success(address))).run { onComplete($0) }
     }
 
     func findByCreatorAndMint(_ creator: PublicKey, and treasuryMint: PublicKey, onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void) {
-        let operation = FindAuctionHouseByCreatorAndMintOperationHandler(metaplex: self.metaplex)
+        let operation = FindAuctionHouseByCreatorAndMintOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindAuctionHouseByCreatorAndMintOperation.pure(.success(
             FindAuctionHouseByCreatorAndMintInput(creator: creator, treasuryMint: treasuryMint)
         ))).run { onComplete($0) }
@@ -46,7 +46,7 @@ public class AuctionHouseClient {
         bookkeeper: Account? = nil,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
-        let operation = CreateBidOperationHandler(metaplex: self.metaplex)
+        let operation = CreateBidOperationHandler(metaplex: metaplex)
         operation.handle(operation: CreateBidOperation.pure(.success(
             CreateBidInput(
                 auctionHouse: auctionHouse,
@@ -69,7 +69,7 @@ public class AuctionHouseClient {
         auctionHouse: Auctionhouse,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
-        let operation = FindBidByReceiptOperationHandler(metaplex: self.metaplex)
+        let operation = FindBidByReceiptOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindBidByReceiptOperation.pure(.success(
             FindBidByReceiptInput(
                 address: address,
@@ -83,7 +83,7 @@ public class AuctionHouseClient {
         auctionHouse: Auctionhouse,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
-        let operation = FindBidByTradeStateOperationHandler(metaplex: self.metaplex)
+        let operation = FindBidByTradeStateOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindBidByTradeStateOperation.pure(.success(
             FindBidByTradeStateInput(address: address, auctionHouse: auctionHouse)
         ))).run { onComplete($0) }
@@ -95,7 +95,7 @@ public class AuctionHouseClient {
         publicKey: PublicKey,
         onComplete: @escaping (Result<[Bidreceipt], OperationError>) -> Void
     ) {
-        let operation = FindBidsByPublicKeyFieldOperationHandler(metaplex: self.metaplex)
+        let operation = FindBidsByPublicKeyFieldOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindBidsByPublicKeyFieldOperation.pure(.success(
             FindBidsByPublicKeyFieldInput(
                 field: type,
@@ -106,7 +106,7 @@ public class AuctionHouseClient {
     }
 
     func loadBid(_ bid: LazyBid, onComplete: @escaping (Result<Bid, OperationError>) -> Void) {
-        let operation = LoadBidOperationHandler(metaplex: self.metaplex)
+        let operation = LoadBidOperationHandler(metaplex: metaplex)
         operation.handle(operation: LoadBidOperation.pure(.success(bid))).run { onComplete($0) }
     }
 
@@ -116,7 +116,7 @@ public class AuctionHouseClient {
         bid: Bid,
         onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void
     ) {
-        let operation = CancelBidOperationHandler(metaplex: self.metaplex)
+        let operation = CancelBidOperationHandler(metaplex: metaplex)
         operation.handle(operation: CancelBidOperation.pure(.success(
             CancelBidInput(
                 auctioneerAuthority: auctioneerAuthority,
@@ -149,7 +149,7 @@ public class AuctionHouseClient {
         auctionHouse: Auctionhouse,
         onComplete: @escaping (Result<Listing, OperationError>) -> Void
     ) {
-        let operation = FindListingByReceiptOperationHandler(metaplex: self.metaplex)
+        let operation = FindListingByReceiptOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindListingByReceiptOperation.pure(.success(
             FindListingByReceiptInput(
                 address: address,
@@ -159,7 +159,7 @@ public class AuctionHouseClient {
     }
 
     func loadListing(_ listing: LazyListing, onComplete: @escaping (Result<Listing, OperationError>) -> Void) {
-        let operation = LoadListingOperationHandler(metaplex: self.metaplex)
+        let operation = LoadListingOperationHandler(metaplex: metaplex)
         operation.handle(operation: LoadListingOperation.pure(.success(listing))).run { onComplete($0) }
     }
 
@@ -167,8 +167,9 @@ public class AuctionHouseClient {
         auctioneerAuthority: Account? = nil,
         auctionHouse: Auctionhouse,
         listing: Listing,
-        onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void) {
-        let operation = CancelListingOperationHandler(metaplex: self.metaplex)
+        onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void
+    ) {
+        let operation = CancelListingOperationHandler(metaplex: metaplex)
         operation.handle(operation: CancelListingOperation.pure(.success(
             CancelListingInput(
                 auctioneerAuthority: auctioneerAuthority,
@@ -176,5 +177,44 @@ public class AuctionHouseClient {
                 listing: listing
             )
         ))).run { onComplete($0) }
+    }
+
+    // MARK: - Sale
+
+    func executeSale(
+        _ auctionHouse: Auctionhouse,
+        bid: Bid,
+        listing: Listing,
+        auctioneerAuthority: Account?,
+        onComplete: @escaping (Result<Purchase, OperationError>) -> Void
+    ) {
+        let operation = ExecuteSaleOperationHandler(metaplex: metaplex)
+        operation.handle(operation: ExecuteSaleOperation.pure(.success(
+            ExecuteSaleInput(
+                bid: bid,
+                listing: listing,
+                auctionHouse: auctionHouse,
+                auctioneerAuthority: auctioneerAuthority
+            )
+        ))).run { onComplete($0) }
+    }
+
+    func findPurchaseByReceipt(
+        _ address: PublicKey,
+        auctionHouse: Auctionhouse,
+        onComplete: @escaping (Result<Purchase, OperationError>) -> Void
+    ) {
+        let operation = FindPurchaseByReceiptOperationHandler(metaplex: metaplex)
+        operation.handle(operation: FindPurchaseByReceiptOperation.pure(.success(
+            FindPurchaseByReceiptInput(
+                address: address,
+                auctionHouse: auctionHouse
+            )
+        ))).run { onComplete($0) }
+    }
+
+    func loadPurchase(_ purchase: LazyPurchase, onComplete: @escaping (Result<Purchase, OperationError>) -> Void) {
+        let operation = LoadPurchaseOperationHandler(metaplex: metaplex)
+        operation.handle(operation: LoadPurchaseOperation.pure(.success(purchase))).run { onComplete($0) }
     }
 }

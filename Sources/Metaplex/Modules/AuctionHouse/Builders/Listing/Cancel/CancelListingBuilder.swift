@@ -11,6 +11,8 @@ import Solana
 
 extension TransactionBuilder {
     static func cancelListingBuilder(parameters: CancelListingBuilderParameters) -> TransactionBuilder {
+        // MARK: - Accounts
+
         let accounts = CancelAccounts(
             wallet: parameters.wallet,
             tokenAccount: parameters.tokenAccount,
@@ -24,6 +26,8 @@ extension TransactionBuilder {
             buyerPrice: parameters.price,
             tokenSize: parameters.tokenSize
         )
+
+        // MARK: - Cancel Instruction
 
         var cancelBidInstruction = createCancelInstruction(
             accounts: CancelInstructionAccounts(accounts: accounts),
@@ -44,6 +48,8 @@ extension TransactionBuilder {
             cancelSigners.append(auctioneerAuthority)
         }
 
+        // MARK: - Receipt Instruction
+
         let listingReceipt: (addListingReceipt: Bool, instruction: InstructionWithSigner?) = {
             guard let purchaseReceipt = parameters.purchaseReceipt else {
                 return (false, nil)
@@ -62,6 +68,8 @@ extension TransactionBuilder {
 
             return (true, instruction)
         }()
+
+        // MARK: - Transaction Builder
 
         return TransactionBuilder
             .build()
