@@ -32,7 +32,7 @@ class CancelListingOperationHandler: OperationHandler {
             guard let auctionHouseAddress = try? Auctionhouse.pda(
                 creator: input.auctionHouse.creator,
                 treasuryMint: input.auctionHouse.treasuryMint
-            ).get(),
+            ).get().publicKey,
                   let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
                     mint: input.listing.nft.mint,
                     owner: input.listing.listingReceipt.seller
@@ -51,10 +51,6 @@ class CancelListingOperationHandler: OperationHandler {
                 cancelListingBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
                     switch result {
                     case .success(let status):
-                        guard let status else {
-                            callback(.failure(.nilSignatureStatus))
-                            return
-                        }
                         callback(.success(status))
                     case .failure(let error):
                         callback(.failure(.confirmTransactionError(error)))

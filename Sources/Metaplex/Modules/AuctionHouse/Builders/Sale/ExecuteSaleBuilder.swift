@@ -58,20 +58,23 @@ extension TransactionBuilder {
         )
 
         var saleSigners: [Account] = []
-        #warning("Need to make keys mutable.")
-//        parameters.nft.creators.forEach { creator in
-//            executeSaleInstruction.keys.append(
-//                AccountMeta(
-//                    publicKey: creator.address,
-//                    isSigner: true,
-//                    isWritable: false
-//                )
-//            )
-//
-//            if !parameters.isNative, let publicKey = PublicKey.findAssociatedTokenAccountPda(mint: parameters.treasuryMint, owner: creator.address) {
-//                executeSaleInstruction.keys.append(AccountMeta(publicKey: publicKey, isSigner: true, isWritable: false))
-//            }
-//        }
+        parameters.nft.creators.forEach { creator in
+            executeSaleInstruction.append(
+                AccountMeta(
+                    publicKey: creator.address,
+                    isSigner: true,
+                    isWritable: false
+                )
+            )
+
+            if !parameters.isNative,
+               let publicKey = PublicKey.findAssociatedTokenAccountPda(
+                mint: parameters.treasuryMint,
+                owner: creator.address
+               ) {
+                executeSaleInstruction.append(AccountMeta(publicKey: publicKey, isSigner: true, isWritable: false))
+            }
+        }
 
         if let auctioneerAuthority = parameters.auctioneerAuthority,
            let auctioneerPda = parameters.auctioneerPda {

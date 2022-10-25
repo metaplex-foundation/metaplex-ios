@@ -33,16 +33,18 @@ class ViewController: UIViewController {
          */
         publicKeyLabel.text = ownerPublicKey.base58EncodedString
         metaplex.nft.findAllByOwner(publicKey: ownerPublicKey) { [weak self] result in
-            self?.loadingIndicator.stopAnimating()
-            switch result {
-            case .success(let nftList):
-                self?.nftList = nftList.compactMap{ $0 }
-                self?.collectionView.reloadData()
-            case .failure:
-                break
+            DispatchQueue.main.async {
+                self?.loadingIndicator.stopAnimating()
+                switch result {
+                case .success(let nftList):
+                    self?.nftList = nftList.compactMap{ $0 }
+                    self?.collectionView.reloadData()
+                case .failure(let error):
+                    print("###: \(error)")
+                }
             }
         }
-        
+
     }
     
 }

@@ -64,12 +64,16 @@ struct OperationResult<Success, Failure: Error> {
         }
     }
 
-    static func retry(attempts: Int, operation: @escaping () -> OperationResult<Success, Retry<Failure>>) -> OperationResult<Success, Failure> {
-        return operation().recover {
+    static func retry(
+        with delay: TimeInterval = 0,
+        attempts: Int,
+        operation: @escaping () -> OperationResult<Success, Retry<Failure>>
+    ) -> OperationResult<Success, Failure> {
+        return operation().recover(with: delay) {
             switch $0 {
             case .retry(let error):
                 if attempts > 0 {
-                    return retry(attempts: attempts - 1, operation: operation)
+                    return retry(with: delay, attempts: attempts - 1, operation: operation)
                 } else {
                     return .failure(error)
                 }
@@ -96,11 +100,15 @@ struct OperationResult<Success, Failure: Error> {
         return OperationResult<Success, NewFailure>(cont.map { $0.mapError(f) })
     }
 
-    func recover<NewFailure>(_ f: @escaping (Failure) -> OperationResult<Success, NewFailure>) -> OperationResult<Success, NewFailure> {
+    func recover<NewFailure>(with delay: TimeInterval = 0, _ f: @escaping (Failure) -> OperationResult<Success, NewFailure>) -> OperationResult<Success, NewFailure> {
         return OperationResult<Success, NewFailure>(cont.flatMap { result in
             Operation { cb in
-                result.onSuccess { cb(.success($0)) }
-                    .onFailure { f($0).cont.run(cb) }
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    result.onSuccess {
+                        cb(.success($0))
+
+                    }.onFailure { f($0).cont.run(cb) }
+                }
             }
         })
     }

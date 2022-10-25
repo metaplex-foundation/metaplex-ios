@@ -11,7 +11,7 @@ import Solana
 
 struct FindBidByReceiptInput {
     let address: PublicKey
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
 }
 
 typealias FindBidByReceiptOperation = OperationResult<FindBidByReceiptInput, OperationError>

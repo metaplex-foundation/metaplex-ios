@@ -103,10 +103,6 @@ class CreateListingOperationHandler: OperationHandler {
             createListingBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
                 switch result {
                 case .success(let status):
-                    guard let status else {
-                        callback(.failure(.nilSignatureStatus))
-                        return
-                    }
                     callback(.success(status))
                 case .failure(let error):
                     callback(.failure(.confirmTransactionError(error)))

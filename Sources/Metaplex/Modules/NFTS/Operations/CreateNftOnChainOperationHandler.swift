@@ -50,6 +50,9 @@ class CreateNftOnChainOperationHandler: OperationHandler {
     }
 
     func handle(operation: CreateNftOperation) -> OperationResult<NFT, OperationError> {
+        let delay: TimeInterval = 5
+        let attempts = 5
+
         let builder = InstructionBuilder(metaplex: metaplex)
         return operation.flatMap { input in
             OperationResult<[TransactionInstruction], Error>.init { callback in
@@ -66,12 +69,17 @@ class CreateNftOnChainOperationHandler: OperationHandler {
                 }
                 .mapError { OperationError.serializeTransactionError($0) }
             }.flatMap { serializedTransaction in
-                OperationResult<TransactionID, IdentityDriverError>.init { callback in
-                    self.metaplex.sendTransaction(serializedTransaction: serializedTransaction) {
-                        callback($0)
-                    }
+                let operation = {
+                    OperationResult<TransactionID, IdentityDriverError>.init { onComplete in
+                        self.metaplex.sendTransaction(serializedTransaction: serializedTransaction, onComplete: onComplete)
+                    }.mapError { Retry.retry($0) }
                 }
-                .mapError { OperationError.sendTransactionError($0) }
+                let retry = OperationResult<TransactionID, IdentityDriverError>.retry(
+                    with: delay,
+                    attempts: attempts,
+                    operation: operation
+                ).mapError { OperationError.sendTransactionError($0) }
+                return retry
             }.flatMap { signature in
                 let operation: () -> OperationResult<SignatureStatus, Retry<Error>> = {
                     OperationResult<SignatureStatus, Error>.init { callback in

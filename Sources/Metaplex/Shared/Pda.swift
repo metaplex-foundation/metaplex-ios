@@ -7,7 +7,7 @@
 
 import Solana
 
-struct Pda {
+public struct Pda {
     let publicKey: PublicKey
     let bump: UInt8
 }

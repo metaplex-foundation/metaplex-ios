@@ -40,7 +40,7 @@ class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {
                 )
             ).flatMap { address in
                 let accounts = AuctionHouseProgram.bidAccounts(connection: self.metaplex.connection)
-                var query = accounts.whereAuctionHouse(address: address)
+                var query = accounts.whereAuctionHouse(address: address.publicKey)
                 switch input.field {
                 case .buyer:
                     query = query.whereBuyer(address: input.publicKey)

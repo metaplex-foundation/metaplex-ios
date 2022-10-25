@@ -35,7 +35,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
             guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
             return self.createOperationResult(parameters)
         }
-    }
+    }   
 
     private func createParametersFromInput(_ input: ExecuteSaleInput) -> ExecuteSaleBuilderParameters? {
         let defaultIdentity = metaplex.identity()
@@ -108,10 +108,6 @@ class ExecuteSaleOperationHandler: OperationHandler {
             executeSaleBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
                 switch result {
                 case .success(let status):
-                    guard let status else {
-                        callback(.failure(.nilSignatureStatus))
-                        return
-                    }
                     callback(.success(status))
                 case .failure(let error):
                     callback(.failure(.confirmTransactionError(error)))

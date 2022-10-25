@@ -9,26 +9,47 @@ import AuctionHouse
 import Foundation
 import Solana
 
+public extension AuctionhouseArgs {
+    var isNative: Bool {
+        treasuryMint == Auctionhouse.treasuryMintDefault
+    }
+
+    var address: PublicKey? {
+        try? Auctionhouse.pda(creator: creator, treasuryMint: treasuryMint).get().publicKey
+    }
+}
+
 extension Auctionhouse {
     static let PROGRAM = "auction_house"
+    static let treasuryMintDefault: PublicKey = PublicKey(string: "So11111111111111111111111111111111111111112")!
 
-    var isNative: Bool {
-        treasuryMint == PublicKey(string: "So11111111111111111111111111111111111111112")!
-    }
-    
-    var address: PublicKey? {
-        try? Auctionhouse.pda(creator: creator, treasuryMint: treasuryMint).get()
-    }
-
-    static func pda(creator: PublicKey, treasuryMint: PublicKey) -> Result<PublicKey, Error> {
+    static func pda(creator: PublicKey, treasuryMint: PublicKey) -> Result<Pda, Error> {
         let seeds = [
             PROGRAM.bytes,
             creator.bytes,
             treasuryMint.bytes
         ].map { Data($0) }
         return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map {
-            return $0.0
+            Pda(publicKey: $0.0, bump: $0.1)
         }
+    }
+
+    static func feePda(auctionHouse: PublicKey) -> Result<Pda, Error> {
+        let seeds = [
+            PROGRAM.bytes,
+            auctionHouse.bytes,
+            "fee_payer".bytes
+        ].map { Data($0) }
+        return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map { Pda(publicKey: $0.0, bump: $0.1) }
+    }
+
+    static func treasuryPda(auctionHouse: PublicKey) -> Result<Pda, Error> {
+        let seeds = [
+            PROGRAM.bytes,
+            auctionHouse.bytes,
+            "treasury".bytes
+        ].map { Data($0) }
+        return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map { Pda(publicKey: $0.0, bump: $0.1) }
     }
 
     static func auctioneerPda(auctionHouse: PublicKey, auctioneerAuthority: PublicKey) -> Result<PublicKey, Error> {

@@ -33,13 +33,13 @@ public class AuctionHouseClient {
     // MARK: - Bid
 
     func bid(
-        _ auctionHouse: Auctionhouse,
+        _ auctionHouse: AuctionhouseArgs,
         buyer: Account? = nil,
         authority: Account? = nil,
         auctioneerAuthority: Account? = nil,
         mintAccount: PublicKey,
-        seller: PublicKey?,
-        tokenAccount: PublicKey?,
+        seller: PublicKey? = nil,
+        tokenAccount: PublicKey? = nil,
         price: UInt64? = nil,
         tokens: UInt64? = nil,
         printReceipt: Bool = true,
@@ -66,7 +66,7 @@ public class AuctionHouseClient {
 
     func findBidByReceipt(
         _ address: PublicKey,
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
         let operation = FindBidByReceiptOperationHandler(metaplex: metaplex)

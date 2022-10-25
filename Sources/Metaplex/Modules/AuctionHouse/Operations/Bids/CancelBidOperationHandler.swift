@@ -11,7 +11,7 @@ import Solana
 
 public struct CancelBidInput {
     let auctioneerAuthority: Account?
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
     let bid: Bid
 }
 
@@ -38,7 +38,7 @@ class CancelBidOperationHandler: OperationHandler {
             ), let auctionHouseAddress = try? Auctionhouse.pda(
                 creator: input.auctionHouse.creator,
                 treasuryMint: input.auctionHouse.treasuryMint
-            ).get() else {
+            ).get().publicKey else {
                 return .failure(.couldNotFindPDA)
             }
 
@@ -57,10 +57,6 @@ class CancelBidOperationHandler: OperationHandler {
                 cancelBidBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
                     switch result {
                     case .success(let status):
-                        guard let status else {
-                            callback(.failure(.nilSignatureStatus))
-                            return
-                        }
                         callback(.success(status))
                     case .failure(let error):
                         callback(.failure(.confirmTransactionError(error)))

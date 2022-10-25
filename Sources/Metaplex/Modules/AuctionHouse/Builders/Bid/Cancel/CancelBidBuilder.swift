@@ -9,16 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct CancelBidBuilderParameters {
-    let wallet: PublicKey
-    let tokenAccount: PublicKey
-    let mint: PublicKey
-    let auctionHouseAddress: PublicKey
-    let auctionHouse: Auctionhouse
-    let bid: Bid
-    let auctioneerAuthority: Account?
-}
-
 extension TransactionBuilder {
     static func cancelBidBuilder(parameters: CancelBidBuilderParameters) -> TransactionBuilder {
         let accounts = CancelAccounts(

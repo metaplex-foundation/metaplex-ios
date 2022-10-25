@@ -15,6 +15,9 @@ class TransactionBuilder {
         let key: String
     }
 
+    private let delay: TimeInterval = 5
+    private let attempts = 5
+
     private var feePayer: Account?
     private var instructions: [InstructionWithSigner] = []
 
@@ -51,11 +54,22 @@ class TransactionBuilder {
 
     // MARK: - Send and Confirm
 
-    func sendAndConfirm(metaplex: Metaplex, onComplete: @escaping (Result<SignatureStatus?, Error>) -> Void) {
-        metaplex.connection.serializeTransaction(instructions: getInstructions(), recentBlockhash: nil, signers: getSigners()) { result in
+    func sendAndConfirm(metaplex: Metaplex, onComplete: @escaping (Result<SignatureStatus, Error>) -> Void) {
+        metaplex.connection.serializeTransaction(
+            instructions: getInstructions(),
+            recentBlockhash: nil,
+            signers: getSigners().isEmpty ? [metaplex.identity()] : getSigners()
+        ) { result in
             switch result {
-            case .success(let transactionId):
-                metaplex.sendAndConfirmTransaction(serializedTransaction: transactionId, configs: nil, onComplete: onComplete)
+            case .success(let serializedTransaction):
+                self.sendTransaction(metaplex: metaplex, serializedTransaction: serializedTransaction) { result in
+                    switch result {
+                    case .success(let signature):
+                        self.confirmTransaction(metaplex: metaplex, signature: signature, onComplete: onComplete)
+                    case .failure(let error):
+                        onComplete(.failure(OperationError.sendTransactionError(error)))
+                    }
+                }
             case .failure(let error):
                 onComplete(.failure(error))
             }
@@ -73,5 +87,42 @@ class TransactionBuilder {
         let additionalSigners = instructions.flatMap { $0.signers }
         signers.append(contentsOf: additionalSigners)
         return signers
+    }
+
+    private func sendTransaction(
+        metaplex: Metaplex,
+        serializedTransaction: String,
+        onComplete: @escaping (Result<TransactionID, IdentityDriverError>) -> Void
+    ) {
+        let operation = {
+            OperationResult<TransactionID, IdentityDriverError>.init { onComplete in
+                metaplex.sendTransaction(serializedTransaction: serializedTransaction, onComplete: onComplete)
+            }.mapError { Retry.retry($0) }
+        }
+        let retry = OperationResult<TransactionID, IdentityDriverError>.retry(
+            with: delay,
+            attempts: attempts,
+            operation: operation
+        ).mapError { IdentityDriverError.sendTransactionError($0) }
+        retry.run(onComplete)
+    }
+
+    private func confirmTransaction(
+        metaplex: Metaplex,
+        signature: String,
+        onComplete: @escaping (Result<SignatureStatus, Error>) -> Void
+    ) {
+        let operation = {
+            OperationResult<SignatureStatus?, Error>.init { onComplete in
+                metaplex.confirmTransaction(signature: signature, configs: nil, onComplete: onComplete)
+            }.flatMap { (status: SignatureStatus?) -> OperationResult<SignatureStatus, Error> in
+                guard let status, status.confirmationStatus == .finalized else {
+                    return OperationResult.failure(OperationError.nilSignatureStatus)
+                }
+                return OperationResult.success(status)
+            }.mapError { Retry.retry($0) }
+        }
+        let retry = OperationResult<SignatureStatus, Error>.retry(with: delay, attempts: attempts, operation: operation)
+        retry.run(onComplete)
     }
 }

@@ -9,62 +9,41 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct CreateBidBuilderParameters {
-    let authority: Account?
-    let buyerPrice: UInt64
-    let tokenSize: UInt64
-    let paymentAccount: PublicKey
-    let metadata: PublicKey
-    let escrowPaymentAccount: Pda
-    let buyerTradeState: Pda
-    let buyerTokenAccount: PublicKey
-    let auctioneerAuthority: Account?
-    let tokenAccount: PublicKey?
-    let mintAccount: PublicKey
-    let seller: PublicKey?
-    let buyer: Account
-    let auctionHouse: Auctionhouse
-    let auctionHouseAddress: PublicKey
-    let bookkeeper: Account
-    let printReceipt: (shouldPrintReceipt: Bool, receipt: Pda?)
-}
-
 extension TransactionBuilder {
     static func createBidBuilder(parameters: CreateBidBuilderParameters) -> TransactionBuilder {
-        let authority = parameters.authority?.publicKey ?? parameters.auctionHouse.authority
-
         // MARK: - Buy Instruction
 
         let buyAccounts = BuyAccounts(
-            wallet: parameters.buyer.publicKey,
+            wallet: parameters.wallet,
             paymentAccount: parameters.paymentAccount,
-            transferAuthority: parameters.buyer.publicKey,
-            treasuryMint: parameters.auctionHouse.treasuryMint,
+            transferAuthority: parameters.transferAuthority,
+            treasuryMint: parameters.treasuryMint,
             metadata: parameters.metadata,
-            escrowPaymentAccount: parameters.escrowPaymentAccount.publicKey,
-            authority: authority,
-            auctionHouse: parameters.auctionHouseAddress,
-            auctionHouseFeeAccount: parameters.auctionHouse.auctionHouseFeeAccount,
-            buyerTradeState: parameters.buyerTradeState.publicKey
+            escrowPaymentAccount: parameters.escrowPaymentAccount,
+            authority: parameters.authority,
+            auctionHouse: parameters.auctionHouse,
+            auctionHouseFeeAccount: parameters.auctionHouseFeeAccount,
+            buyerTradeState: parameters.buyerTradeState
         )
 
         let buyArgs = BuyArgs(
-            tradeStateBump: parameters.buyerTradeState.bump,
-            escrowPaymentBump: parameters.escrowPaymentAccount.bump,
+            tradeStateBump: parameters.tradeStateBump,
+            escrowPaymentBump: parameters.escrowPaymentBump,
             buyerPrice: parameters.buyerPrice,
             tokenSize: parameters.tokenSize
         )
 
         let buyInstruction: TransactionInstruction
-        var buySigners = [parameters.buyer]
+        var buySigners = [parameters.buyerSigner]
+
         #warning("This is incorrect and does not consider auctionHouse.authority sense it is not an Account")
-        if let authority = parameters.authority {
-            buySigners.append(authority)
+        if let authoritySigner = parameters.authoritySigner {
+            buySigners.append(authoritySigner)
         }
 
-        if let auctioneerAuthority = parameters.auctioneerAuthority,
+        if let auctioneerAuthority = parameters.auctioneerAuthoritySigner,
            let auctioneerPda = try? Auctionhouse.auctioneerPda(
-            auctionHouse: parameters.auctionHouseAddress,
+            auctionHouse: parameters.auctionHouse,
             auctioneerAuthority: auctioneerAuthority.publicKey
            ).get() {
             if let tokenAccount = parameters.tokenAccount {
@@ -108,24 +87,24 @@ extension TransactionBuilder {
         // MARK: - Print Receipt Instruction
 
         let printReceipt: (shouldPrintReceipt: Bool, instruction: InstructionWithSigner?) = {
-            guard let receipt = parameters.printReceipt.receipt else {
+            guard let receipt = parameters.receipt else {
                 return (false, nil)
             }
 
             let printReceiptAccounts = PrintBidReceiptInstructionAccounts(
                 receipt: receipt.publicKey,
-                bookkeeper: parameters.bookkeeper.publicKey,
+                bookkeeper: parameters.bookkeeper,
                 instruction: PublicKey.sysvarInstructionsPublicKey
             )
             let printReceiptArgs = PrintBidReceiptInstructionArgs(receiptBump: receipt.bump)
 
-            let shouldPrintReciept = parameters.printReceipt.shouldPrintReceipt && parameters.auctioneerAuthority != nil
+            let shouldPrintReciept = parameters.shouldPrintReceipt && parameters.auctioneerAuthoritySigner == nil
             let instruction = InstructionWithSigner(
                 instruction: createPrintBidReceiptInstruction(
                     accounts: printReceiptAccounts,
                     args: printReceiptArgs
                 ),
-                signers: [parameters.bookkeeper],
+                signers: [parameters.bookkeeperSigner],
                 key: "printBidReceipt"
             )
 
@@ -135,8 +114,6 @@ extension TransactionBuilder {
         // MARK: - Create Token Account Instruction
 
         // TODO: Create an account if it doesn't exist. Will come back to this as there's a bit involved.
-        // I'm also not positive we can ever get to a state where create account is needed because there are several pieces that rely on tokenAccount existing otherwise it all fails
-        // Need to do more research.
 
         // MARK: - Transaction Builder
 

@@ -16,20 +16,20 @@ class LogInViewController: UIViewController {
     }
     
     @IBAction func onLogInWithPhantom(_ sender: Any) {
-        let windowScene: SceneDelegate = self.view.window?.windowScene?.delegate as! SceneDelegate
-        windowScene.phantom.connect()
-        windowScene.phantom.onConnect = { result in
-            self.ownerPublicKeyString = result.public_key
+//        let windowScene: SceneDelegate = self.view.window?.windowScene?.delegate as! SceneDelegate
+//        windowScene.phantom.connect()
+//        windowScene.phantom.onConnect = { result in
+//            self.ownerPublicKeyString = result.public_key
             self.performSegue(withIdentifier: "goToWallet", sender: sender)
-        }
+//        }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)  {
-        if segue.identifier == "goToWallet",
-           let walletViewController = segue.destination as? ViewController,
-           let ownerPublicKeyString = self.ownerPublicKeyString,
-           let ownerPublicKey = PublicKey(string: ownerPublicKeyString) {
-            walletViewController.ownerPublicKey = ownerPublicKey
-        }
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?)  {
+//        if segue.identifier == "goToWallet",
+//           let walletViewController = segue.destination as? ViewController,
+//           let ownerPublicKeyString = self.ownerPublicKeyString,
+//           let ownerPublicKey = PublicKey(string: ownerPublicKeyString) {
+//            walletViewController.ownerPublicKey = ownerPublicKey
+//        }
+//    }
 }

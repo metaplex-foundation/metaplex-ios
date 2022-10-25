@@ -113,6 +113,10 @@ struct ExecuteSaleBuilderParameters {
         executeSaleInput.listing.nft
     }
 
+    var isNative: Bool {
+        executeSaleInput.auctionHouse.isNative
+    }
+
     var auctioneerAuthority: Account? {
         executeSaleInput.auctioneerAuthority
     }

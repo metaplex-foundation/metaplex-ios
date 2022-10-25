@@ -9,27 +9,27 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct Bid {
-    let bidReceipt: LazyBid
-    let nft: NFT
+public struct Bid {
+    public let bidReceipt: LazyBid
+    public let nft: NFT
 }
 
-struct LazyBid {
-    let auctionHouse: Auctionhouse
-    let tradeState: Pda
-    let bookkeeper: PublicKey?
-    let buyer: PublicKey
-    let metadata: PublicKey
-    let tokenAddress: PublicKey?
-    let receipt: Pda?
-    let purchaseReceipt: PublicKey?
-    let price: UInt64
-    let tokenSize: UInt64
-    let createdAt: Int64
-    let canceledAt: Int64?
+public struct LazyBid {
+    public let auctionHouse: AuctionhouseArgs
+    public let tradeState: Pda
+    public let bookkeeper: PublicKey?
+    public let buyer: PublicKey
+    public let metadata: PublicKey
+    public let tokenAddress: PublicKey?
+    public let receipt: Pda?
+    public let purchaseReceipt: PublicKey?
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let createdAt: Int64
+    public let canceledAt: Int64?
 
-    init(
-        auctionHouse: Auctionhouse,
+    public init(
+        auctionHouse: AuctionhouseArgs,
         tradeState: Pda,
         bookkeeper: PublicKey?,
         buyer: PublicKey,
@@ -56,7 +56,7 @@ struct LazyBid {
         self.canceledAt = canceledAt
     }
 
-    init(auctionHouse: Auctionhouse, bidReceipt: Bidreceipt, publicKey: PublicKey) {
+    public init(auctionHouse: AuctionhouseArgs, bidReceipt: Bidreceipt, publicKey: PublicKey) {
         self.auctionHouse = auctionHouse
         self.tradeState = Pda(publicKey: bidReceipt.tradeState, bump: bidReceipt.tradeStateBump)
         self.bookkeeper = bidReceipt.bookkeeper

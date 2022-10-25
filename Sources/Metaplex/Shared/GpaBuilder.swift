@@ -190,7 +190,7 @@ extension GpaBuilder {
         }
     }
 
-    func getDataAsPublicKeys () -> OperationResult<[PublicKey], Error> {
+    func getDataAsPublicKeys() -> OperationResult<[PublicKey], Error> {
         return self.getAndMap { (account: [AccountInfoWithPublicKey<AccountPublicKey>]) in
             account.map { $0.account.data.value!.publicKey }
         }
