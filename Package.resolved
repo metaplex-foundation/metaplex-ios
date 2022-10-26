@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "metaplex-swift-program-library",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/metaplex-foundation/metaplex-swift-program-library",
+      "state" : {
+        "branch" : "1.1.0",
+        "revision" : "33818f9d56a0788b6acf7c9f0435ae0d7c218f74"
+      }
+    },
+    {
       "identity" : "pathkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kylef/PathKit.git",

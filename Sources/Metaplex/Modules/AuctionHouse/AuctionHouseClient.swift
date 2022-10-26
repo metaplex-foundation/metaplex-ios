@@ -110,7 +110,7 @@ public class AuctionHouseClient {
 
     public func findBidByTradeState(
         _ address: PublicKey,
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
         let operation = FindBidByTradeStateOperationHandler(metaplex: metaplex)
@@ -121,7 +121,7 @@ public class AuctionHouseClient {
 
     public func findBidsBy(
         type: BidPublicKeyType,
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         onComplete: @escaping (Result<[Bidreceipt], OperationError>) -> Void
     ) {
         let operation = FindBidsByPublicKeyFieldOperationHandler(metaplex: metaplex)

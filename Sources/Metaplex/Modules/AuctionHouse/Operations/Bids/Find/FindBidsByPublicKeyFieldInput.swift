@@ -28,5 +28,5 @@ public enum BidPublicKeyType {
 
 struct FindBidsByPublicKeyFieldInput {
     let type: BidPublicKeyType
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
 }

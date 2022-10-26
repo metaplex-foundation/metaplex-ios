@@ -15,17 +15,17 @@ public struct Purchase {
 }
 
 public struct LazyPurchase {
-    let auctionHouse: AuctionhouseArgs
-    let buyer: PublicKey
-    let seller: PublicKey
-    let metadata: PublicKey
-    let bookkeeper: PublicKey
-    let receipt: PublicKey?
-    let price: UInt64
-    let tokenSize: UInt64
-    let createdAt: Int64
+    public let auctionHouse: AuctionhouseArgs
+    public let buyer: PublicKey
+    public let seller: PublicKey
+    public let metadata: PublicKey
+    public let bookkeeper: PublicKey
+    public let receipt: PublicKey?
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let createdAt: Int64
 
-    init(
+    public init(
         auctionHouse: AuctionhouseArgs,
         buyer: PublicKey,
         seller: PublicKey,
@@ -47,7 +47,7 @@ public struct LazyPurchase {
         self.createdAt = createdAt
     }
 
-    init(auctionHouse: AuctionhouseArgs, purchaseReceipt: Purchasereceipt, publicKey: PublicKey) {
+    public init(auctionHouse: AuctionhouseArgs, purchaseReceipt: Purchasereceipt, publicKey: PublicKey) {
         self.auctionHouse = auctionHouse
         self.buyer = purchaseReceipt.buyer
         self.seller = purchaseReceipt.seller

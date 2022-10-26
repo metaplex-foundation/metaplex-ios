@@ -301,7 +301,7 @@ Bidding is a part of the `AuctionHouseClient` and allows you to create, find, an
 - [`findBidByTradeState(address, auctionHouse, callback)`](#findBidByTradeState)
 - [`findBidsBy(type, auctionHouse, callback)`](#findBidsBy)
 - [`loadBid(bid, callback)`](#loadBid)
-- [`cancelBid(address, auctionHouse, callback)`](#findBidByReceipt)
+- [`cancelBid(auctioneerAuthority, auctionHouse, bid, callback)`](#cancelBid)
 
 ### bid
 
@@ -326,7 +326,7 @@ public func bid(
 
 ### findBidByReceipt
 
-The `findBidByReceipt` takes a `PublicKey` address and an Auction House, using `AuctionhouseArgs` in order to find the bid for that Auction House. In your app you could create an `Auctionhouse` using `create(input, callback)` or find an auction house with `findByAddress(address, callback)` or `findByCreatorAndMint(creator, treasuryMint, callback)`.
+The `findBidByReceipt` takes a `PublicKey` address and an Auction House, using `AuctionhouseArgs` in order to find the bid on the Auction House. In your app you could create an `Auctionhouse` using `create(input, callback)` or find an auction house with `findByAddress(address, callback)` or `findByCreatorAndMint(creator, treasuryMint, callback)`.
 
 ```swift
 public func findBidByReceipt(
@@ -338,11 +338,54 @@ public func findBidByReceipt(
 
 ### findBidByTradeState
 
+The `findBidByTradeState` is identical to `findBidByReceipt` except now you are using the trade state `PublicKey` to find the bid on the `AuctionhouseArgs` passed in.
+
+```swift
+public func findBidByTradeState(
+    _ address: PublicKey,
+    auctionHouse: Auctionhouse,
+    onComplete: @escaping (Result<Bid, OperationError>) -> Void
+) { ... }
+```
+
 ### findBidsBy
+
+`findBidsBy` uses `BidPublicKeyType` to find multiple bids on the Auction House you provide using `AuctionhouseArgs`. The supported types are `buyer`, `metadata`, and `mint`.
+
+```swift
+enum BidPublicKeyType {
+    case buyer(PublicKey)
+    case metadata(PublicKey)
+    case mint(PublicKey)
+}
+
+public func findBidsBy(
+    type: BidPublicKeyType,
+    auctionHouse: AuctionhouseArgs,
+    onComplete: @escaping (Result<[Bidreceipt], OperationError>) -> Void
+) { ... }
+```
 
 ### loadBid
 
+Use `loadBid` to finish loading the `LazyBid` with an asset, `NFT`, for a particular bid on the Auction House.
+
+```swift
+public func loadBid(_ bid: LazyBid, onComplete: @escaping (Result<Bid, OperationError>) -> Void) { ... }
+```
+
 ### cancelBid
+
+Cancel a bid on the Auction House using `cancelBid`. A `Bid` object is required and you cannot use a `LazyBid`.
+
+```swift
+public func cancelBid(
+    auctioneerAuthority: Account? = nil,
+    auctionHouse: AuctionhouseArgs,
+    bid: Bid,
+    onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void
+) { ... }
+```
 
 ### Bid
 
@@ -357,7 +400,7 @@ public struct Bid {
 
 ### LazyBid
 
-`LazyBid` is a partially loaded `Bid`. It's created a `BidReceipt` and can be passed to `loadBid(bid, callback)` to fetch the asset in order to have access to the full `Bid` object.
+`LazyBid` is a partially loaded `Bid`. It's created from a `BidReceipt` and can be passed to `loadBid(bid, callback)` to fetch the asset in order to have access to the full `Bid` object.
 
 ```swift
 public struct LazyBid {
@@ -398,6 +441,217 @@ public struct Bidreceipt: BidreceiptArgs {
     public let tradeStateBump: UInt8
     public let createdAt: Int64
     public let canceledAt: COption<Int64>
+}
+```
+
+## Listing
+
+Listing is a part of the `AuctionHouseClient` and allows you to list, find, and cancel listings using the following methods:
+
+- [`list(input, callback)`](#list)
+- [`findListingByReceipt(address, auctionHouse, callback)`](#findListingByReceipt)
+- [`loadListing(listing, callback)`](#loadListing)
+- [`cancelListing(auctioneerAuthority, auctionHouse, listing, callback)`](#cancelListing)
+
+### list
+
+The `list` method takes in parameters in order to fill the `CreateListingInput` struct in order to create a `Listing` on Auction House. The required parameters are the `AuctionhouseArgs` and a `UInt64` representing the price you want to charge. With all of the parameters set to their default you will have a basic `Listing` that uses the identity of the `IdentityDriver`.
+
+```swift
+public func list(
+    auctionHouse: AuctionhouseArgs,
+    seller: Account? = nil,
+    authority: Account? = nil,
+    auctioneerAuthority: Account? = nil,
+    mintAccount: PublicKey,
+    tokenAccount: PublicKey? = nil,
+    price: UInt64,
+    tokens: UInt64 = 1,
+    printReceipt: Bool = true,
+    bookkeeper: Account? = nil,
+    onComplete: @escaping (Result<Listing, OperationError>) -> Void
+) { ... }
+```
+
+### findListingByReceipt
+
+The `findListingByReceipt` takes a `PublicKey` address and an Auction House, using `AuctionhouseArgs` in order to find the listing on the Auction House. In your app you could create an `Auctionhouse` using `create(input, callback)` or find an auction house with `findByAddress(address, callback)` or `findByCreatorAndMint(creator, treasuryMint, callback)`.
+
+```swift
+public func findListingByReceipt(
+    _ address: PublicKey,
+    auctionHouse: AuctionhouseArgs,
+    onComplete: @escaping (Result<Listing, OperationError>) -> Void
+) { ... }
+```
+
+### loadListing
+
+Use `loadListing` to finish loading the `LazyListing` with an asset, `NFT`, for a particular listing on the Auction House.
+
+```swift
+public func loadListing(_ listing: LazyListing, onComplete: @escaping (Result<Listing, OperationError>) -> Void) { ... }
+```
+
+### cancelListing
+
+Cancel a listing on the Auction House using `cancelListing`. A `Listing` object is required and you cannot use a `LazyListing`.
+
+```swift
+public func cancelListing(
+    auctioneerAuthority: Account? = nil,
+    auctionHouse: Auctionhouse,
+    listing: Listing,
+    onComplete: @escaping (Result<SignatureStatus, OperationError>) -> Void
+) { ... }
+```
+
+### Listing
+
+`Listing` is an object that consists of a `LazyListing` and an `NFT`. Sometimes you will only have `LazyListing` or a `Listingreceipt`. You can create a `Listing` object from these using the `loadListing(listing, callback)` method. A `LazyListing` can be created using an `Auctionhouse` and `Listingreceipt` to be passed into `loadListing(listing, callback)`.
+
+```swift
+public struct Listing {
+    public let listingReceipt: LazyListing
+    public let nft: NFT
+}
+```
+
+### LazyListing
+
+`LazyListing` is a partially loaded `Listing`. It's created from a `ListingReceipt` and can be passed to `loadListing(listing, callback)` to fetch the asset in order to have access to the full `Listing` object.
+
+```swift
+public struct LazyListing {
+    public let auctionHouse: AuctionhouseArgs
+    public let tradeState: Pda
+    public let bookkeeper: PublicKey?
+    public let seller: PublicKey
+    public let metadata: PublicKey
+    public let receipt: Pda?
+    public let purchaseReceipt: PublicKey?
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let createdAt: Int64
+    public let canceledAt: Int64?
+}
+```
+
+### Listingreceipt
+
+`Bidreceipt` is the low-level data that the Auction House program uses to return raw `Bid` data. Since we are working with raw data here we don't have access to the `NFT` and has to be loaded using the `loadBid(bid, callback)` method to create a usable higher level `Bid` object.
+
+```swift
+public struct Listingreceipt: ListingreceiptArgs {
+    public static let listingReceiptDiscriminator = [97, 99, 99, 111, 117, 110, 116, 58] as [UInt8]
+
+    public let listingReceiptDiscriminator: [UInt8]
+    public let tradeState: PublicKey
+    public let bookkeeper: PublicKey
+    public let auctionHouse: PublicKey
+    public let seller: PublicKey
+    public let metadata: PublicKey
+    public let purchaseReceipt: COption<PublicKey>
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let bump: UInt8
+    public let tradeStateBump: UInt8
+    public let createdAt: Int64
+    public let canceledAt: COption<Int64>
+}
+```
+
+## Sale
+
+Listing is a part of the `AuctionHouseClient` and allows you to list, find, and cancel listings using the following methods:
+
+- [`executeSale(input, callback)`](#executeSale)
+- [`findPurchaseByReceipt(address, auctionHouse, callback)`](#findPurchaseByReceipt)
+- [`loadPurchase(purchase, callback)`](#loadPurchase)
+
+### executeSale
+
+The `executeSale` method takes in parameters in order to fill the `ExecuteSaleInput` struct in order to execute the `Purchase` on the Auction House. The required parameters are the `AuctionhouseArgs`, along with the `Bid`, and `Listing` required for the sale. With the remaining parameters set to their default you will execute the sale using the identity of the `IdentityDriver`.
+
+```swift
+public func executeSale(
+    bid: Bid,
+    listing: Listing,
+    auctionHouse: AuctionhouseArgs,
+    auctioneerAuthority: Account? = nil,
+    bookkeeper: Account? = nil,
+    printReceipt: Bool = true,
+    onComplete: @escaping (Result<Purchase, OperationError>) -> Void
+) { ... }
+```
+
+### findPurchaseByReceipt
+
+The `findPurchaseByReceipt` takes a `PublicKey` address and an Auction House, using `AuctionhouseArgs` in order to find the purchase on the Auction House. In your app you could create an `Auctionhouse` using `create(input, callback)` or find an auction house with `findByAddress(address, callback)` or `findByCreatorAndMint(creator, treasuryMint, callback)`.
+
+```swift
+public func findPurchaseByReceipt(
+    _ address: PublicKey,
+    auctionHouse: AuctionhouseArgs,
+    onComplete: @escaping (Result<Purchase, OperationError>) -> Void
+) { ... }
+```
+
+### loadPurchase
+
+Use `loadPurchase` to finish loading the `LazyPurchase` with an asset, `NFT`, for a particular listing on the Auction House.
+
+```swift
+public func loadPurchase(_ purchase: LazyPurchase, onComplete: @escaping (Result<Purchase, OperationError>) -> Void) { ... }
+```
+
+### Purchase
+
+`Purchase` is an object that consists of a `LazyPurchase` and an `NFT`. Sometimes you will only have `LazyPurchase` or a `Purchasereceipt`. You can create a `Purchase` object from these using the `loadPurchase(purchase, callback)` method. A `LazyPurchase` can be created using an `Auctionhouse` and `Purchasereceipt` to be passed into `loadPurchase(purchase, callback)`.
+
+```swift
+public struct Purchase {
+    public let purchaseReceipt: LazyPurchase
+    public let nft: NFT
+}
+```
+
+### LazyPurchase
+
+`LazyPurchase` is a partially loaded `Purchase`. It's created from a `Purchasereceipt` and can be passed to `loadPurchase(purchase, callback)` to fetch the asset in order to have access to the full `Purchase` object.
+
+```swift
+public struct LazyPurchase {
+    public let auctionHouse: AuctionhouseArgs
+    public let buyer: PublicKey
+    public let seller: PublicKey
+    public let metadata: PublicKey
+    public let bookkeeper: PublicKey
+    public let receipt: PublicKey?
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let createdAt: Int64
+}
+```
+
+### Purchasereceipt
+
+`Purchasereceipt` is the low-level data that the Auction House program uses to return raw `Purchase` data. Since we are working with raw data here we don't have access to the `NFT` and has to be loaded using the `loadPurchase(purchase, callback)` method to create a usable higher level `Purchase` object.
+
+```swift
+public struct Purchasereceipt: PurchasereceiptArgs {
+    public static let purchaseReceiptDiscriminator = [97, 99, 99, 111, 117, 110, 116, 58] as [UInt8]
+
+    public let purchaseReceiptDiscriminator: [UInt8]
+    public let bookkeeper: PublicKey
+    public let buyer: PublicKey
+    public let seller: PublicKey
+    public let auctionHouse: PublicKey
+    public let metadata: PublicKey
+    public let tokenSize: UInt64
+    public let price: UInt64
+    public let bump: UInt8
+    public let createdAt: Int64
 }
 ```
 
