@@ -9,7 +9,7 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CancelBidInput {
+struct CancelBidInput {
     let auctioneerAuthority: Account?
     let auctionHouse: AuctionhouseArgs
     let bid: Bid

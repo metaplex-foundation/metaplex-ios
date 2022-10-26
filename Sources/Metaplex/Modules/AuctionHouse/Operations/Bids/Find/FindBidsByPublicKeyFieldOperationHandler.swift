@@ -31,13 +31,14 @@ class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {
             ).flatMap { address in
                 let accounts = AuctionHouseProgram.bidAccounts(connection: self.metaplex.connection)
                 var query = accounts.whereAuctionHouse(address: address.publicKey)
-                switch input.field {
-                case .buyer:
-                    query = query.whereBuyer(address: input.publicKey)
-                case .metadata:
-                    query = query.whereBuyer(address: input.publicKey)
-                case .mint:
-                    query = query.whereBuyer(address: input.publicKey)
+                switch input.type {
+                case .buyer(let address):
+                    query = query.whereBuyer(address: address)
+                case .metadata(let address):
+                    query = query.whereMetadata(address: address)
+                case .mint(let mintKey):
+                    guard let address = try? MetadataAccount.pda(mintKey: mintKey).get() else { return .failure(OperationError.couldNotFindPDA) }
+                    query = query.whereMetadata(address: address)
                 }
                 return query.getAndMap { (accounts: [AccountInfoWithPureData]) in
                     accounts.compactMap { (accountInfo: AccountInfoWithPureData) -> Bidreceipt? in

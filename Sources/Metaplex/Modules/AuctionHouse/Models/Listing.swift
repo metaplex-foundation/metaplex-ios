@@ -9,12 +9,12 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct Listing {
+public struct Listing {
     let listingReceipt: LazyListing
     let nft: NFT
 }
 
-struct LazyListing {
+public struct LazyListing {
     let auctionHouse: AuctionhouseArgs
     let tradeState: Pda
     let bookkeeper: PublicKey?

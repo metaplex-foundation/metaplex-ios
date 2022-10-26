@@ -9,7 +9,7 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CreateAuctionHouseInput {
+struct CreateAuctionHouseInput {
     let sellerFeeBasisPoints: UInt16
     let requiresSignOff: Bool
     let canChangeSalePrice: Bool

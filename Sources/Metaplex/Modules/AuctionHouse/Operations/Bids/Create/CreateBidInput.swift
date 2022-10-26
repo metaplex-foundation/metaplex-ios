@@ -9,7 +9,7 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CreateBidInput {
+struct CreateBidInput {
     let auctionHouse: AuctionhouseArgs
     let buyer: Account?
     let authority: Account?

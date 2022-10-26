@@ -203,7 +203,7 @@ nft.metadata(metaplex: self.metaplex) { result in
 ## Auction House
 The Auction House module can be accessed via `Metaplex.auctionHouse` and provide the following methods. This is still a WIP and we are continuously adding more tests and documentation. These methods belong to the `AuctionHouseClient` class. `AuctionHouseClient` is separated into four sections currently. `AuctionHouse`, `Bid`, `Listing`, and `Sale`. You can find more information about them below.
 
-- [`create(sellerFeeBasisPoints, auctioneerAuthority, callback)`](#create)
+- [`create(input, callback)`](#create)
 - [`findByAddress(address, callback)`](#findByAddress)
 - [`findByCreatorAndMint(creator, treasuryMint, callback)`](#findByCreatorAndMint)
 
@@ -211,7 +211,23 @@ All the methods return a callback. It's also possible to wrap them inside either
 
 ### create
 
-The `create` method accepts a `sellerFeeBasisPoints` and an optional `auctioneerAuthority` public key. Upon sucessful creation you will get an `Auctionhouse` object back.
+The `create` method accepts properties that fills `CreateAuctionHouseInput` where `sellerFeeBasisPoints` is required to share part of the sale with the Auction House. Upon sucessful creation you will get an `Auctionhouse` object back.
+
+```swift
+public func create(
+    sellerFeeBasisPoints: UInt16,
+    requiresSignOff: Bool = false,
+    canChangeSalePrice: Bool = false,
+    auctioneerScopes: [AuthorityScope] = [],
+    treasuryMint: PublicKey = PublicKey(string: "So11111111111111111111111111111111111111112")!,
+    payer: Account? = nil,
+    authority: Account? = nil,
+    feeWithdrawalDestination: Account? = nil,
+    treasuryWithdrawalDestinationOwner: PublicKey? = nil,
+    auctioneerAuthority: PublicKey? = nil,
+    onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void
+) { ... }
+```
 
 ### findByAddress
 
@@ -280,7 +296,110 @@ public let scopes: [Bool] /* size: 7 */
 
 Bidding is a part of the `AuctionHouseClient` and allows you to create, find, and cancel bids using the following methods:
 
+- [`bid(input, callback)`](#bid)
+- [`findBidByReceipt(address, auctionHouse, callback)`](#findBidByReceipt)
+- [`findBidByTradeState(address, auctionHouse, callback)`](#findBidByTradeState)
+- [`findBidsBy(type, auctionHouse, callback)`](#findBidsBy)
+- [`loadBid(bid, callback)`](#loadBid)
+- [`cancelBid(address, auctionHouse, callback)`](#findBidByReceipt)
 
+### bid
+
+The `bid` method takes in parameters in order to fill the `CreateBidInput` struct in order to create a `Bid` on Auction House. The only required parameter is the `AuctionhouseArgs`, which are the properties that make up an `Auctionhouse` object. With all of the parameters set to their default you will have a basic `Bid` that uses the identity of the `IdentityDriver`.
+
+```swift
+public func bid(
+    auctionHouse: AuctionhouseArgs,
+    buyer: Account? = nil,
+    authority: Account? = nil,
+    auctioneerAuthority: Account? = nil,
+    mintAccount: PublicKey,
+    seller: PublicKey? = nil,
+    tokenAccount: PublicKey? = nil,
+    price: UInt64? = 0,
+    tokens: UInt64? = 1,
+    printReceipt: Bool = true,
+    bookkeeper: Account? = nil,
+    onComplete: @escaping (Result<Bid, OperationError>) -> Void
+) { ... }
+```
+
+### findBidByReceipt
+
+The `findBidByReceipt` takes a `PublicKey` address and an Auction House, using `AuctionhouseArgs` in order to find the bid for that Auction House. In your app you could create an `Auctionhouse` using `create(input, callback)` or find an auction house with `findByAddress(address, callback)` or `findByCreatorAndMint(creator, treasuryMint, callback)`.
+
+```swift
+public func findBidByReceipt(
+    _ address: PublicKey,
+    auctionHouse: AuctionhouseArgs,
+    onComplete: @escaping (Result<Bid, OperationError>) -> Void
+) { ... }
+```
+
+### findBidByTradeState
+
+### findBidsBy
+
+### loadBid
+
+### cancelBid
+
+### Bid
+
+`Bid` is an object that consists of a `LazyBid` and an `NFT`. Sometimes you will only have `LazyBid` or a `Bidreceipt`. You can create a `Bid` object from these using the `loadBid(bid, callback)` method. A `LazyBid` can be created using an `Auctionhouse` and `Bidreceipt` to be passed into `loadBid(bid, callback)`.
+
+```swift
+public struct Bid {
+    public let bidReceipt: LazyBid
+    public let nft: NFT
+}
+```
+
+### LazyBid
+
+`LazyBid` is a partially loaded `Bid`. It's created a `BidReceipt` and can be passed to `loadBid(bid, callback)` to fetch the asset in order to have access to the full `Bid` object.
+
+```swift
+public struct LazyBid {
+    public let auctionHouse: AuctionhouseArgs
+    public let tradeState: Pda
+    public let bookkeeper: PublicKey?
+    public let buyer: PublicKey
+    public let metadata: PublicKey
+    public let tokenAddress: PublicKey?
+    public let receipt: Pda?
+    public let purchaseReceipt: PublicKey?
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let createdAt: Int64
+    public let canceledAt: Int64?
+}
+```
+
+### Bidreceipt
+
+`Bidreceipt` is the low-level data that the Auction House program uses to return raw `Bid` data. Since we are working with raw data here we don't have access to the `NFT` and has to be loaded using the `loadBid(bid, callback)` method to create a usable higher level `Bid` object.
+
+```swift
+public struct Bidreceipt: BidreceiptArgs {
+    public static let bidReceiptDiscriminator = [97, 99, 99, 111, 117, 110, 116, 58] as [UInt8]
+
+    public let bidReceiptDiscriminator: [UInt8]
+    public let tradeState: PublicKey
+    public let bookkeeper: PublicKey
+    public let auctionHouse: PublicKey
+    public let buyer: PublicKey
+    public let metadata: PublicKey
+    public let tokenAccount: COption<PublicKey>
+    public let purchaseReceipt: COption<PublicKey>
+    public let price: UInt64
+    public let tokenSize: UInt64
+    public let bump: UInt8
+    public let tradeStateBump: UInt8
+    public let createdAt: Int64
+    public let canceledAt: COption<Int64>
+}
+```
 
 You can [read more about Auction House in our online docs](https://docs.metaplex.com/programs/auction-house/overview).
 

@@ -8,7 +8,7 @@
 import Foundation
 import Solana
 
-public struct FindAuctionHouseByCreatorAndMintInput {
+struct FindAuctionHouseByCreatorAndMintInput {
     let creator: PublicKey
     let treasuryMint: PublicKey
 }

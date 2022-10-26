@@ -20,8 +20,9 @@ public extension AuctionhouseArgs {
 }
 
 extension Auctionhouse {
+    public static let treasuryMintDefault: PublicKey = PublicKey(string: "So11111111111111111111111111111111111111112")!
+
     static let PROGRAM = "auction_house"
-    static let treasuryMintDefault: PublicKey = PublicKey(string: "So11111111111111111111111111111111111111112")!
 
     static func pda(creator: PublicKey, treasuryMint: PublicKey) -> Result<Pda, Error> {
         let seeds = [

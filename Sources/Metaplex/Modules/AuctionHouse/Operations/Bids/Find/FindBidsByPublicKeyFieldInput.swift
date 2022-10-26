@@ -9,12 +9,24 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct FindBidsByPublicKeyFieldInput {
-    enum Field {
-        case buyer, metadata, mint
-    }
+public enum BidPublicKeyType {
+    case buyer(PublicKey)
+    case metadata(PublicKey)
+    case mint(PublicKey)
 
-    let field: Field
+    var publicKey: PublicKey {
+        switch self {
+        case .buyer(let key):
+            return key
+        case .metadata(let key):
+            return key
+        case .mint(let key):
+            return key
+        }
+    }
+}
+
+struct FindBidsByPublicKeyFieldInput {
+    let type: BidPublicKeyType
     let auctionHouse: Auctionhouse
-    let publicKey: PublicKey
 }
