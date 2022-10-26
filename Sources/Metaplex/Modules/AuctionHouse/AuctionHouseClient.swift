@@ -41,7 +41,7 @@ public class AuctionHouseClient {
     // MARK: - Bid
 
     func bid(
-        input: CreateBidInput
+        input: CreateBidInput,
         onComplete: @escaping (Result<Bid, OperationError>) -> Void
     ) {
         let operation = CreateBidOperationHandler(metaplex: metaplex)
@@ -105,7 +105,7 @@ public class AuctionHouseClient {
     // MARK: - Listing
 
     func list(
-        input: CancelBidInput,
+        input: CreateListingInput,
         onComplete: @escaping (Result<Listing, OperationError>) -> Void
     ) {
         let operation = CreateListingOperationHandler(metaplex: metaplex)
@@ -150,7 +150,7 @@ public class AuctionHouseClient {
     // MARK: - Sale
 
     func executeSale(
-        input: ExecuteSaleInput
+        input: ExecuteSaleInput,
         onComplete: @escaping (Result<Purchase, OperationError>) -> Void
     ) {
         let operation = ExecuteSaleOperationHandler(metaplex: metaplex)

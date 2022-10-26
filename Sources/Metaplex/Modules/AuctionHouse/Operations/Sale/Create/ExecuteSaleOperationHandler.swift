@@ -26,7 +26,9 @@ class ExecuteSaleOperationHandler: OperationHandler {
             guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
             return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
         }
-    }   
+    }
+
+    // MARK: - Private Helpers
 
     private func createParametersFromInput(_ input: ExecuteSaleInput) -> ExecuteSaleBuilderParameters? {
         let defaultIdentity = metaplex.identity()
