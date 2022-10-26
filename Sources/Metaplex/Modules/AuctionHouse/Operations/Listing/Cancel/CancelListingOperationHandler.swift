@@ -9,12 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CancelListingInput {
-    let auctioneerAuthority: Account?
-    let auctionHouse: Auctionhouse
-    let listing: Listing
-}
-
 typealias CancelListingOperation = OperationResult<CancelListingInput, OperationError>
 
 class CancelListingOperationHandler: OperationHandler {

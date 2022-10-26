@@ -9,16 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct FindBidsByPublicKeyFieldInput {
-    enum Field {
-        case buyer, metadata, mint
-    }
-
-    let field: Field
-    let auctionHouse: Auctionhouse
-    let publicKey: PublicKey
-}
-
 typealias FindBidsByPublicKeyFieldOperation = OperationResult<FindBidsByPublicKeyFieldInput, OperationError>
 
 class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {

@@ -9,19 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CreateListingInput {
-    let auctionHouse: AuctionhouseArgs
-    let seller: Account? = nil
-    let authority: Account? = nil
-    let auctioneerAuthority: Account?
-    let mintAccount: PublicKey
-    let tokenAccount: PublicKey? = nil
-    let price: UInt64 = 0
-    let tokens: UInt64 = 1
-    let printReceipt: Bool = true
-    let bookkeeper: Account? = nil
-}
-
 typealias CreateListingOperation = OperationResult<CreateListingInput, OperationError>
 
 class CreateListingOperationHandler: OperationHandler {
@@ -40,6 +27,8 @@ class CreateListingOperationHandler: OperationHandler {
             return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
         }
     }
+
+    // MARK: - Private Helpers
 
     private func createParametersFromInput(_ input: CreateListingInput) -> CreateListingBuilderParameters? {
         let defaultIdentity = metaplex.identity()

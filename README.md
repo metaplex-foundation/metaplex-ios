@@ -201,12 +201,17 @@ nft.metadata(metaplex: self.metaplex) { result in
 ```
 
 ## Auction House
-The Auction House module can be accessed via `Metaplex.auctionHouse` and provide the following methods. Currently only read methods are supported with other methods coming in the future. These methods belong to the `AuctionHouseClient` class.
+The Auction House module can be accessed via `Metaplex.auctionHouse` and provide the following methods. This is still a WIP and we are continuously adding more tests and documentation. These methods belong to the `AuctionHouseClient` class. `AuctionHouseClient` is separated into four sections currently. `AuctionHouse`, `Bid`, `Listing`, and `Sale`. You can find more information about them below.
 
+- [`create(sellerFeeBasisPoints, auctioneerAuthority, callback)`](#create)
 - [`findByAddress(address, callback)`](#findByAddress)
 - [`findByCreatorAndMint(creator, treasuryMint, callback)`](#findByCreatorAndMint)
 
-All the methods return a callback. It's also posible to wrap them inside either RX, an async Result or Combine. We only provide this interface since it's the most compatible without forcing any specific framework. 
+All the methods return a callback. It's also possible to wrap them inside either RX, an async Result or Combine. We only provide this interface since it's the most compatible without forcing any specific framework. 
+
+### create
+
+The `create` method accepts a `sellerFeeBasisPoints` and an optional `auctioneerAuthority` public key. Upon sucessful creation you will get an `Auctionhouse` object back.
 
 ### findByAddress
 
@@ -270,6 +275,12 @@ public let hasAuctioneer: Bool
 public let auctioneerAddress: PublicKey /* `PublicKey.default` if `hasAuctioneer` is false */
 public let scopes: [Bool] /* size: 7 */
 ```
+
+## Bid
+
+Bidding is a part of the `AuctionHouseClient` and allows you to create, find, and cancel bids using the following methods:
+
+
 
 You can [read more about Auction House in our online docs](https://docs.metaplex.com/programs/auction-house/overview).
 

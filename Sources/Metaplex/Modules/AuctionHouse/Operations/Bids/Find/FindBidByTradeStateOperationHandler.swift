@@ -9,11 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct FindBidByTradeStateInput {
-    let address: PublicKey
-    let auctionHouse: AuctionhouseArgs
-}
-
 typealias FindBidByTradeStateOperation = OperationResult<FindBidByTradeStateInput, OperationError>
 
 class FindBidByTradeStateOperationHandler: OperationHandler {

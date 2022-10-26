@@ -9,11 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-struct FindBidByReceiptInput {
-    let address: PublicKey
-    let auctionHouse: AuctionhouseArgs
-}
-
 typealias FindBidByReceiptOperation = OperationResult<FindBidByReceiptInput, OperationError>
 
 class FindBidByReceiptOperationHandler: OperationHandler {

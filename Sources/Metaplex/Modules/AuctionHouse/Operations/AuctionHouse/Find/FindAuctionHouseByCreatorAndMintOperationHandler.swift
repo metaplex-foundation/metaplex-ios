@@ -7,12 +7,6 @@
 
 import AuctionHouse
 import Foundation
-import Solana
-
-public struct FindAuctionHouseByCreatorAndMintInput {
-    let creator: PublicKey
-    let treasuryMint: PublicKey
-}
 
 typealias FindAuctionHouseByCreatorAndMintOperation = OperationResult<FindAuctionHouseByCreatorAndMintInput, OperationError>
 

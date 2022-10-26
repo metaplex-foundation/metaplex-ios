@@ -9,15 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct ExecuteSaleInput {
-    let bid: Bid
-    let listing: Listing
-    let auctionHouse: AuctionhouseArgs
-    let auctioneerAuthority: Account?
-    let bookkeeper: Account? = nil
-    let printReceipt: Bool = true
-}
-
 typealias ExecuteSaleOperation = OperationResult<ExecuteSaleInput, OperationError>
 
 class ExecuteSaleOperationHandler: OperationHandler {

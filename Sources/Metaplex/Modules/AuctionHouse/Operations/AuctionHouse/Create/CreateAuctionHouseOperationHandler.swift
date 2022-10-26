@@ -9,43 +9,6 @@ import AuctionHouse
 import Foundation
 import Solana
 
-public struct CreateAuctionHouseInput {
-    let sellerFeeBasisPoints: UInt16
-    let requiresSignOff: Bool
-    let canChangeSalePrice: Bool
-    let auctioneerScopes: [AuthorityScope]
-    let treasuryMint: PublicKey
-    let payer: Account?
-    let authority: Account?
-    let feeWithdrawalDestination: Account?
-    let treasuryWithdrawalDestinationOwner: PublicKey?
-    let auctioneerAuthority: PublicKey?
-
-    init(
-        sellerFeeBasisPoints: UInt16,
-        requiresSignOff: Bool = false,
-        canChangeSalePrice: Bool = false,
-        auctioneerScopes: [AuthorityScope] = [],
-        treasuryMint: PublicKey = Auctionhouse.treasuryMintDefault,
-        payer: Account? = nil,
-        authority: Account? = nil,
-        feeWithdrawalDestination: Account? = nil,
-        treasuryWithdrawalDestinationOwner: PublicKey? = nil,
-        auctioneerAuthority: PublicKey?
-    ) {
-        self.sellerFeeBasisPoints = sellerFeeBasisPoints
-        self.requiresSignOff = requiresSignOff
-        self.canChangeSalePrice = canChangeSalePrice
-        self.auctioneerScopes = auctioneerScopes
-        self.treasuryMint = treasuryMint
-        self.payer = payer
-        self.authority = authority
-        self.feeWithdrawalDestination = feeWithdrawalDestination
-        self.treasuryWithdrawalDestinationOwner = treasuryWithdrawalDestinationOwner
-        self.auctioneerAuthority = auctioneerAuthority
-    }
-}
-
 typealias CreateAuctionHouseOperation = OperationResult<CreateAuctionHouseInput, OperationError>
 
 class CreateAuctionHouseOperationHandler: OperationHandler {
@@ -64,6 +27,8 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
             return self.createOperationResult(parameters)
         }
     }
+
+    // MARK: - Private Helpers
 
     private func createParametersFromInput(_ input: CreateAuctionHouseInput) -> CreateAuctionHouseBuilderParameters? {
         let defaultIdentity = metaplex.identity()
@@ -101,7 +66,9 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
         )
     }
 
-    private func createOperationResult(_ parameters: CreateAuctionHouseBuilderParameters) -> OperationResult<Auctionhouse, OperationError> {
+    private func createOperationResult(
+        _ parameters: CreateAuctionHouseBuilderParameters
+    ) -> OperationResult<Auctionhouse, OperationError> {
         let createAuctionHouseBuilder = TransactionBuilder.createAuctionHouseBuilder(parameters: parameters)
         let operation = OperationResult<SignatureStatus, OperationError>.init { callback in
             createAuctionHouseBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
