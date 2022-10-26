@@ -146,7 +146,7 @@ public class AuctionHouseClient {
 
     func findListingByReceipt(
         _ address: PublicKey,
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         onComplete: @escaping (Result<Listing, OperationError>) -> Void
     ) {
         let operation = FindListingByReceiptOperationHandler(metaplex: metaplex)
@@ -201,7 +201,7 @@ public class AuctionHouseClient {
 
     func findPurchaseByReceipt(
         _ address: PublicKey,
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         onComplete: @escaping (Result<Purchase, OperationError>) -> Void
     ) {
         let operation = FindPurchaseByReceiptOperationHandler(metaplex: metaplex)

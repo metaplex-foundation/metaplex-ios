@@ -11,8 +11,8 @@ import Solana
 
 extension TransactionBuilder {
     static func createBidBuilder(parameters: CreateBidBuilderParameters) -> TransactionBuilder {
-        // MARK: - Buy Instruction
-
+        // MARK: - Accounts
+        
         let buyAccounts = BuyAccounts(
             wallet: parameters.wallet,
             paymentAccount: parameters.paymentAccount,
@@ -33,6 +33,8 @@ extension TransactionBuilder {
             tokenSize: parameters.tokenSize
         )
 
+        // MARK: - Buy Instruction
+
         let buyInstruction: TransactionInstruction
         var buySigners = [parameters.buyerSigner]
 
@@ -42,10 +44,7 @@ extension TransactionBuilder {
         }
 
         if let auctioneerAuthority = parameters.auctioneerAuthoritySigner,
-           let auctioneerPda = try? Auctionhouse.auctioneerPda(
-            auctionHouse: parameters.auctionHouse,
-            auctioneerAuthority: auctioneerAuthority.publicKey
-           ).get() {
+           let auctioneerPda = parameters.auctioneerPda {
             if let tokenAccount = parameters.tokenAccount {
                 let accounts = AuctioneerBuyInstructionAccounts(
                     tokenAccount: tokenAccount,

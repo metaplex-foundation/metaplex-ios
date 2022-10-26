@@ -62,6 +62,24 @@ struct AuctionHouseTestDataProvider {
         return try? result?.get()
     }
 
+    static func findBidByReceipt(_ metaplex: Metaplex, address: PublicKey, auctionHouse: AuctionhouseArgs) -> Bid? {
+        var result: Result<Bid, OperationError>?
+
+        let lock = RunLoopSimpleLock()
+        lock.dispatch {
+            let operation = FindBidByReceiptOperationHandler(metaplex: metaplex)
+            operation.handle(operation: FindBidByReceiptOperation.pure(.success(
+                FindBidByReceiptInput(address: address, auctionHouse: auctionHouse)
+            ))).run {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+
+        return try? result?.get()
+    }
+
     static func findBidByTradeState(_ metaplex: Metaplex, address: PublicKey, auctionHouse: AuctionhouseArgs) -> Bid? {
         var result: Result<Bid, OperationError>?
 

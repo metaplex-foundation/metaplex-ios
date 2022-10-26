@@ -50,6 +50,13 @@ struct CreateAuctionHouseBuilderParameters {
     var auctionHouse: PublicKey { auctionHousePda.publicKey }
     var auctionHouseFeeAccount: PublicKey { auctionHouseFeePda.publicKey }
     var auctionHouseTreasury: PublicKey { auctionHouseTreasuryPda.publicKey }
+    var auctioneerPda: PublicKey? {
+        guard let auctioneerAuthority else { return nil }
+        return try? Auctionhouse.auctioneerPda(
+            auctionHouse: auctionHouse,
+            auctioneerAuthority: auctioneerAuthority
+        ).get()
+    }
 
     var auctioneerAuthority: PublicKey? { createAuctionHouseInput.auctioneerAuthority }
 
@@ -62,7 +69,7 @@ struct CreateAuctionHouseBuilderParameters {
     var requiresSignOff: Bool { createAuctionHouseInput.requiresSignOff }
     var canChangeSalePrice: Bool { createAuctionHouseInput.canChangeSalePrice }
 
-    var auctioneerScopes: [AuthorityScope] { createAuctionHouseInput.auctioneerScopes ?? AuthorityScope.allCases }
+    var auctioneerScopes: [AuthorityScope] { createAuctionHouseInput.auctioneerScopes }
 
     // MARK: - Signers
 

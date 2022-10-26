@@ -5,6 +5,7 @@
 //  Created by Michael J. Huber Jr. on 10/19/22.
 //
 
+import AuctionHouse
 import Foundation
 import Solana
 import XCTest

@@ -10,7 +10,7 @@ import Foundation
 import Solana
 
 public struct CreateListingInput {
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
     let seller: Account? = nil
     let authority: Account? = nil
     let auctioneerAuthority: Account?
@@ -37,7 +37,7 @@ class CreateListingOperationHandler: OperationHandler {
     func handle(operation: CreateListingOperation) -> OperationResult<Listing, OperationError> {
         operation.flatMap { input in
             guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters)
+            return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
         }
     }
 
@@ -51,12 +51,12 @@ class CreateListingOperationHandler: OperationHandler {
             owner: seller.publicKey
         )
 
-        guard let auctionHouseAddress = input.auctionHouse.address else {
+        guard let auctionHouse = input.auctionHouse.address else {
             return nil //.failure(.couldNotFindPDA)
         }
 
         let sellerTradeStatePda = try? Auctionhouse.tradeStatePda(
-            auctionHouse: auctionHouseAddress,
+            auctionHouse: auctionHouse,
             wallet: seller.publicKey,
             treasuryMint: input.auctionHouse.treasuryMint,
             mintAccount: input.mintAccount,
@@ -66,7 +66,7 @@ class CreateListingOperationHandler: OperationHandler {
         ).get()
 
         let freeSellerTradeState = try? Auctionhouse.tradeStatePda(
-            auctionHouse: auctionHouseAddress,
+            auctionHouse: auctionHouse,
             wallet: seller.publicKey,
             treasuryMint: input.auctionHouse.treasuryMint,
             mintAccount: input.mintAccount,
@@ -87,17 +87,20 @@ class CreateListingOperationHandler: OperationHandler {
 
         return CreateListingBuilderParameters(
             createListingInput: input,
-            metadata: metadata,
-            tokenAccount: tokenAccount,
             sellerTradeStatePda: sellerTradeStatePda,
             freeSellerTradeStatePda: freeSellerTradeState,
             programAsSignerPda: programAsSignerPda,
-            auctionHouseAddress: auctionHouseAddress,
-            defaultIdentity: defaultIdentity
+            defaultIdentity: defaultIdentity,
+            tokenAccount: tokenAccount,
+            metadata: metadata,
+            auctionHouse: auctionHouse
         )
     }
 
-    private func createOperationResult(_ parameters: CreateListingBuilderParameters) -> OperationResult<Listing, OperationError> {
+    private func createOperationResult(
+        _ parameters: CreateListingBuilderParameters,
+        auctionHouse: AuctionhouseArgs
+    ) -> OperationResult<Listing, OperationError> {
         let createListingBuilder = TransactionBuilder.createListingBuilder(parameters: parameters)
         let operation = OperationResult<SignatureStatus, OperationError>.init { callback in
             createListingBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
@@ -110,8 +113,7 @@ class CreateListingOperationHandler: OperationHandler {
             }
         }.flatMap { status in
             OperationResult<Listing, OperationError>.init { callback in
-                let auctionHouse = parameters.createListingInput.auctionHouse
-                if let receipt = parameters.printReceipt.receipt {
+                if let receipt = parameters.receipt {
                     self.metaplex.auctionHouse.findListingByReceipt(
                         receipt.publicKey,
                         auctionHouse: auctionHouse
@@ -119,11 +121,11 @@ class CreateListingOperationHandler: OperationHandler {
                 } else {
                     let listing = LazyListing(
                         auctionHouse: auctionHouse,
-                        tradeState: parameters.sellerTradeStatePda,
-                        bookkeeper: parameters.bookkeeper.publicKey,
-                        seller: parameters.seller.publicKey,
+                        tradeState: Pda(publicKey: parameters.sellerTradeState, bump: parameters.tradeStateBump),
+                        bookkeeper: parameters.bookkeeper,
+                        seller: parameters.sellerSigner.publicKey,
                         metadata: parameters.metadata,
-                        receipt: parameters.printReceipt.receipt,
+                        receipt: parameters.receipt,
                         purchaseReceipt: nil,
                         price: parameters.buyerPrice,
                         tokenSize: parameters.tokenSize,

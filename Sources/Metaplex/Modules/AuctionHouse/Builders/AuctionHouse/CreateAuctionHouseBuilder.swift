@@ -43,10 +43,7 @@ extension TransactionBuilder {
 
         let auctioneerDelegate: (shouldAddInstruction: Bool, instruction: InstructionWithSigner?) = {
             guard let auctioneerAuthority = parameters.auctioneerAuthority,
-                  let auctioneerPda = try? Auctionhouse.auctioneerPda(
-                    auctionHouse: parameters.auctionHouse,
-                    auctioneerAuthority: auctioneerAuthority
-                  ).get() else {
+                  let auctioneerPda = parameters.auctioneerPda else {
                 return (false, nil)
             }
 

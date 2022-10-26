@@ -109,7 +109,6 @@ class CreateBidOperationHandler: OperationHandler {
         )
 
         guard let buyerTradeState else { return nil /*.failure(.couldNotFindPDA)*/ }
-        let printReceipt = input.printReceipt ? try? Bidreceipt.pda(tradeStateAddress: buyerTradeState.publicKey).get() : nil
 
         guard let escrowPaymentAccount,
               let paymentAccount,
@@ -122,7 +121,6 @@ class CreateBidOperationHandler: OperationHandler {
             createBidInput: input,
             escrowPaymentPda: escrowPaymentAccount,
             buyerTradePda: buyerTradeState,
-            printReceipt: printReceipt,
             defaultIdentity: defaultIdentity,
             paymentAccount: paymentAccount,
             metadata: metadata,

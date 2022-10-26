@@ -15,7 +15,6 @@ struct CreateBidBuilderParameters {
     private let createBidInput: CreateBidInput
     private let escrowPaymentPda: Pda
     private let buyerTradePda: Pda
-    private let printReceipt: Pda?
     private let defaultIdentity: Account
 
     let paymentAccount: PublicKey
@@ -27,7 +26,6 @@ struct CreateBidBuilderParameters {
         createBidInput: CreateBidInput,
         escrowPaymentPda: Pda,
         buyerTradePda: Pda,
-        printReceipt: Pda?,
         defaultIdentity: Account,
         paymentAccount: PublicKey,
         metadata: PublicKey,
@@ -37,7 +35,6 @@ struct CreateBidBuilderParameters {
         self.createBidInput = createBidInput
         self.escrowPaymentPda = escrowPaymentPda
         self.buyerTradePda = buyerTradePda
-        self.printReceipt = printReceipt
         self.defaultIdentity = defaultIdentity
         self.paymentAccount = paymentAccount
         self.metadata = metadata
@@ -48,7 +45,7 @@ struct CreateBidBuilderParameters {
     // MARK: - Getters
 
     var shouldPrintReceipt: Bool { createBidInput.printReceipt }
-    var receipt: Pda? { printReceipt }
+    var receipt: Pda? { shouldPrintReceipt ? try? Bidreceipt.pda(tradeStateAddress: buyerTradeState).get() : nil }
     var buyer: PublicKey { buyerSigner.publicKey }
 
     // MARK: - Accounts
@@ -60,6 +57,13 @@ struct CreateBidBuilderParameters {
     var authority: PublicKey { authoritySigner?.publicKey ?? createBidInput.auctionHouse.authority }
     var auctionHouseFeeAccount: PublicKey { createBidInput.auctionHouse.auctionHouseFeeAccount }
     var buyerTradeState: PublicKey { buyerTradePda.publicKey }
+    var auctioneerPda: PublicKey? {
+        guard let auctioneerAuthoritySigner else { return nil }
+        return try? Auctionhouse.auctioneerPda(
+            auctionHouse: auctionHouse,
+            auctioneerAuthority: auctioneerAuthoritySigner.publicKey
+        ).get()
+    }
     var tokenAccount: PublicKey? {
         let tokenAccountPda: (PublicKey?) -> PublicKey? = { seller in
             if let seller {

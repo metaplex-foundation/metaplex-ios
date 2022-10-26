@@ -12,7 +12,7 @@ import Solana
 public struct ExecuteSaleInput {
     let bid: Bid
     let listing: Listing
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
     let auctioneerAuthority: Account?
     let bookkeeper: Account? = nil
     let printReceipt: Bool = true
@@ -33,7 +33,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
     func handle(operation: ExecuteSaleOperation) -> OperationResult<Purchase, OperationError> {
         operation.flatMap { input in
             guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters)
+            return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
         }
     }   
 
@@ -45,12 +45,12 @@ class ExecuteSaleOperationHandler: OperationHandler {
           owner: input.listing.listingReceipt.seller
         )
 
-        guard let auctionHouseAddress = input.auctionHouse.address else {
+        guard let auctionHouse = input.auctionHouse.address else {
             return nil
         }
 
-        let escrowPayment = try? Auctionhouse.buyerEscrowPda(
-            auctionHouse: auctionHouseAddress,
+        let escrowPaymentPda = try? Auctionhouse.buyerEscrowPda(
+            auctionHouse: auctionHouse,
             buyer: input.bid.bidReceipt.buyer
         ).get()
 
@@ -68,8 +68,8 @@ class ExecuteSaleOperationHandler: OperationHandler {
         )
 
         #warning("Fix tokenSize.")
-        let freeTradeStateAccount = try? Auctionhouse.tradeStatePda(
-            auctionHouse: auctionHouseAddress,
+        let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
+            auctionHouse: auctionHouse,
             wallet: input.listing.listingReceipt.seller,
             treasuryMint: input.auctionHouse.treasuryMint,
             mintAccount: input.listing.nft.mint,
@@ -78,31 +78,34 @@ class ExecuteSaleOperationHandler: OperationHandler {
             tokenAccount: tokenAccount
         ).get()
 
-        let programAsSignerAccount = try? Auctionhouse.programAsSignerPda().get()
+        let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
 
         guard let tokenAccount,
-              let escrowPayment,
+              let escrowPaymentPda,
               let sellerPaymentReceiptAccount,
               let buyerReceiptTokenAccount,
-              let freeTradeStateAccount,
-              let programAsSignerAccount else {
+              let freeTradeStatePda,
+              let programAsSignerPda else {
             return nil
         }
 
         return ExecuteSaleBuilderParameters(
             executeSaleInput: input,
+            escrowPaymentPda: escrowPaymentPda,
+            freeTradeStatePda: freeTradeStatePda,
+            programAsSignerPda: programAsSignerPda,
+            defaultIdentity: defaultIdentity,
             tokenAccount: tokenAccount,
-            escrowPayment: escrowPayment,
             sellerPaymentReceiptAccount: sellerPaymentReceiptAccount,
             buyerReceiptTokenAccount: buyerReceiptTokenAccount,
-            auctionHouseAddress: auctionHouseAddress,
-            freeTradeStateAccount: freeTradeStateAccount,
-            programAsSignerAccount: programAsSignerAccount,
-            defaultIdentity: defaultIdentity
+            auctionHouse: auctionHouse
         )
     }
 
-    private func createOperationResult(_ parameters: ExecuteSaleBuilderParameters) -> OperationResult<Purchase, OperationError> {
+    private func createOperationResult(
+        _ parameters: ExecuteSaleBuilderParameters,
+        auctionHouse: AuctionhouseArgs
+    ) -> OperationResult<Purchase, OperationError> {
         let executeSaleBuilder = TransactionBuilder.executeSaleBuilder(parameters: parameters)
         let operation = OperationResult<SignatureStatus, OperationError>.init { callback in
             executeSaleBuilder.sendAndConfirm(metaplex: self.metaplex) { result in
@@ -115,8 +118,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
             }
         }.flatMap { status in
             OperationResult<Purchase, OperationError>.init { callback in
-                let auctionHouse = parameters.executeSaleInput.auctionHouse
-                if let receipt = parameters.printReceipt.receipt {
+                if let receipt = parameters.receipt {
                     self.metaplex.auctionHouse.findPurchaseByReceipt(
                         receipt.publicKey,
                         auctionHouse: auctionHouse
@@ -127,8 +129,8 @@ class ExecuteSaleOperationHandler: OperationHandler {
                         buyer: parameters.buyer,
                         seller: parameters.seller,
                         metadata: parameters.metadata,
-                        bookkeeper: parameters.bookkeeper.publicKey,
-                        receipt: parameters.printReceipt.receipt?.publicKey,
+                        bookkeeper: parameters.bookkeeper,
+                        receipt: parameters.receipt?.publicKey,
                         price: parameters.buyerPrice,
                         tokenSize: parameters.tokenSize,
                         createdAt: Int64(Date().timeIntervalSinceNow)

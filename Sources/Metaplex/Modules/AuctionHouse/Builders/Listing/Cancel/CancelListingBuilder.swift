@@ -18,7 +18,7 @@ extension TransactionBuilder {
             tokenAccount: parameters.tokenAccount,
             tokenMint: parameters.tokenMint,
             authority: parameters.authority,
-            auctionHouse: parameters.auctionHouseAddress,
+            auctionHouse: parameters.auctionHouse,
             auctionHouseFeeAccount: parameters.auctionHouseFeeAccount,
             tradeState: parameters.tradeState
         )
@@ -29,23 +29,23 @@ extension TransactionBuilder {
 
         // MARK: - Cancel Instruction
 
-        var cancelBidInstruction = createCancelInstruction(
+        var cancelListingInstruction = createCancelInstruction(
             accounts: CancelInstructionAccounts(accounts: accounts),
             args: CancelInstructionArgs(args: args)
         )
         var cancelSigners: [Account] = []
 
-        if let auctioneerAuthority = parameters.auctioneerAuthority,
+        if let auctioneerAuthoritySigner = parameters.auctioneerAuthoritySigner,
            let auctioneerPda = parameters.auctioneerPda {
-            cancelBidInstruction = createAuctioneerCancelInstruction(
+            cancelListingInstruction = createAuctioneerCancelInstruction(
                 accounts: AuctioneerCancelInstructionAccounts(
-                    auctioneerAuthority: auctioneerAuthority.publicKey,
+                    auctioneerAuthority: auctioneerAuthoritySigner.publicKey,
                     ahAuctioneerPda: auctioneerPda,
                     accounts: accounts
                 ),
                 args: AuctioneerCancelInstructionArgs(args: args)
             )
-            cancelSigners.append(auctioneerAuthority)
+            cancelSigners.append(auctioneerAuthoritySigner)
         }
 
         // MARK: - Receipt Instruction
@@ -75,7 +75,7 @@ extension TransactionBuilder {
             .build()
             .add(
                 InstructionWithSigner(
-                    instruction: cancelBidInstruction,
+                    instruction: cancelListingInstruction,
                     signers: cancelSigners,
                     key: "cancelListing"
                 )

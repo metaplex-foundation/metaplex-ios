@@ -24,7 +24,7 @@ extension TransactionBuilder {
             sellerPaymentReceiptAccount: parameters.sellerPaymentReceiptAccount,
             buyerReceiptTokenAccount: parameters.buyerReceiptTokenAccount,
             authority: parameters.authority,
-            auctionHouseAddress: parameters.auctionHouseAddress,
+            auctionHouseAddress: parameters.auctionHouse,
             auctionHouseFeeAccount: parameters.auctionHouseFeeAccount,
             auctionHouseTreasury: parameters.auctionHouseTreasury,
             buyerTradeState: parameters.buyerTradeState,
@@ -76,23 +76,23 @@ extension TransactionBuilder {
             }
         }
 
-        if let auctioneerAuthority = parameters.auctioneerAuthority,
+        if let auctioneerAuthoritySigner = parameters.auctioneerAuthoritySigner,
            let auctioneerPda = parameters.auctioneerPda {
             executeSaleInstruction = createAuctioneerExecuteSaleInstruction(
                 accounts: AuctioneerExecuteSaleInstructionAccounts(
-                    auctioneerAuthority: auctioneerAuthority.publicKey,
+                    auctioneerAuthority: auctioneerAuthoritySigner.publicKey,
                     auctioneerPda: auctioneerPda,
                     accounts: saleAccounts
                 ),
                 args: AuctioneerExecuteSaleInstructionArgs(args: saleArgs)
             )
-            saleSigners.append(auctioneerAuthority)
+            saleSigners.append(auctioneerAuthoritySigner)
         }
 
         // MARK: - Receipt Instruction
 
         let printReceipt: (shouldPrintReceipt: Bool, instruction: InstructionWithSigner?) = {
-            guard let receipt = parameters.printReceipt.receipt,
+            guard let receipt = parameters.receipt,
                     let listingReceiptAddress = parameters.listingReceiptAddress,
                     let bidReceiptAddress = parameters.bidReceiptAddress else {
                 return (false, nil)
@@ -102,18 +102,18 @@ extension TransactionBuilder {
                 purchaseReceipt: receipt.publicKey,
                 listingReceipt: listingReceiptAddress,
                 bidReceipt: bidReceiptAddress,
-                bookkeeper: parameters.bookkeeper.publicKey,
+                bookkeeper: parameters.bookkeeper,
                 instruction: PublicKey.sysvarInstructionsPublicKey
             )
             let printReceiptArgs = PrintPurchaseReceiptInstructionArgs(purchaseReceiptBump: receipt.bump)
 
-            let shouldPrintReciept = parameters.printReceipt.shouldPrintReceipt && !parameters.isPartialSale
+            let shouldPrintReciept = parameters.shouldPrintReceipt && !parameters.isPartialSale
             let instruction = InstructionWithSigner(
                 instruction: createPrintPurchaseReceiptInstruction(
                     accounts: printReceiptAccounts,
                     args: printReceiptArgs
                 ),
-                signers: [parameters.bookkeeper],
+                signers: [parameters.bookkeeperSigner],
                 key: "printPurchaseReceipt"
             )
 

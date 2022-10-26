@@ -12,84 +12,69 @@ import Solana
 struct CreateListingBuilderParameters {
     // MARK: - Initialization
 
-    let createListingInput: CreateListingInput
-    let metadata: PublicKey
+    private let createListingInput: CreateListingInput
+    private let sellerTradeStatePda: Pda
+    private let freeSellerTradeStatePda: Pda
+    private let programAsSignerPda: Pda
+    private let defaultIdentity: Account
+
     let tokenAccount: PublicKey
-    let sellerTradeStatePda: Pda
-    let freeSellerTradeStatePda: Pda
-    let programAsSignerPda: Pda
-    let auctionHouseAddress: PublicKey
-    let defaultIdentity: Account
+    let metadata: PublicKey
+    let auctionHouse: PublicKey
+
+    init(
+        createListingInput: CreateListingInput,
+        sellerTradeStatePda: Pda,
+        freeSellerTradeStatePda: Pda,
+        programAsSignerPda: Pda,
+        defaultIdentity: Account,
+        tokenAccount: PublicKey,
+        metadata: PublicKey,
+        auctionHouse: PublicKey
+    ) {
+        self.createListingInput = createListingInput
+        self.sellerTradeStatePda = sellerTradeStatePda
+        self.freeSellerTradeStatePda = freeSellerTradeStatePda
+        self.programAsSignerPda = programAsSignerPda
+        self.defaultIdentity = defaultIdentity
+        self.tokenAccount = tokenAccount
+        self.metadata = metadata
+        self.auctionHouse = auctionHouse
+    }
 
     // MARK: - Getters
 
-    var wallet: PublicKey {
-        seller.publicKey
-    }
+    var shouldPrintReceipt: Bool { createListingInput.printReceipt }
+    var receipt: Pda? { shouldPrintReceipt ? try? Bidreceipt.pda(tradeStateAddress: sellerTradeState).get() : nil }
+    
+    // MARK: - Accounts
 
-    var authority: PublicKey {
-        createListingInput.authority?.publicKey ?? createListingInput.auctionHouse.authority
-    }
-
-    var auctionHouseFeeAccount: PublicKey {
-        createListingInput.auctionHouse.auctionHouseFeeAccount
-    }
-
-    var sellerTradeState: PublicKey {
-        sellerTradeStatePda.publicKey
-    }
-
-    var freeSellerTradeState: PublicKey {
-        freeSellerTradeStatePda.publicKey
-    }
-
-    var programAsSigner: PublicKey {
-        programAsSignerPda.publicKey
-    }
-
-    var tradeStateBump: UInt8 {
-        sellerTradeStatePda.bump
-    }
-
-    var freeTradeStateBump: UInt8 {
-        freeSellerTradeStatePda.bump
-    }
-
-    var programAsSignerBump: UInt8 {
-        programAsSignerPda.bump
-    }
-
-    var tokenSize: UInt64 {
-        createListingInput.tokens
-    }
-
-    var buyerPrice: UInt64 {
-        createListingInput.price
-    }
-
-    var auctioneerAuthority: Account? {
-        createListingInput.auctioneerAuthority
-    }
-
-    var seller: Account {
-        createListingInput.seller ?? defaultIdentity
-    }
-
+    var wallet: PublicKey { sellerSigner.publicKey }
+    var authority: PublicKey { createListingInput.authority?.publicKey ?? createListingInput.auctionHouse.authority }
+    var auctionHouseFeeAccount: PublicKey { createListingInput.auctionHouse.auctionHouseFeeAccount }
+    var sellerTradeState: PublicKey { sellerTradeStatePda.publicKey }
+    var freeSellerTradeState: PublicKey { freeSellerTradeStatePda.publicKey }
+    var programAsSigner: PublicKey { programAsSignerPda.publicKey }
     var auctioneerPda: PublicKey? {
-        guard let auctioneerAuthority else { return nil }
+        guard let auctioneerAuthoritySigner else { return nil }
         return try? Auctionhouse.auctioneerPda(
-            auctionHouse: auctionHouseAddress,
-            auctioneerAuthority: auctioneerAuthority.publicKey
+            auctionHouse: auctionHouse,
+            auctioneerAuthority: auctioneerAuthoritySigner.publicKey
         ).get()
     }
+    var bookkeeper: PublicKey { bookkeeperSigner.publicKey }
 
-    var printReceipt: (shouldPrintReceipt: Bool, receipt: Pda?) {
-        let shouldPrintReceipt = createListingInput.printReceipt
-        let receipt = shouldPrintReceipt ? try? Bidreceipt.pda(tradeStateAddress: sellerTradeState).get() : nil
-        return (shouldPrintReceipt, receipt)
-    }
+    // MARK: - Args
 
-    var bookkeeper: Account {
-        createListingInput.bookkeeper ?? defaultIdentity
-    }
+    var tradeStateBump: UInt8 { sellerTradeStatePda.bump }
+    var freeTradeStateBump: UInt8 { freeSellerTradeStatePda.bump }
+    var programAsSignerBump: UInt8 { programAsSignerPda.bump }
+    var tokenSize: UInt64 { createListingInput.tokens }
+    var buyerPrice: UInt64 { createListingInput.price }
+
+    // MARK: - Signers
+
+    var sellerSigner: Account { createListingInput.seller ?? defaultIdentity }
+    var auctioneerAuthoritySigner: Account? { createListingInput.auctioneerAuthority }
+    var bookkeeperSigner: Account { createListingInput.bookkeeper ?? defaultIdentity }
 }

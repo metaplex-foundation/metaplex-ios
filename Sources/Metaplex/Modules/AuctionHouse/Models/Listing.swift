@@ -15,7 +15,7 @@ struct Listing {
 }
 
 struct LazyListing {
-    let auctionHouse: Auctionhouse
+    let auctionHouse: AuctionhouseArgs
     let tradeState: Pda
     let bookkeeper: PublicKey?
     let seller: PublicKey
@@ -28,7 +28,7 @@ struct LazyListing {
     let canceledAt: Int64?
 
     init(
-        auctionHouse: Auctionhouse,
+        auctionHouse: AuctionhouseArgs,
         tradeState: Pda,
         bookkeeper: PublicKey?,
         seller: PublicKey,
@@ -53,7 +53,7 @@ struct LazyListing {
         self.canceledAt = canceledAt
     }
 
-    init(auctionHouse: Auctionhouse, listingReceipt: Listingreceipt, publicKey: PublicKey) {
+    init(auctionHouse: AuctionhouseArgs, listingReceipt: Listingreceipt, publicKey: PublicKey) {
         self.auctionHouse = auctionHouse
         self.tradeState = Pda(publicKey: listingReceipt.tradeState, bump: listingReceipt.tradeStateBump)
         self.bookkeeper = listingReceipt.bookkeeper

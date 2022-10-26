@@ -29,21 +29,20 @@ class CancelListingOperationHandler: OperationHandler {
 
     func handle(operation: CancelListingOperation) -> OperationResult<SignatureStatus, OperationError> {
         operation.flatMap { input in
-            guard let auctionHouseAddress = try? Auctionhouse.pda(
+            guard let auctionHouse = try? Auctionhouse.pda(
                 creator: input.auctionHouse.creator,
                 treasuryMint: input.auctionHouse.treasuryMint
-            ).get().publicKey,
-                  let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
-                    mint: input.listing.nft.mint,
-                    owner: input.listing.listingReceipt.seller
-                  ) else {
+            ).get().publicKey, let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
+                mint: input.listing.nft.mint,
+                owner: input.listing.listingReceipt.seller
+            ) else {
                 return .failure(.couldNotFindPDA)
             }
 
             let parameters = CancelListingBuilderParameters(
                 cancelListingInput: input,
-                auctionHouseAddress: auctionHouseAddress,
-                tokenAccount: tokenAccount
+                tokenAccount: tokenAccount,
+                auctionHouse: auctionHouse
             )
 
             let cancelListingBuilder = TransactionBuilder.cancelListingBuilder(parameters: parameters)

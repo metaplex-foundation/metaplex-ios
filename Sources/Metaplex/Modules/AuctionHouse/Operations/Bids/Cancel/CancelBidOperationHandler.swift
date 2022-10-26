@@ -29,13 +29,10 @@ class CancelBidOperationHandler: OperationHandler {
 
     func handle(operation: CancelBidOperation) -> OperationResult<SignatureStatus, OperationError> {
         operation.flatMap { input in
-            let wallet = input.bid.bidReceipt.buyer
-            let mint = input.bid.nft.mint
-
-            guard case let .success(tokenAccount) = PublicKey.associatedTokenAddress(
-                walletAddress: wallet,
-                tokenMintAddress: mint
-            ), let auctionHouseAddress = try? Auctionhouse.pda(
+            guard let tokenAccount = try? PublicKey.associatedTokenAddress(
+                walletAddress: input.bid.bidReceipt.buyer,
+                tokenMintAddress: input.bid.nft.mint
+            ).get(), let auctionHouse = try? Auctionhouse.pda(
                 creator: input.auctionHouse.creator,
                 treasuryMint: input.auctionHouse.treasuryMint
             ).get().publicKey else {
@@ -43,13 +40,9 @@ class CancelBidOperationHandler: OperationHandler {
             }
 
             let parameters = CancelBidBuilderParameters(
-                wallet: wallet,
+                cancelBidInput: input,
                 tokenAccount: tokenAccount,
-                mint: mint,
-                auctionHouseAddress: auctionHouseAddress,
-                auctionHouse: input.auctionHouse,
-                bid: input.bid,
-                auctioneerAuthority: input.auctioneerAuthority
+                auctionHouse: auctionHouse
             )
             
             let cancelBidBuilder = TransactionBuilder.cancelBidBuilder(parameters: parameters)

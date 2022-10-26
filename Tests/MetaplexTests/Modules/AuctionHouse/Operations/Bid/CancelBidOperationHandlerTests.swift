@@ -31,7 +31,8 @@ final class CancelBidOperationHandlerTests: XCTestCase {
 
         XCTAssertNotNil(signatureStatus)
 
-        guard let canceledBid = AuctionHouseTestDataProvider.findBidByTradeState(metaplex, address: bid.bidReceipt.tradeState.publicKey, auctionHouse: auctionHouse)
+        let address = bid.bidReceipt.tradeState.publicKey
+        guard let canceledBid = AuctionHouseTestDataProvider.findBidByTradeState(metaplex, address: address, auctionHouse: auctionHouse)
         else { return XCTFail("Couldn't find bid") }
 
         XCTAssertNotNil(canceledBid.bidReceipt.canceledAt)
