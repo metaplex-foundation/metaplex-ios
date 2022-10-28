@@ -59,3 +59,16 @@ public struct LazyPurchase {
         self.createdAt = purchaseReceipt.createdAt
     }
 }
+
+extension Purchasereceipt {
+    static func pda(sellerTradeState: PublicKey, buyerTradeState: PublicKey) -> Result<Pda, Error> {
+        let seeds = [
+            "purchase_receipt".bytes,
+            sellerTradeState.bytes,
+            buyerTradeState.bytes
+        ].map { Data($0) }
+        return PublicKey.findProgramAddress(seeds: seeds, programId: PROGRAM_ID!).map {
+            Pda(publicKey: $0.0, bump: $0.1)
+        }
+    }
+}

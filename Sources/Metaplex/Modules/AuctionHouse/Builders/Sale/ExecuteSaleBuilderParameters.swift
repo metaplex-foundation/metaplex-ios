@@ -19,6 +19,7 @@ struct ExecuteSaleBuilderParameters {
     private let defaultIdentity: Account
 
     let tokenAccount: PublicKey
+    let metadata: PublicKey
     let sellerPaymentReceiptAccount: PublicKey
     let buyerReceiptTokenAccount: PublicKey
     let auctionHouse: PublicKey
@@ -30,6 +31,7 @@ struct ExecuteSaleBuilderParameters {
         programAsSignerPda: Pda,
         defaultIdentity: Account,
         tokenAccount: PublicKey,
+        metadata: PublicKey,
         sellerPaymentReceiptAccount: PublicKey,
         buyerReceiptTokenAccount: PublicKey,
         auctionHouse: PublicKey
@@ -40,6 +42,7 @@ struct ExecuteSaleBuilderParameters {
         self.programAsSignerPda = programAsSignerPda
         self.defaultIdentity = defaultIdentity
         self.tokenAccount = tokenAccount
+        self.metadata = metadata
         self.sellerPaymentReceiptAccount = sellerPaymentReceiptAccount
         self.buyerReceiptTokenAccount = buyerReceiptTokenAccount
         self.auctionHouse = auctionHouse
@@ -53,14 +56,16 @@ struct ExecuteSaleBuilderParameters {
     var nft: NFT { executeSaleInput.listing.nft }
     var isNative: Bool { executeSaleInput.auctionHouse.isNative }
     var shouldPrintReceipt: Bool { executeSaleInput.printReceipt }
-    var receipt: Pda? { shouldPrintReceipt ? try? Bidreceipt.pda(tradeStateAddress: sellerTradeState).get() : nil }
+    var receipt: Pda? {
+        shouldPrintReceipt ? try? Purchasereceipt.pda(sellerTradeState: sellerTradeState, buyerTradeState: buyerTradeState).get() : nil
+    }
 
     // MARK: - Accounts
 
     var buyer: PublicKey { executeSaleInput.bid.bidReceipt.buyer }
     var seller: PublicKey { executeSaleInput.listing.listingReceipt.seller }
     var tokenMint: PublicKey { nft.mint }
-    var metadata: PublicKey { nft.metadataAccount.mint }
+//    var metadata: PublicKey { nft.metadataAccount.mint }
     var treasuryMint: PublicKey { executeSaleInput.auctionHouse.treasuryMint }
     var escrowPaymentAccount: PublicKey { escrowPaymentPda.publicKey }
     var authority: PublicKey { executeSaleInput.auctionHouse.authority }

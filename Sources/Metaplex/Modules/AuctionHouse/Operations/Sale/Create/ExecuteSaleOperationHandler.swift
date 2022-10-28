@@ -38,6 +38,8 @@ class ExecuteSaleOperationHandler: OperationHandler {
           owner: input.listing.listingReceipt.seller
         )
 
+        let metadata = try? MetadataAccount.pda(mintKey: input.listing.nft.mint).get()
+
         guard let auctionHouse = input.auctionHouse.address else {
             return nil
         }
@@ -60,20 +62,22 @@ class ExecuteSaleOperationHandler: OperationHandler {
             owner: input.bid.bidReceipt.buyer
         )
 
-        #warning("Fix tokenSize.")
+        let isPartialSale = input.bid.bidReceipt.tokenSize < input.listing.listingReceipt.tokenSize
+        let tokenSize = isPartialSale ? input.listing.listingReceipt.tokenSize : input.bid.bidReceipt.tokenSize
         let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
             wallet: input.listing.listingReceipt.seller,
             treasuryMint: input.auctionHouse.treasuryMint,
             mintAccount: input.listing.nft.mint,
             buyerPrice: Lamports(),
-            tokenSize: Lamports(),
+            tokenSize: tokenSize,
             tokenAccount: tokenAccount
         ).get()
 
         let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
 
         guard let tokenAccount,
+              let metadata,
               let escrowPaymentPda,
               let sellerPaymentReceiptAccount,
               let buyerReceiptTokenAccount,
@@ -89,6 +93,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
             programAsSignerPda: programAsSignerPda,
             defaultIdentity: defaultIdentity,
             tokenAccount: tokenAccount,
+            metadata: metadata,
             sellerPaymentReceiptAccount: sellerPaymentReceiptAccount,
             buyerReceiptTokenAccount: buyerReceiptTokenAccount,
             auctionHouse: auctionHouse

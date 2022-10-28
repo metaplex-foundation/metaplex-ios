@@ -51,12 +51,12 @@ extension TransactionBuilder {
         // MARK: - Receipt Instruction
 
         let listingReceipt: (addListingReceipt: Bool, instruction: InstructionWithSigner?) = {
-            guard let purchaseReceipt = parameters.purchaseReceipt else {
+            guard let receipt = parameters.receipt else {
                 return (false, nil)
             }
 
             let accounts = CancelListingReceiptInstructionAccounts(
-                receipt: purchaseReceipt,
+                receipt: receipt,
                 instruction: PublicKey.sysvarInstructionsPublicKey
             )
 

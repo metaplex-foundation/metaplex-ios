@@ -13,7 +13,7 @@ import XCTest
 final class CreateAuctionHouseOperationTests: XCTestCase {
     func testCreateAuctionHouseOperation() {
         let metaplex = TestDataProvider.createMetaplex()
-        let auctionHouse = AuctionHouseTestDataProvider.createAuctionHouse(metaplex)
+        let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         XCTAssertNotNil(auctionHouse)
     }
 }

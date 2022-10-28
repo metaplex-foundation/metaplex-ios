@@ -1,8 +1,8 @@
 //
-//  CreateBidOperationHandlerTests.swift
+//  CreateListingOperationHandlerTests.swift
 //  
 //
-//  Created by Michael J. Huber Jr. on 10/19/22.
+//  Created by Michael J. Huber Jr. on 10/27/22.
 //
 
 import AuctionHouse
@@ -12,8 +12,8 @@ import XCTest
 
 @testable import Metaplex
 
-final class CreateBidOperationTests: XCTestCase {
-    func testCreateBidOperation() {
+final class CreateListingOperationHandlerTests: XCTestCase {
+    func testCreateListingOperation() {
         let metaplex = TestDataProvider.createMetaplex()
         guard let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         else { return XCTFail("Couldn't create auction house") }
@@ -24,10 +24,10 @@ final class CreateBidOperationTests: XCTestCase {
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
         else { return XCTFail("Couldn't create auction house") }
 
-        guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, nft: nft)
-        else { return XCTFail("Couldn't create bid") }
+        guard let listing = ListingDataProvider.createListing(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)
+        else { return XCTFail("Couldn't create listing") }
 
-        XCTAssertEqual(bid.bidReceipt.auctionHouse.address, auctionHouse.address)
-        XCTAssertEqual(bid.nft.mint, nft.mint)
+        XCTAssertEqual(listing.listingReceipt.auctionHouse.address, auctionHouse.address)
+        XCTAssertEqual(listing.nft.mint, nft.mint)
     }
 }

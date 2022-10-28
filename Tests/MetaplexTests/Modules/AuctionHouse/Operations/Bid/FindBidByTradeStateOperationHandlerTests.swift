@@ -14,7 +14,7 @@ import XCTest
 final class FindBidByTradeStateOperationHandlerTests: XCTestCase {
     func testFindBidByTradeStateOperation() {
         let metaplex = TestDataProvider.createMetaplex()
-        guard let auctionHouse = AuctionHouseTestDataProvider.createAuctionHouse(metaplex)
+        guard let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         else { return XCTFail("Couldn't create auction house") }
 
         TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
@@ -23,11 +23,11 @@ final class FindBidByTradeStateOperationHandlerTests: XCTestCase {
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
         else { return XCTFail("Couldn't create auction house") }
 
-        guard let bid = AuctionHouseTestDataProvider.createBid(metaplex, auctionHouse: auctionHouse, nft: nft)?.bidReceipt
+        guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, nft: nft)?.bidReceipt
         else { return XCTFail("Couldn't create bid") }
 
         let address = bid.tradeState.publicKey
-        guard let expectedBid = AuctionHouseTestDataProvider.findBidByTradeState(metaplex, address: address, auctionHouse: auctionHouse)?.bidReceipt
+        guard let expectedBid = BidDataProvider.findBidByTradeState(metaplex, address: address, auctionHouse: auctionHouse)?.bidReceipt
         else { return XCTFail("Couldn't find bid") }
 
         XCTAssertEqual(bid.tradeState.publicKey, expectedBid.tradeState.publicKey)

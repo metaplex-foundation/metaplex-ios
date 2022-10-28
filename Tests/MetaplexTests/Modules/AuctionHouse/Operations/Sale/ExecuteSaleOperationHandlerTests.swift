@@ -1,18 +1,19 @@
 //
-//  CancelBidOperationHandlerTests.swift
+//  ExecuteSaleOperationHandlerTests.swift
 //  
 //
-//  Created by Michael J. Huber Jr. on 10/25/22.
+//  Created by Michael J. Huber Jr. on 10/27/22.
 //
 
+import AuctionHouse
 import Foundation
 import Solana
 import XCTest
 
 @testable import Metaplex
 
-final class CancelBidOperationHandlerTests: XCTestCase {
-    func testCancelBidOperation() {
+final class ExecuteSaleOperationHandlerTests: XCTestCase {
+    func testExecuteSaleOperation() {
         let metaplex = TestDataProvider.createMetaplex()
         guard let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         else { return XCTFail("Couldn't create auction house") }
@@ -26,15 +27,13 @@ final class CancelBidOperationHandlerTests: XCTestCase {
         guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, nft: nft)
         else { return XCTFail("Couldn't create bid") }
 
-        guard let signatureStatus = BidDataProvider.cancelBid(metaplex, auctionHouse: auctionHouse, bid: bid)
-        else { return XCTFail("Couldn't cancel bid") }
+        guard let listing = ListingDataProvider.createListing(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)
+        else { return XCTFail("Couldn't create listing") }
 
-        XCTAssertNotNil(signatureStatus)
+        guard let purchase = PurchaseDataProvider.executeSale(metaplex, bid: bid, listing: listing, auctionHouse: auctionHouse)
+        else { return XCTFail("Couldn't execute sale") }
 
-        let address = bid.bidReceipt.tradeState.publicKey
-        guard let canceledBid = BidDataProvider.findBidByTradeState(metaplex, address: address, auctionHouse: auctionHouse)
-        else { return XCTFail("Couldn't find bid") }
-
-        XCTAssertNotNil(canceledBid.bidReceipt.canceledAt)
+        XCTAssertEqual(purchase.purchaseReceipt.auctionHouse.address, auctionHouse.address)
+        XCTAssertEqual(purchase.nft.mint, nft.mint)
     }
 }

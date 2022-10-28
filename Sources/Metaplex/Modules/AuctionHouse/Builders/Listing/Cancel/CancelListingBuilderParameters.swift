@@ -42,7 +42,7 @@ struct CancelListingBuilderParameters {
             auctioneerAuthority: auctioneerAuthoritySigner.publicKey
         ).get()
     }
-    var purchaseReceipt: PublicKey? { cancelListingInput.listing.listingReceipt.purchaseReceipt }
+    var receipt: PublicKey? { cancelListingInput.listing.listingReceipt.receipt?.publicKey }
 
 
     // MARK: - Args
