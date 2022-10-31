@@ -16,7 +16,7 @@ struct CreateBidInput {
     let auctioneerAuthority: Account?
     let mintAccount: PublicKey
     let seller: PublicKey?
-    let tokenAccount: PublicKey?
+    let tokenAccountAddress: PublicKey?
     let price: UInt64?
     let tokens: UInt64?
     let printReceipt: Bool
@@ -29,7 +29,7 @@ struct CreateBidInput {
         auctioneerAuthority: Account? = nil,
         mintAccount: PublicKey,
         seller: PublicKey? = nil,
-        tokenAccount: PublicKey? = nil,
+        tokenAccountAddress: PublicKey? = nil,
         price: UInt64? = 0,
         tokens: UInt64? = 1,
         printReceipt: Bool = true,
@@ -41,10 +41,22 @@ struct CreateBidInput {
         self.auctioneerAuthority = auctioneerAuthority
         self.mintAccount = mintAccount
         self.seller = seller
-        self.tokenAccount = tokenAccount
+        self.tokenAccountAddress = tokenAccountAddress
         self.price = price
         self.tokens = tokens
         self.printReceipt = printReceipt
         self.bookkeeper = bookkeeper
+    }
+
+    // MARK: - Helpers
+
+    var tokenAccount: PublicKey? {
+        let tokenAccountPda: (PublicKey?) -> PublicKey? = { seller in
+            if let seller {
+                return PublicKey.findAssociatedTokenAccountPda(mint: mintAccount, owner: seller)
+            }
+            return nil
+        }
+        return tokenAccountAddress ?? tokenAccountPda(seller)
     }
 }

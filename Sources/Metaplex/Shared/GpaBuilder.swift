@@ -42,7 +42,7 @@ struct AccountInfoWithPublicKey<B: BufferLayout> {
 }
 
 struct AccountInfoWithPureData {
-    public let pubKey: PublicKey
+    public let pubkey: PublicKey
     public let account: BufferInfoPureData
 }
 
@@ -169,7 +169,7 @@ extension GpaBuilder {
         }.map { programAccount in
             var infoAccounts: [AccountInfoWithPureData] = []
             programAccount.forEach { programAccount in
-                let infoAccount = AccountInfoWithPureData(pubKey: PublicKey(string: programAccount.publicKey)!, account: programAccount.account)
+                let infoAccount = AccountInfoWithPureData(pubkey: PublicKey(string: programAccount.pubkey)!, account: programAccount.account)
                 infoAccounts.append(infoAccount)
             }
             return infoAccounts

@@ -27,6 +27,7 @@ public enum OperationError: Error {
     case findBidByTradeStateError(Error)
     case findListingByReceiptError(Error)
     case findPurchaseByReceiptError(Error)
+    case createExecuteSaleError(ExecuteSaleError)
 }
 
 protocol OperationHandler {

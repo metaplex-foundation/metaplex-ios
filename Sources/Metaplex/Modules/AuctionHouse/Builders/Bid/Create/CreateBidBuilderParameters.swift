@@ -64,15 +64,7 @@ struct CreateBidBuilderParameters {
             auctioneerAuthority: auctioneerAuthoritySigner.publicKey
         ).get()
     }
-    var tokenAccount: PublicKey? {
-        let tokenAccountPda: (PublicKey?) -> PublicKey? = { seller in
-            if let seller {
-                return PublicKey.findAssociatedTokenAccountPda(mint: createBidInput.mintAccount, owner: seller)
-            }
-            return nil
-        }
-        return createBidInput.tokenAccount ?? tokenAccountPda(createBidInput.seller)
-    }
+    var tokenAccount: PublicKey? { createBidInput.tokenAccount }
     var bookkeeper: PublicKey { bookkeeperSigner.publicKey }
 
     // MARK: - Args

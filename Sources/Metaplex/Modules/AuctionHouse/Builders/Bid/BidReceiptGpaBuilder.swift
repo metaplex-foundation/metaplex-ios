@@ -11,7 +11,7 @@ import Solana
 
 class BidReceiptGpaBuilder: GpaBuilder {
     private struct Offsets {
-        private static let publicKey = UInt(PublicKey.default.bytes.count)
+        private static let publicKey = UInt(PublicKey.LENGTH)
 
         static let auctionHouse = UInt(Bidreceipt.bidReceiptDiscriminator.count) + publicKey + publicKey
         static let buyer = auctionHouse + publicKey
@@ -27,23 +27,23 @@ class BidReceiptGpaBuilder: GpaBuilder {
         self.programId = programId
     }
 
-    func bidReceiptAccounts() -> BidReceiptGpaBuilder {
-        var mutableGpaBuilder = self
-        return mutableGpaBuilder.where(offset: 0, bytes: Bidreceipt.bidReceiptDiscriminator)
-    }
-
     func whereAuctionHouse(address: PublicKey) -> BidReceiptGpaBuilder {
-        var mutableGpaBuilder = self
+        var mutableGpaBuilder = bidReceiptAccounts()
         return mutableGpaBuilder.where(offset: Offsets.auctionHouse, publicKey: address)
     }
 
     func whereBuyer(address: PublicKey) -> BidReceiptGpaBuilder {
-        var mutableGpaBuilder = self
+        var mutableGpaBuilder = bidReceiptAccounts()
         return mutableGpaBuilder.where(offset: Offsets.buyer, publicKey: address)
     }
 
     func whereMetadata(address: PublicKey) -> BidReceiptGpaBuilder {
-        var mutableGpaBuilder = self
+        var mutableGpaBuilder = bidReceiptAccounts()
         return mutableGpaBuilder.where(offset: Offsets.metadata, publicKey: address)
+    }
+
+    private func bidReceiptAccounts() -> BidReceiptGpaBuilder {
+        var mutableGpaBuilder = self
+        return mutableGpaBuilder.where(offset: 0, bytes: Bidreceipt.bidReceiptDiscriminator)
     }
 }

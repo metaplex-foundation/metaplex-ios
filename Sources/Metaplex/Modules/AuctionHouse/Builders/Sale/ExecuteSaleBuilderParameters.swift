@@ -50,9 +50,7 @@ struct ExecuteSaleBuilderParameters {
 
     // MARK: - Getters
 
-    var isPartialSale: Bool {
-        executeSaleInput.bid.bidReceipt.tokenSize < executeSaleInput.listing.listingReceipt.tokenSize
-    }
+    var isPartialSale: Bool { executeSaleInput.isPartialSale }
     var nft: NFT { executeSaleInput.listing.nft }
     var isNative: Bool { executeSaleInput.auctionHouse.isNative }
     var shouldPrintReceipt: Bool { executeSaleInput.printReceipt }

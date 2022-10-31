@@ -12,14 +12,27 @@ import Solana
 @testable import Metaplex
 
 struct BidDataProvider {
-    static func createBid(_ metaplex: Metaplex, auctionHouse: AuctionhouseArgs, nft: NFT, buyer: Account? = nil) -> Bid? {
+    static func createBid(
+        _ metaplex: Metaplex,
+        auctionHouse: AuctionhouseArgs,
+        mintAccount: PublicKey,
+        buyer: Account? = nil,
+        seller: Account? = nil,
+        price: UInt64 = 650
+    ) -> Bid? {
         var result: Result<Bid, OperationError>?
 
         let lock = RunLoopSimpleLock()
         lock.dispatch {
             let operation = CreateBidOperationHandler(metaplex: metaplex)
             operation.handle(operation: CreateBidOperation.pure(.success(
-                CreateBidInput(auctionHouse: auctionHouse, buyer: buyer, mintAccount: nft.mint, price: 650)
+                CreateBidInput(
+                    auctionHouse: auctionHouse,
+                    buyer: buyer,
+                    mintAccount: mintAccount,
+                    seller: seller?.publicKey,
+                    price: price
+                )
             ))).run {
                 result = $0
                 lock.stop()

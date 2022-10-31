@@ -23,6 +23,12 @@ class ExecuteSaleOperationHandler: OperationHandler {
 
     func handle(operation: ExecuteSaleOperation) -> OperationResult<Purchase, OperationError> {
         operation.flatMap { input in
+            guard input.isAuctionHouseMatching else { return .failure(.createExecuteSaleError(.auctionHouseMismatchError)) }
+            guard input.isMintMatching else { return .failure(.createExecuteSaleError(.mintMismatchError)) }
+            guard !input.isBidCancelled else { return .failure(.createExecuteSaleError(.bidCancelledError)) }
+            guard !input.isListingCancelled else { return .failure(.createExecuteSaleError(.listingCancelledError)) }
+            guard input.isAuctioneerRequired else { return .failure(.createExecuteSaleError(.auctioneerRequiredError)) }
+            guard input.isPartialSaleSupported else { return .failure(.createExecuteSaleError(.partialSaleUnsupportedError)) }
             guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
             return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
         }
@@ -62,8 +68,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
             owner: input.bid.bidReceipt.buyer
         )
 
-        let isPartialSale = input.bid.bidReceipt.tokenSize < input.listing.listingReceipt.tokenSize
-        let tokenSize = isPartialSale ? input.listing.listingReceipt.tokenSize : input.bid.bidReceipt.tokenSize
+        let tokenSize = input.isPartialSale ? input.listing.listingReceipt.tokenSize : input.bid.bidReceipt.tokenSize
         let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
             wallet: input.listing.listingReceipt.seller,

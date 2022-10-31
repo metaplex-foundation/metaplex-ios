@@ -20,7 +20,7 @@ final class LoadListingOperationHandlerTests: XCTestCase {
 
         TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
 
-        guard let account = HotAccount(network: .testnet),
+        guard let account = HotAccount(),
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
         else { return XCTFail("Couldn't create auction house") }
 

@@ -15,7 +15,7 @@ final class CreateNftOnChainOperationTests: XCTestCase {
     func testCreateNftOnChainOperation() {
         let metaplex = TestDataProvider.createMetaplex()
 
-        let account = HotAccount(network: .testnet)!
+        let account = HotAccount()!
         guard let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account)) else {
             return XCTFail("NFT result is nil.")
         }

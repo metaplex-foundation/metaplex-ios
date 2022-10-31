@@ -49,12 +49,12 @@ extension TransactionBuilder {
 
         // MARK: - Sale Instruction
 
-        var executeSaleInstruction = parameters.isPartialSale ? createExecuteSaleInstruction(
-            accounts: ExecuteSaleInstructionAccounts(accounts: saleAccounts),
-            args: ExecuteSaleInstructionArgs(args: saleArgs)
-        ) : createExecutePartialSaleInstruction(
+        var executeSaleInstruction = parameters.isPartialSale ? createExecutePartialSaleInstruction(
             accounts: ExecutePartialSaleInstructionAccounts(accounts: saleAccounts),
             args: partialSaleArgs
+        ) : createExecuteSaleInstruction(
+            accounts: ExecuteSaleInstructionAccounts(accounts: saleAccounts),
+            args: ExecuteSaleInstructionArgs(args: saleArgs)
         )
 
         var saleSigners: [Account] = []

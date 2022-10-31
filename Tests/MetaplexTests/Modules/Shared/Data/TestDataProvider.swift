@@ -12,7 +12,7 @@ import Solana
 
 struct TestDataProvider {
     static func createMetaplex() -> Metaplex {
-        let account = HotAccount(network: .testnet)!
+        let account = HotAccount()!
         let url = URL(string: "http://127.0.0.1:8899")!
         let connection = SolanaConnectionDriver(endpoint: .init(url: url, urlWebSocket: url, network: .testnet))
         let identityDriver = KeypairIdentityDriver(solanaRPC: connection.api, account: account)
@@ -33,7 +33,7 @@ struct TestDataProvider {
             uri: "https://bafybeig7fvs66jwfszmddy5ojxyjvitgs7sfoxlk3lz3qhclqmvqtfbi4y.ipfs.nftstorage.link/2009.json",
             sellerFeeBasisPoints: 660,
             hasCreators: false,
-            addressCount: 1,
+            addressCount: 0,
             creators: [],
             isMutable: true
         )

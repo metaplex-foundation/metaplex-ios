@@ -20,11 +20,11 @@ final class LoadBidOperationHandlerTests: XCTestCase {
 
         TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
 
-        guard let account = HotAccount(network: .testnet),
+        guard let account = HotAccount(),
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
         else { return XCTFail("Couldn't create auction house") }
 
-        guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, nft: nft)?.bidReceipt
+        guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)?.bidReceipt
         else { return XCTFail("Couldn't create bid") }
 
         guard let expectedBid = BidDataProvider.loadBid(metaplex, bid: bid)?.bidReceipt

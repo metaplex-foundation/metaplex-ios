@@ -32,4 +32,14 @@ struct ExecuteSaleInput {
         self.bookkeeper = bookkeeper
         self.printReceipt = printReceipt
     }
+
+    // MARK: - Helpers
+
+    var isPartialSale: Bool { false /* bid.bidReceipt.tokenSize < listing.listingReceipt.tokenSize */ }
+    var isAuctionHouseMatching: Bool { bid.bidReceipt.auctionHouse.address == listing.listingReceipt.auctionHouse.address }
+    var isMintMatching: Bool { bid.nft.mint == listing.nft.mint }
+    var isBidCancelled: Bool { bid.bidReceipt.canceledAt != nil }
+    var isListingCancelled: Bool { listing.listingReceipt.canceledAt != nil }
+    var isAuctioneerRequired: Bool { !(auctionHouse.hasAuctioneer && auctioneerAuthority != nil) }
+    var isPartialSaleSupported: Bool { !(isPartialSale && auctionHouse.hasAuctioneer) }
 }
