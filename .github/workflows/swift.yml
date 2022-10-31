@@ -50,11 +50,11 @@ jobs:
         curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/solana_gateway_program.so > programs/solana_gateway_program.so
         curl -O https://raw.githubusercontent.com/metaplex-foundation/js/main/.ammanrc.js
 
-    - name: Start local validator using Amman
-      run: npx amman start
-
     - name: Build
       run: swift build
+
+    - name: Start local validator using Amman
+      run: npx amman start
 
     - name: Run tests
       run: swift test --enable-code-coverage
