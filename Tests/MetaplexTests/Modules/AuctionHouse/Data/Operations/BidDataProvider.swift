@@ -12,6 +12,7 @@ import Solana
 @testable import Metaplex
 
 struct BidDataProvider {
+    @discardableResult
     static func createBid(
         _ metaplex: Metaplex,
         auctionHouse: AuctionhouseArgs,

@@ -51,7 +51,7 @@ jobs:
         curl -O https://raw.githubusercontent.com/metaplex-foundation/js/main/.ammanrc.js
 
     - name: Start local validator using Amman
-      run: yarn amman:start
+      run: npx amman start
 
     - name: Build
       run: swift build

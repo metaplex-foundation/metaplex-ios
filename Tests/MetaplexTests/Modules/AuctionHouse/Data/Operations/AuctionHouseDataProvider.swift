@@ -12,6 +12,14 @@ import Foundation
 
 struct AuctionHouseDataProvider {
     static func createAuctionHouse(_ metaplex: Metaplex) -> Auctionhouse? {
+        guard let auctionHouse = create(metaplex) else { return nil }
+
+        TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
+
+        return auctionHouse
+    }
+
+    private static func create(_ metaplex: Metaplex) -> Auctionhouse? {
         var result: Result<Auctionhouse, OperationError>?
 
         let lock = RunLoopSimpleLock()

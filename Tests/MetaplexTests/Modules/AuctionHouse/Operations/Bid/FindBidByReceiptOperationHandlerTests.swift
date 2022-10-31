@@ -17,11 +17,9 @@ final class FindBidByReceiptOperationHandlerTests: XCTestCase {
         guard let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         else { return XCTFail("Couldn't create auction house") }
 
-        TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
-
         guard let account = HotAccount(),
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
-        else { return XCTFail("Couldn't create auction house") }
+        else { return XCTFail("Couldn't create nft") }
 
         guard let bid = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)?.bidReceipt
         else { return XCTFail("Couldn't create bid") }

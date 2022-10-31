@@ -60,10 +60,9 @@ struct ExecuteSaleBuilderParameters {
 
     // MARK: - Accounts
 
-    var buyer: PublicKey { executeSaleInput.bid.bidReceipt.buyer }
-    var seller: PublicKey { executeSaleInput.listing.listingReceipt.seller }
-    var tokenMint: PublicKey { nft.mint }
-//    var metadata: PublicKey { nft.metadataAccount.mint }
+    var buyer: PublicKey { executeSaleInput.buyer }
+    var seller: PublicKey { executeSaleInput.seller }
+    var tokenMint: PublicKey { executeSaleInput.mintAccount }
     var treasuryMint: PublicKey { executeSaleInput.auctionHouse.treasuryMint }
     var escrowPaymentAccount: PublicKey { escrowPaymentPda.publicKey }
     var authority: PublicKey { executeSaleInput.auctionHouse.authority }

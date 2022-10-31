@@ -35,7 +35,11 @@ struct ExecuteSaleInput {
 
     // MARK: - Helpers
 
-    var isPartialSale: Bool { false /* bid.bidReceipt.tokenSize < listing.listingReceipt.tokenSize */ }
+    var seller: PublicKey { listing.listingReceipt.seller }
+    var buyer: PublicKey { bid.bidReceipt.buyer }
+    var mintAccount: PublicKey { listing.nft.mint }
+
+    var isPartialSale: Bool { bid.bidReceipt.tokenSize < listing.listingReceipt.tokenSize }
     var isAuctionHouseMatching: Bool { bid.bidReceipt.auctionHouse.address == listing.listingReceipt.auctionHouse.address }
     var isMintMatching: Bool { bid.nft.mint == listing.nft.mint }
     var isBidCancelled: Bool { bid.bidReceipt.canceledAt != nil }

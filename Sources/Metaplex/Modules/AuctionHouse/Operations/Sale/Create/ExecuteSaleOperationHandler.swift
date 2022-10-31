@@ -40,11 +40,11 @@ class ExecuteSaleOperationHandler: OperationHandler {
         let defaultIdentity = metaplex.identity()
 
         let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
-          mint: input.listing.nft.mint,
-          owner: input.listing.listingReceipt.seller
+          mint: input.mintAccount,
+          owner: input.seller
         )
 
-        let metadata = try? MetadataAccount.pda(mintKey: input.listing.nft.mint).get()
+        let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
 
         guard let auctionHouse = input.auctionHouse.address else {
             return nil
@@ -52,28 +52,27 @@ class ExecuteSaleOperationHandler: OperationHandler {
 
         let escrowPaymentPda = try? Auctionhouse.buyerEscrowPda(
             auctionHouse: auctionHouse,
-            buyer: input.bid.bidReceipt.buyer
+            buyer: input.buyer
         ).get()
 
-        let seller = input.listing.listingReceipt.seller
         let sellerPaymentReceiptAccount = input.auctionHouse.isNative
-        ? seller
+        ? input.seller
         : PublicKey.findAssociatedTokenAccountPda(
             mint: input.auctionHouse.treasuryMint,
-            owner: seller
+            owner: input.seller
         )
 
         let buyerReceiptTokenAccount = PublicKey.findAssociatedTokenAccountPda(
-            mint: input.listing.nft.mint,
-            owner: input.bid.bidReceipt.buyer
+            mint: input.mintAccount,
+            owner: input.buyer
         )
 
         let tokenSize = input.isPartialSale ? input.listing.listingReceipt.tokenSize : input.bid.bidReceipt.tokenSize
         let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
-            wallet: input.listing.listingReceipt.seller,
+            wallet: input.seller,
             treasuryMint: input.auctionHouse.treasuryMint,
-            mintAccount: input.listing.nft.mint,
+            mintAccount: input.mintAccount,
             buyerPrice: Lamports(),
             tokenSize: tokenSize,
             tokenAccount: tokenAccount

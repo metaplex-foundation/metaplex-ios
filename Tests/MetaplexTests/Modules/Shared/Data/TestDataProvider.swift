@@ -63,7 +63,7 @@ struct TestDataProvider {
         lock.dispatch {
             metaplex.connection.api.requestAirdrop(
                 account: account.base58EncodedString,
-                lamports: 1_000_000_000
+                lamports: 1_000_000_000_000
             ) {
                 result = $0
                 lock.stop()

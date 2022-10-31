@@ -17,28 +17,23 @@ final class FindBidsByPublicKeyFieldOperationHandlerTests: XCTestCase {
         guard let auctionHouse = AuctionHouseDataProvider.createAuctionHouse(metaplex)
         else { return XCTFail("Couldn't create auction house") }
 
-        TestDataProvider.airDropFunds(metaplex, account: auctionHouse.auctionHouseFeeAccount)
-
         guard let account = HotAccount(),
               let nft = TestDataProvider.createNft(metaplex, mintAccount: .new(account))
-        else { return XCTFail("Couldn't create auction house") }
+        else { return XCTFail("Couldn't create nft") }
 
-        guard let bid1 = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)?.bidReceipt
-        else { return XCTFail("Couldn't create bid") }
+        BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint)
 
-        guard let bid2 = BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint, price: 100)?.bidReceipt
-        else { return XCTFail("Couldn't create bid") }
+        BidDataProvider.createBid(metaplex, auctionHouse: auctionHouse, mintAccount: nft.mint, price: 100)
 
         let buyer = HotAccount()!
         TestDataProvider.airDropFunds(metaplex, account: buyer.publicKey)
 
-        guard let bid3 = BidDataProvider.createBid(
+        BidDataProvider.createBid(
             metaplex, auctionHouse: auctionHouse,
             mintAccount: nft.mint,
             buyer: buyer,
             seller: metaplex.identity()
-        )?.bidReceipt
-        else { return XCTFail("Couldn't create bid") }
+        )
 
         let bids = BidDataProvider.findBidsBy(metaplex, type: .buyer(metaplex.identity().publicKey), auctionHouse: auctionHouse)
 

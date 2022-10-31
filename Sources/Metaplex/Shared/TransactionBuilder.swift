@@ -15,8 +15,8 @@ class TransactionBuilder {
         let key: String
     }
 
-    private let delay: TimeInterval = 5
-    private let attempts = 5
+    private let delay: TimeInterval = 1
+    private let attempts = 100
 
     private var feePayer: Account?
     private var instructions: [InstructionWithSigner] = []
