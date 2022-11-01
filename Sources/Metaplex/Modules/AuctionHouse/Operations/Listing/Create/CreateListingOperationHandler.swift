@@ -23,28 +23,37 @@ class CreateListingOperationHandler: OperationHandler {
 
     func handle(operation: CreateListingOperation) -> OperationResult<Listing, OperationError> {
         operation.flatMap { input in
-            guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            switch self.createParametersFromInput(input) {
+            case .success(let parameters):
+                return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            case .failure(let error):
+                return .failure(error)
+            }
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createParametersFromInput(_ input: CreateListingInput) -> CreateListingBuilderParameters? {
+    private func createParametersFromInput(
+        _ input: CreateListingInput
+    ) -> Result<CreateListingBuilderParameters, OperationError> {
         let defaultIdentity = metaplex.identity()
         let seller = input.seller ?? defaultIdentity
 
-        let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
-        let tokenAccount = input.tokenAccount ?? PublicKey.findAssociatedTokenAccountPda(
+        guard let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
+        else { return .failure(.couldNotFindMetadata) }
+
+        guard let tokenAccount = input.tokenAccount ?? PublicKey.findAssociatedTokenAccountPda(
             mint: input.mintAccount,
             owner: seller.publicKey
         )
+        else { return .failure(.couldNotFindTokenAccount) }
 
         guard let auctionHouse = input.auctionHouse.address else {
-            return nil //.failure(.couldNotFindPDA)
+            return .failure(.couldNotFindAuctionHouse)
         }
 
-        let sellerTradeStatePda = try? Auctionhouse.tradeStatePda(
+         guard let sellerTradeStatePda = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
             wallet: seller.publicKey,
             treasuryMint: input.auctionHouse.treasuryMint,
@@ -53,8 +62,9 @@ class CreateListingOperationHandler: OperationHandler {
             tokenSize: input.tokens,
             tokenAccount: tokenAccount
         ).get()
+        else { return .failure(.couldNotFindSellerTradeStatePda) }
 
-        let freeSellerTradeState = try? Auctionhouse.tradeStatePda(
+        guard let freeSellerTradeState = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
             wallet: seller.publicKey,
             treasuryMint: input.auctionHouse.treasuryMint,
@@ -63,18 +73,12 @@ class CreateListingOperationHandler: OperationHandler {
             tokenSize: input.tokens,
             tokenAccount: tokenAccount
         ).get()
+        else { return .failure(.couldNotFindFreeTradeStatePda) }
 
-        let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
+        guard let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
+        else { return .failure(.couldNotFindProgramAsSignerPda) }
 
-        guard let metadata,
-              let tokenAccount,
-              let sellerTradeStatePda,
-              let freeSellerTradeState,
-              let programAsSignerPda else {
-            return nil // Handle error here
-        }
-
-        return CreateListingBuilderParameters(
+        let parameters = CreateListingBuilderParameters(
             createListingInput: input,
             sellerTradeStatePda: sellerTradeStatePda,
             freeSellerTradeStatePda: freeSellerTradeState,
@@ -84,6 +88,7 @@ class CreateListingOperationHandler: OperationHandler {
             metadata: metadata,
             auctionHouse: auctionHouse
         )
+        return .success(parameters)
     }
 
     private func createOperationResult(

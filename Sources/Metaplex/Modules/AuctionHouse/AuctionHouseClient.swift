@@ -53,7 +53,11 @@ public class AuctionHouseClient {
         operation.handle(operation: FindAuctionHouseByAddressOperation.pure(.success(address))).run { onComplete($0) }
     }
 
-    public func findByCreatorAndMint(_ creator: PublicKey, and treasuryMint: PublicKey, onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void) {
+    public func findByCreatorAndMint(
+        _ creator: PublicKey,
+        and treasuryMint: PublicKey,
+        onComplete: @escaping (Result<Auctionhouse, OperationError>) -> Void
+    ) {
         let operation = FindAuctionHouseByCreatorAndMintOperationHandler(metaplex: metaplex)
         operation.handle(operation: FindAuctionHouseByCreatorAndMintOperation.pure(.success(
             FindAuctionHouseByCreatorAndMintInput(creator: creator, treasuryMint: treasuryMint)

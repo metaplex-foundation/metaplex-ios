@@ -7,7 +7,6 @@
 
 import AuctionHouse
 import Foundation
-import Solana
 
 struct SaleArgs {
     let escrowPaymentBump: UInt8

@@ -23,31 +23,38 @@ class CancelBidOperationHandler: OperationHandler {
 
     func handle(operation: CancelBidOperation) -> OperationResult<SignatureStatus, OperationError> {
         operation.flatMap { input in
-            guard let parameters = self.createParametersFromInput(input) else {
-                return .failure(.couldNotFindPDA)
+            switch self.createParametersFromInput(input) {
+            case .success(let parameters):
+                return self.createOperationResult(parameters)
+            case .failure(let error):
+                return .failure(error)
             }
-            return self.createOperationResult(parameters)
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createParametersFromInput(_ input: CancelBidInput) -> CancelBidBuilderParameters? {
+    private func createParametersFromInput(
+        _ input: CancelBidInput
+    ) -> Result<CancelBidBuilderParameters, OperationError> {
         guard let tokenAccount = try? PublicKey.associatedTokenAddress(
             walletAddress: input.bid.bidReceipt.buyer,
             tokenMintAddress: input.bid.nft.mint
-        ).get(), let auctionHouse = try? Auctionhouse.pda(
+        ).get()
+        else { return .failure(.couldNotFindTokenAccount) }
+
+        guard let auctionHouse = try? Auctionhouse.pda(
             creator: input.auctionHouse.creator,
             treasuryMint: input.auctionHouse.treasuryMint
-        ).get().publicKey else {
-            return nil // .failure(.couldNotFindPDA)
-        }
+        ).get().publicKey
+        else { return .failure(.couldNotFindAuctionHouse) }
 
-        return CancelBidBuilderParameters(
+        let parameters = CancelBidBuilderParameters(
             cancelBidInput: input,
             tokenAccount: tokenAccount,
             auctionHouse: auctionHouse
         )
+        return .success(parameters)
     }
 
     private func createOperationResult(

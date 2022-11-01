@@ -7,7 +7,6 @@
 
 import AuctionHouse
 import Foundation
-import Solana
 
 public class AuctionHouseProgram {
     static let programId = PROGRAM_ID!

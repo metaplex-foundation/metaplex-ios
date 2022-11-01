@@ -23,39 +23,48 @@ class CreateBidOperationHandler: OperationHandler {
 
     func handle(operation: CreateBidOperation) -> OperationResult<Bid, OperationError> {
         operation.flatMap { input in
-            guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            switch self.createParametersFromInput(input) {
+            case .success(let parameters):
+                return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            case .failure(let error):
+                return .failure(error)
+            }
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createParametersFromInput(_ input: CreateBidInput) -> CreateBidBuilderParameters? {
+    private func createParametersFromInput(
+        _ input: CreateBidInput
+    ) -> Result<CreateBidBuilderParameters, OperationError> {
         let defaultIdentity = metaplex.identity()
         let buyer = input.buyer ?? defaultIdentity
 
         guard let auctionHouseAddress = input.auctionHouse.address else {
-            return nil //.failure(.couldNotFindPDA)
+            return .failure(.couldNotFindAuctionHouse)
         }
 
-        let escrowPaymentAccount = try? Auctionhouse.buyerEscrowPda(
+        guard let escrowPaymentAccount = try? Auctionhouse.buyerEscrowPda(
             auctionHouse: auctionHouseAddress,
             buyer: buyer.publicKey
         ).get()
+        else { return .failure(.couldNotFindEscrowPaymentAccount) }
 
-        let paymentAccount = input.auctionHouse.isNative
+        guard let paymentAccount = input.auctionHouse.isNative
         ? buyer.publicKey
         : PublicKey.findAssociatedTokenAccountPda(
             mint: input.auctionHouse.treasuryMint,
             owner: buyer.publicKey
         )
+        else { return .failure(.couldNotFindPaymentAccount) }
 
-        let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
+        guard let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
+        else { return .failure(.couldNotFindMetadata) }
 
         let buyerPrice = input.price ?? 0
         let tokenSize = input.tokens ?? 1
 
-        let buyerTradeState = try? Auctionhouse.tradeStatePda(
+        guard let buyerTradeState = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouseAddress,
             wallet: buyer.publicKey,
             treasuryMint: input.auctionHouse.treasuryMint,
@@ -64,22 +73,15 @@ class CreateBidOperationHandler: OperationHandler {
             tokenSize: tokenSize,
             tokenAccount: input.tokenAccount
         ).get()
+        else { return .failure(.couldNotFindBuyerTradeStatePda) }
 
-        let buyerTokenAccount = PublicKey.findAssociatedTokenAccountPda(
+        guard let buyerTokenAccount = PublicKey.findAssociatedTokenAccountPda(
             mint: input.mintAccount,
             owner: buyer.publicKey
         )
+        else { return .failure(.couldNotFindBuyerTokenAccount) }
 
-        guard let buyerTradeState else { return nil /*.failure(.couldNotFindPDA)*/ }
-
-        guard let escrowPaymentAccount,
-              let paymentAccount,
-              let metadata,
-              let buyerTokenAccount else {
-            return nil //.failure(.couldNotFindPDA)
-        }
-
-        return CreateBidBuilderParameters(
+        let parameters = CreateBidBuilderParameters(
             createBidInput: input,
             escrowPaymentPda: escrowPaymentAccount,
             buyerTradePda: buyerTradeState,
@@ -89,6 +91,7 @@ class CreateBidOperationHandler: OperationHandler {
             auctionHouse: auctionHouseAddress,
             buyerTokenAccount: buyerTokenAccount
         )
+        return .success(parameters)
     }
 
     private func createOperationResult(

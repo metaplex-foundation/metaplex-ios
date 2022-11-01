@@ -29,46 +29,58 @@ class ExecuteSaleOperationHandler: OperationHandler {
             guard !input.isListingCancelled else { return .failure(.createExecuteSaleError(.listingCancelledError)) }
             guard input.isAuctioneerRequired else { return .failure(.createExecuteSaleError(.auctioneerRequiredError)) }
             guard input.isPartialSaleSupported else { return .failure(.createExecuteSaleError(.partialSaleUnsupportedError)) }
-            guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            switch self.createParametersFromInput(input) {
+            case .success(let parameters):
+                return self.createOperationResult(parameters, auctionHouse: input.auctionHouse)
+            case .failure(let error):
+                return .failure(error)
+            }
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createParametersFromInput(_ input: ExecuteSaleInput) -> ExecuteSaleBuilderParameters? {
+    private func createParametersFromInput(
+        _ input: ExecuteSaleInput
+    ) -> Result<ExecuteSaleBuilderParameters, OperationError> {
         let defaultIdentity = metaplex.identity()
 
-        let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
+        guard let tokenAccount = PublicKey.findAssociatedTokenAccountPda(
           mint: input.mintAccount,
           owner: input.seller
         )
+        else { return .failure(.couldNotFindTokenAccount) }
 
-        let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
+        guard let metadata = try? MetadataAccount.pda(mintKey: input.mintAccount).get()
+        else { return .failure(.couldNotFindMetadata) }
 
         guard let auctionHouse = input.auctionHouse.address else {
-            return nil
+            return .failure(.couldNotFindAuctionHouse)
         }
 
-        let escrowPaymentPda = try? Auctionhouse.buyerEscrowPda(
+        guard let escrowPaymentPda = try? Auctionhouse.buyerEscrowPda(
             auctionHouse: auctionHouse,
             buyer: input.buyer
         ).get()
+        else { return .failure(.couldNotFindEscrowPaymentAccount) }
 
-        let sellerPaymentReceiptAccount = input.auctionHouse.isNative
+        guard let sellerPaymentReceiptAccount = input.auctionHouse.isNative
         ? input.seller
         : PublicKey.findAssociatedTokenAccountPda(
             mint: input.auctionHouse.treasuryMint,
             owner: input.seller
         )
+        else { return .failure(.couldNotFindSellerReceiptAccount) }
 
-        let buyerReceiptTokenAccount = PublicKey.findAssociatedTokenAccountPda(
+        guard let buyerReceiptTokenAccount = PublicKey.findAssociatedTokenAccountPda(
             mint: input.mintAccount,
             owner: input.buyer
         )
+        else { return .failure(.couldNotFindBuyerReceiptAccount) }
 
         let tokenSize = input.isPartialSale ? input.listing.listingReceipt.tokenSize : input.bid.bidReceipt.tokenSize
-        let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
+
+        guard let freeTradeStatePda = try? Auctionhouse.tradeStatePda(
             auctionHouse: auctionHouse,
             wallet: input.seller,
             treasuryMint: input.auctionHouse.treasuryMint,
@@ -77,20 +89,12 @@ class ExecuteSaleOperationHandler: OperationHandler {
             tokenSize: tokenSize,
             tokenAccount: tokenAccount
         ).get()
+        else { return .failure(.couldNotFindFreeTradeStatePda) }
 
-        let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
+        guard let programAsSignerPda = try? Auctionhouse.programAsSignerPda().get()
+        else { return .failure(.couldNotFindProgramAsSignerPda) }
 
-        guard let tokenAccount,
-              let metadata,
-              let escrowPaymentPda,
-              let sellerPaymentReceiptAccount,
-              let buyerReceiptTokenAccount,
-              let freeTradeStatePda,
-              let programAsSignerPda else {
-            return nil
-        }
-
-        return ExecuteSaleBuilderParameters(
+        let parameters = ExecuteSaleBuilderParameters(
             executeSaleInput: input,
             escrowPaymentPda: escrowPaymentPda,
             freeTradeStatePda: freeTradeStatePda,
@@ -102,6 +106,7 @@ class ExecuteSaleOperationHandler: OperationHandler {
             buyerReceiptTokenAccount: buyerReceiptTokenAccount,
             auctionHouse: auctionHouse
         )
+        return .success(parameters)
     }
 
     private func createOperationResult(

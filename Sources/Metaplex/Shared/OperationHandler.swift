@@ -28,6 +28,22 @@ public enum OperationError: Error {
     case findListingByReceiptError(Error)
     case findPurchaseByReceiptError(Error)
     case createExecuteSaleError(ExecuteSaleError)
+
+    case couldNotFindAuctionHouse
+    case couldNotFindBuyerTradeStatePda
+    case couldNotFindSellerTradeStatePda
+    case couldNotFindFreeTradeStatePda
+    case couldNotFindProgramAsSignerPda
+    case couldNotFindMetadata
+    case couldNotFindTokenAccount
+    case couldNotFindAuctionHouseFeePda
+    case couldNotFindAuctionHouseTreasuryPda
+    case couldNotFindTreasuryWithdrawalDestination
+    case couldNotFindEscrowPaymentAccount
+    case couldNotFindPaymentAccount
+    case couldNotFindBuyerTokenAccount
+    case couldNotFindBuyerReceiptAccount
+    case couldNotFindSellerReceiptAccount
 }
 
 protocol OperationHandler {

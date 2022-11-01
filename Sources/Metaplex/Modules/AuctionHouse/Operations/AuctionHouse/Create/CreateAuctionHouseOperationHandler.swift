@@ -23,14 +23,20 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
 
     func handle(operation: CreateAuctionHouseOperation) -> OperationResult<Auctionhouse, OperationError> {
         operation.flatMap { input in
-            guard let parameters = self.createParametersFromInput(input) else { return .failure(.couldNotFindPDA) } // TODO: Fix error here, maybe throw from `createParametersFromInput(_:)`
-            return self.createOperationResult(parameters)
+            switch self.createParametersFromInput(input) {
+            case .success(let parameters):
+                return self.createOperationResult(parameters)
+            case .failure(let error):
+                return .failure(error)
+            }
         }
     }
 
     // MARK: - Private Helpers
 
-    private func createParametersFromInput(_ input: CreateAuctionHouseInput) -> CreateAuctionHouseBuilderParameters? {
+    private func createParametersFromInput(
+        _ input: CreateAuctionHouseInput
+    ) -> Result<CreateAuctionHouseBuilderParameters, OperationError> {
         let defaultIdentity = metaplex.identity()
 
         let authority = input.authority ?? defaultIdentity
@@ -48,15 +54,24 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
         guard let auctionHousePda = try? Auctionhouse.pda(
             creator: authority.publicKey,
             treasuryMint: input.treasuryMint
-        ).get(), let auctionHouseFeePda = try? Auctionhouse.feePda(
+        ).get()
+        else { return .failure(.couldNotFindAuctionHouse) }
+
+        guard let auctionHouseFeePda = try? Auctionhouse.feePda(
             auctionHouse: auctionHousePda.publicKey
-        ).get(), let auctionHouseTreasuryPda = try? Auctionhouse.treasuryPda(
+        ).get()
+        else { return .failure(.couldNotFindAuctionHouseFeePda) }
+
+        guard let auctionHouseTreasuryPda = try? Auctionhouse.treasuryPda(
             auctionHouse: auctionHousePda.publicKey
-        ).get(), let treasuryWithdrawalDestination else {
-            return nil
+        ).get()
+        else { return .failure(.couldNotFindAuctionHouseTreasuryPda) }
+
+        guard let treasuryWithdrawalDestination else {
+            return .failure(.couldNotFindTreasuryWithdrawalDestination)
         }
 
-        return CreateAuctionHouseBuilderParameters(
+        let parameters = CreateAuctionHouseBuilderParameters(
             createAuctionHouseInput: input,
             auctionHousePda: auctionHousePda,
             auctionHouseFeePda: auctionHouseFeePda,
@@ -64,6 +79,7 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
             treasuryWithdrawalDestination: treasuryWithdrawalDestination,
             defaultIdentity: defaultIdentity
         )
+        return .success(parameters)
     }
 
     private func createOperationResult(
