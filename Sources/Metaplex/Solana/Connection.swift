@@ -15,6 +15,9 @@ public protocol Connection {
                                              decodedTo: T.Type,
                                              config: RequestConfiguration,
                                              onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void)
+    func getProgramAccounts(publicKey: PublicKey,
+                            config: RequestConfiguration,
+                            onComplete: @escaping (Result<[ProgramAccountPureData], Error>) -> Void)
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void)
     func getMultipleAccountsInfo<T>(
         accounts: [PublicKey],
@@ -57,6 +60,12 @@ public class SolanaConnectionDriver: Connection {
 
     public func getProgramAccounts<T>(publicKey: PublicKey, decodedTo: T.Type, config: RequestConfiguration, onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) where T: BufferLayout {
         api.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
+    }
+
+    public func getProgramAccounts(publicKey: PublicKey,
+                            config: RequestConfiguration,
+                            onComplete: @escaping (Result<[ProgramAccountPureData], Error>) -> Void) {
+        api.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, onComplete: onComplete)
     }
 
     public func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {

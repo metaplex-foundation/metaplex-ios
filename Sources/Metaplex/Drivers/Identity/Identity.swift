@@ -8,11 +8,23 @@
 import Foundation
 import Solana
 
-public protocol IdentityDriver {
+public protocol IdentityDriver: Account {
     var publicKey: PublicKey { get }
-    func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void)
-    func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void)
-    func signAllTransactions(transactions: [Transaction], onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void)
+
+    func sign(serializedMessage: Data) throws -> Data
+    func signTransaction(
+        transaction: Transaction,
+        onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void
+    )
+    func signAllTransactions(
+        transactions: [Transaction],
+        onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void
+    )
+
+    func sendTransaction(
+        serializedTransaction: String,
+        onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void
+    )
 }
 
 extension IdentityDriver {

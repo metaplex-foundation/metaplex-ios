@@ -11,7 +11,7 @@ import Foundation
 struct JsonMetadataTask {
     let metaplex: Metaplex
     let nft: NFT
-    
+
     func use(onComplete: @escaping (Result<JsonMetadata, StorageDriverError>) -> Void) {
         guard let url = URL(string: nft.uri) else {
             onComplete(.failure(.invalidURL))
