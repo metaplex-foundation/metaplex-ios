@@ -25,7 +25,7 @@ class FindAuctionHouseByCreatorAndMintOperationHandler: OperationHandler {
             OperationResult.pure(Auctionhouse.pda(creator: input.creator, treasuryMint: input.treasuryMint)).flatMap { address in
                 OperationResult<Auctionhouse, Error>.init { callback in
                     self.metaplex.auctionHouse.findByAddress(address.publicKey) { result in
-                        callback(result.mapError { $0 } )
+                        callback(result.mapError { $0 })
                     }
                 }
             }.mapError { OperationError.findAuctionHouseByCreatorAndMintError($0) }

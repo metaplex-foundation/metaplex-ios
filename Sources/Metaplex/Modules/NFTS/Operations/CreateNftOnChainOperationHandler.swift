@@ -63,9 +63,11 @@ class CreateNftOnChainOperationHandler: OperationHandler {
                 OperationError.buildInstructionsError($0)
             }.flatMap { instructions in
                 OperationResult<String, Error>.init { callback in
-                    self.metaplex.connection.serializeTransaction(instructions: instructions, recentBlockhash: nil, signers: [input.account, input.mintAccountState.account]) {
-                        callback($0)
-                    }
+                    self.metaplex.connection.serializeTransaction(
+                        instructions: instructions,
+                        recentBlockhash: nil,
+                        signers: [input.account, input.mintAccountState.account]
+                    ) { callback($0) }
                 }
                 .mapError { OperationError.serializeTransactionError($0) }
             }.flatMap { serializedTransaction in
@@ -109,10 +111,10 @@ class CreateNftOnChainOperationHandler: OperationHandler {
                         return Retry.doNotRetry(error)
                     }
                 }
-                let retry = OperationResult<SignatureStatus, Error>.retry(attempts: 5, operation: operation)
+                let retry = OperationResult<SignatureStatus, Error>.retry(attempts: attempts, operation: operation)
                     .mapError { OperationError.confirmTransactionError($0) }
                 return retry
-            }.flatMap { (status: SignatureStatus) -> OperationResult<NFT, OperationError> in
+            }.flatMap { (_: SignatureStatus) -> OperationResult<NFT, OperationError> in
                 let findNft = FindNftByMintOnChainOperationHandler(metaplex: self.metaplex)
                 return findNft.handle(operation: FindNftByMintOperation.pure(.success(input.mintAccountState.account.publicKey)))
             }

@@ -44,7 +44,6 @@ struct CancelListingBuilderParameters {
     }
     var receipt: PublicKey? { cancelListingInput.listing.listingReceipt.receipt?.publicKey }
 
-
     // MARK: - Args
 
     var price: UInt64 { cancelListingInput.listing.listingReceipt.price }

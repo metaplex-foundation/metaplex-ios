@@ -31,7 +31,11 @@ class FindPurchaseByReceiptOperationHandler: OperationHandler {
             .mapError { OperationError.findPurchaseByReceiptError($0) }
             .flatMap { purchaseReceipt in
                 OperationResult<Purchase, OperationError>.init { callback in
-                    let lazyPurchase = LazyPurchase(auctionHouse: input.auctionHouse, purchaseReceipt: purchaseReceipt, publicKey: input.address)
+                    let lazyPurchase = LazyPurchase(
+                        auctionHouse: input.auctionHouse,
+                        purchaseReceipt: purchaseReceipt,
+                        publicKey: input.address
+                    )
                     self.metaplex.auctionHouse.loadPurchase(lazyPurchase) {
                         callback($0)
                     }

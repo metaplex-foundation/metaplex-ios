@@ -12,7 +12,7 @@ import Solana
 extension TransactionBuilder {
     static func createListingBuilder(parameters: CreateListingBuilderParameters) -> TransactionBuilder {
         // MARK: - Accounts
-        
+
         let sellAccounts = SellAccounts(
             wallet: parameters.wallet,
             tokenAccount: parameters.tokenAccount,

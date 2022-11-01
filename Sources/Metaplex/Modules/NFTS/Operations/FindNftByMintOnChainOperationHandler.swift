@@ -21,7 +21,10 @@ class FindNftByMintOnChainOperationHandler: OperationHandler {
     }
 
     func handle(operation: FindNftByMintOperation) -> OperationResult<NFT, OperationError> {
-        let bufferInfoResult: OperationResult<(BufferInfo<MetadataAccount>, BufferInfo<MasterEditionAccount>), OperationError>  = operation.flatMap { mintKey in
+        let bufferInfoResult: OperationResult<(
+            BufferInfo<MetadataAccount>,
+            BufferInfo<MasterEditionAccount>
+        ), OperationError>  = operation.flatMap { mintKey in
 
             let metaDataResult = OperationResult.pure(MetadataAccount.pda(mintKey: mintKey))
                 .flatMap { (publicKey) in

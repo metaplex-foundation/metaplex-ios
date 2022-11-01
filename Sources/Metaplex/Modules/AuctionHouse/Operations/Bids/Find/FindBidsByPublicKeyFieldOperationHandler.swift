@@ -37,7 +37,9 @@ class FindBidsByPublicKeyFieldOperationHandler: OperationHandler {
                 case .metadata(let address):
                     query = query.whereMetadata(address: address)
                 case .mint(let mintKey):
-                    guard let address = try? MetadataAccount.pda(mintKey: mintKey).get() else { return .failure(OperationError.couldNotFindPDA) }
+                    guard let address = try? MetadataAccount.pda(mintKey: mintKey).get()
+                    else { return .failure(OperationError.couldNotFindPDA) }
+
                     query = query.whereMetadata(address: address)
                 }
                 return query.getAndMap { (accounts: [AccountInfoWithPureData]) in

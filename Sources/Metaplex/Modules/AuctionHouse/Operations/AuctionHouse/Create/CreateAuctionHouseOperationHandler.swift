@@ -95,7 +95,7 @@ class CreateAuctionHouseOperationHandler: OperationHandler {
                     callback(.failure(.confirmTransactionError(error)))
                 }
             }
-        }.flatMap { status in
+        }.flatMap { _ in
             OperationResult<Auctionhouse, OperationError>.init { callback in
                 self.metaplex.auctionHouse.findByAddress(parameters.auctionHouse) { callback($0) }
             }

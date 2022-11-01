@@ -46,7 +46,7 @@ struct CreateListingBuilderParameters {
 
     var shouldPrintReceipt: Bool { createListingInput.printReceipt }
     var receipt: Pda? { shouldPrintReceipt ? try? Listingreceipt.pda(tradeStateAddress: sellerTradeState).get() : nil }
-    
+
     // MARK: - Accounts
 
     var wallet: PublicKey { sellerSigner.publicKey }

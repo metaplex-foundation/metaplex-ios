@@ -12,7 +12,7 @@ import Solana
 extension TransactionBuilder {
     static func createBidBuilder(parameters: CreateBidBuilderParameters) -> TransactionBuilder {
         // MARK: - Accounts
-        
+
         let buyAccounts = BuyAccounts(
             wallet: parameters.wallet,
             paymentAccount: parameters.paymentAccount,
@@ -112,7 +112,7 @@ extension TransactionBuilder {
 
         // MARK: - Create Token Account Instruction
 
-        // TODO: Create an account if it doesn't exist. Will come back to this as there's a bit involved.
+        #warning("Create an account if it doesn't exist. Will come back to this as there's a bit involved.")
 
         // MARK: - Transaction Builder
 

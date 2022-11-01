@@ -108,7 +108,7 @@ class CreateBidOperationHandler: OperationHandler {
                     callback(.failure(.confirmTransactionError(error)))
                 }
             }
-        }.flatMap { status in
+        }.flatMap { _ in
             OperationResult<Bid, OperationError>.init { callback in
                 if let receipt = parameters.receipt {
                     self.metaplex.auctionHouse.findBidByReceipt(
