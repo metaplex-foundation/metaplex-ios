@@ -9,58 +9,15 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: 
-        solana: ["1.10.34"]
+    runs-on: macos-12
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Install Solana
-      uses: ./.github/actions/install-solana
-      with:
-        solana_version: ${{ matrix.solana }}
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: npm-${{ hashFiles('package-lock.json') }}
-        restore-keys: npm-
-
-    - name: Install dependencies
-      run:
-        npm i @metaplex-foundation/js @metaplex-foundation/amman
-
-    - name: Download required files for Amman
-      run: |
-        mkdir -p programs
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/mpl_auction_house.so > programs/mpl_auction_house.so
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/mpl_candy_guard.so > programs/mpl_candy_guard.so
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/mpl_candy_machine_core.so > programs/mpl_candy_machine_core.so
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/mpl_candy_machine.so > programs/mpl_candy_machine.so
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/mpl_token_metadata.so > programs/mpl_token_metadata.so
-        curl -H 'Accept: application/vnd.github.v3.raw' https://api.github.com/repos/metaplex-foundation/js/contents/programs/solana_gateway_program.so > programs/solana_gateway_program.so
-        curl -O https://raw.githubusercontent.com/metaplex-foundation/js/main/.ammanrc.js
-
+    - uses: actions/checkout@v2
     - name: Build
       run: swift build
-
-    - name: Start local validator using Amman
-      run: npx amman start
-
     - name: Run tests
       run: swift test --enable-code-coverage
-
     - name: Test coverage
       uses: maxep/spm-lcov-action@0.3.0
       with:
         output-file: ./coverage/lcov.info
-

@@ -709,6 +709,16 @@ This will use URLShared networking. Which is the default iOS networking implment
 
 This will use return Empty Data object with 0 size. 
 
+## Testing
+
+Currently tests are a mix between `devnet`, `mainnet`, and locally using `amman`. We are in the process of getting `amman` working on CI in order to move all tests to the local validator.
+
+All Auction House tests are set to run locally using `amman`, but are commented out so CI can pass. To run these tests you will need the [js sdk](git@github.com:metaplex-foundation/js.git). With the repo cloned, from the terminal run the following commands from the `js` directory:
+```
+yarn install
+yarn amman:start
+``` 
+
 ## Next steps
 As mentioned above, this SDK is still in very early stages. We plan to add a lot more features to it. Here’s a quick overview of what we plan to work on next.
 - New features in the NFT module.
