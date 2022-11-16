@@ -11,31 +11,31 @@
 /// yarn amman:start
 /// ```
 
-import Foundation
-import XCTest
-
-@testable import Metaplex
-
-final class MintCandyMachineOperationTests: XCTestCase {
-    func testMintCandyMachineOperation() {
-        let metaplex = TestDataProvider.createMetaplex()
-
-        guard let candyMachine = CandyMachineDataProvider.create(metaplex)
-        else { return XCTFail("Couldn't create Candy Machine") }
-
-        guard let nft = CandyMachineDataProvider.mintCandyMachine(metaplex, candyMachine: candyMachine)
-        else { return XCTFail("Couldn't mint NFT") }
-
-        guard let expectedNft = TestDataProvider.findNft(metaplex, mint: nft.mint)
-        else { return XCTFail("Couldn't find minted NFT") }
-
-        XCTAssertEqual(nft.mint, expectedNft.mint)
-        XCTAssertEqual(nft.name, expectedNft.name)
-        XCTAssertEqual(nft.symbol, expectedNft.symbol)
-        XCTAssertEqual(nft.uri, expectedNft.uri)
-        XCTAssertEqual(nft.sellerFeeBasisPoints, expectedNft.sellerFeeBasisPoints)
-        XCTAssertEqual(nft.creators.count, expectedNft.creators.count)
-        XCTAssertEqual(nft.primarySaleHappened, expectedNft.primarySaleHappened)
-        XCTAssertEqual(nft.isMutable, expectedNft.isMutable)
-    }
-}
+//import Foundation
+//import XCTest
+//
+//@testable import Metaplex
+//
+//final class MintCandyMachineOperationTests: XCTestCase {
+//    func testMintCandyMachineOperation() {
+//        let metaplex = TestDataProvider.createMetaplex()
+//
+//        guard let candyMachine = CandyMachineDataProvider.create(metaplex)
+//        else { return XCTFail("Couldn't create Candy Machine") }
+//
+//        guard let nft = CandyMachineDataProvider.mintCandyMachine(metaplex, candyMachine: candyMachine)
+//        else { return XCTFail("Couldn't mint NFT") }
+//
+//        guard let expectedNft = TestDataProvider.findNft(metaplex, mint: nft.mint)
+//        else { return XCTFail("Couldn't find minted NFT") }
+//
+//        XCTAssertEqual(nft.mint, expectedNft.mint)
+//        XCTAssertEqual(nft.name, expectedNft.name)
+//        XCTAssertEqual(nft.symbol, expectedNft.symbol)
+//        XCTAssertEqual(nft.uri, expectedNft.uri)
+//        XCTAssertEqual(nft.sellerFeeBasisPoints, expectedNft.sellerFeeBasisPoints)
+//        XCTAssertEqual(nft.creators.count, expectedNft.creators.count)
+//        XCTAssertEqual(nft.primarySaleHappened, expectedNft.primarySaleHappened)
+//        XCTAssertEqual(nft.isMutable, expectedNft.isMutable)
+//    }
+//}

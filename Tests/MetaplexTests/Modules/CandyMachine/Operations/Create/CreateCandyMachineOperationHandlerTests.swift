@@ -11,15 +11,15 @@
 /// yarn amman:start
 /// ```
 
-import Foundation
-import XCTest
-
-@testable import Metaplex
-
-final class CreateCandyMachineOperationTests: XCTestCase {
-    func testCreateCandyMachineOperation() {
-        let metaplex = TestDataProvider.createMetaplex()
-        let candyMachine = CandyMachineDataProvider.create(metaplex)
-        XCTAssertNotNil(candyMachine)
-    }
-}
+//import Foundation
+//import XCTest
+//
+//@testable import Metaplex
+//
+//final class CreateCandyMachineOperationTests: XCTestCase {
+//    func testCreateCandyMachineOperation() {
+//        let metaplex = TestDataProvider.createMetaplex()
+//        let candyMachine = CandyMachineDataProvider.create(metaplex)
+//        XCTAssertNotNil(candyMachine)
+//    }
+//}
