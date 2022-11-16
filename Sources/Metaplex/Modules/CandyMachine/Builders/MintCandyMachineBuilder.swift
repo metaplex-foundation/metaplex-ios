@@ -37,15 +37,20 @@ extension TransactionBuilder {
 
         // MARK: - Mint NFT Instruction
 
-        let mintNftInstruction = createMintNftInstruction(accounts: mintAccounts, args: mintArgs)
+        var mintNftInstruction = createMintNftInstruction(accounts: mintAccounts, args: mintArgs)
 
-        if let tokenMint = parameters.tokenMint {
-            
+        if let tokenMint = parameters.tokenMint,
+           let payerToken = parameters.payerToken ?? PublicKey.findAssociatedTokenAccountPda(
+            mint: tokenMint,
+            owner: parameters.payer
+           ) {
+            mintNftInstruction.append(AccountMeta(publicKey: payerToken, isSigner: false, isWritable: true))
+            mintNftInstruction.append(AccountMeta(publicKey: parameters.payer, isSigner: true, isWritable: false))
         }
 
         // MARK: - Transaction Builder
 
-        let tx = TransactionBuilder
+        return TransactionBuilder
             .build()
             .add(tokenWithMintBuilder)
             .add(
@@ -55,7 +60,5 @@ extension TransactionBuilder {
                     key: "mintNft"
                 )
             )
-
-        return tx
     }
 }

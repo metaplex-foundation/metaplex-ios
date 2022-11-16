@@ -46,6 +46,9 @@ struct MintCandyMachineBuilderParameters {
     }
 
     var tokenMint: PublicKey? { mintCandyMachineInput.candyMachine.tokenMint }
+    var payerToken: PublicKey? {
+        mintCandyMachineInput.payerToken
+    }
 
     // MARK: - Accounts
 
