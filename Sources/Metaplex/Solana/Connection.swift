@@ -25,6 +25,7 @@ public protocol Connection {
         onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void
     )
     func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void)
+    func getCreatingTokenAccountFee(space: UInt64, onComplete: @escaping (Result<UInt64, Error>) -> Void)
     func createTokenAccount(
         mintAddress: String,
         payer: Account,
@@ -77,7 +78,14 @@ public class SolanaConnectionDriver: Connection {
     }
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
-        api.getMinimumBalanceForRentExemption(dataLength: MINT_SIZE, onComplete: onComplete)
+        getCreatingTokenAccountFee(space: ACCOUNT_SIZE, onComplete: onComplete)
+    }
+
+    public func getCreatingTokenAccountFee(
+        space: UInt64,
+        onComplete: @escaping (Result<UInt64, Error>) -> Void
+    ) {
+        api.getMinimumBalanceForRentExemption(dataLength: space, onComplete: onComplete)
     }
 
     public func createTokenAccount(

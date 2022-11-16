@@ -8,6 +8,7 @@
 import Foundation
 
 public enum OperationError: Error {
+    case nilOperationHandler
     case nilDataOnAccount
     case nilSignatureStatus
     case couldNotFindPDA
@@ -21,6 +22,13 @@ public enum OperationError: Error {
     case serializeTransactionError(Error)
     case sendTransactionError(Error)
     case confirmTransactionError(Error)
+    case couldNotGetLamports(Error)
+    case couldNotFindMetadata
+    case couldNotFindMasterEdition
+    case couldNotFindTokenAccount
+
+    // Auction House
+
     case findAuctionHouseByAddressError(Error)
     case findAuctionHouseByCreatorAndMintError(Error)
     case findBidByReceiptError(Error)
@@ -34,8 +42,6 @@ public enum OperationError: Error {
     case couldNotFindSellerTradeStatePda
     case couldNotFindFreeTradeStatePda
     case couldNotFindProgramAsSignerPda
-    case couldNotFindMetadata
-    case couldNotFindTokenAccount
     case couldNotFindAuctionHouseFeePda
     case couldNotFindAuctionHouseTreasuryPda
     case couldNotFindTreasuryWithdrawalDestination
@@ -44,6 +50,11 @@ public enum OperationError: Error {
     case couldNotFindBuyerTokenAccount
     case couldNotFindBuyerReceiptAccount
     case couldNotFindSellerReceiptAccount
+
+    // Candy Machine
+
+    case findCandyMachineByAddressError(Error)
+    case couldNotFindCandyMachineCreatorPda
 }
 
 protocol OperationHandler {

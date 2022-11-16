@@ -8,10 +8,6 @@
 import Foundation
 import Solana
 
-let MAX_NAME_LENGTH = 32
-let MAX_SYMBOL_LENGTH = 10
-let MAX_URI_LENGTH = 200
-let MAX_CREATOR_LEN = 32 + 1 + 1
 let DATA_START = 1 + 32 + 32
 let NAME_START = DATA_START + 4
 let SYMBOL_START = NAME_START + MAX_NAME_LENGTH + 4

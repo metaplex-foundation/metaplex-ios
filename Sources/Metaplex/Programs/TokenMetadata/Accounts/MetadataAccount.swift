@@ -20,6 +20,24 @@ public struct MetadataAccount: BufferLayout {
         }
     }
 
+    static func collectionAuthorityPda(
+        mintKey: PublicKey,
+        collectionAuthority: PublicKey
+    ) -> Result<PublicKey, Error> {
+        let seedMetadata = [
+            String.metadataPrefix.bytes,
+            TokenMetadataProgram.publicKey.bytes,
+            mintKey.bytes
+        ].map { Data($0) }
+
+        return PublicKey.findProgramAddress(
+            seeds: seedMetadata,
+            programId: TokenMetadataProgram.publicKey
+        ).map { (publicKey, _) in
+            return publicKey
+        }
+    }
+
     public static var BUFFER_LENGTH: UInt64 = 679
 
     public init(
