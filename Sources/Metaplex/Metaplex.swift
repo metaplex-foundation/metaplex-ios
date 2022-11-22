@@ -7,6 +7,7 @@ public class Metaplex {
 
     public lazy var nft: NftClient = NftClient(metaplex: self)
     public lazy var auctionHouse: AuctionHouseClient = AuctionHouseClient(metaplex: self)
+    public lazy var candyMachine: CandyMachineClient = CandyMachineClient(metaplex: self)
 
     public init(connection: Connection, identityDriver: IdentityDriver, storageDriver: StorageDriver) {
         self.connection = connection

@@ -657,6 +657,115 @@ public struct Purchasereceipt: PurchasereceiptArgs {
 
 You can [read more about Auction House in our online docs](https://docs.metaplex.com/programs/auction-house/overview).
 
+## Candy Machine
+The Candy Machine module can be accessed via `Metaplex.candyMachine` and provides the following methods. This is still a WIP and we are continuously adding more tests and documentation. These methods belong to the `CandyMachineClient` class. You can find more information below.
+
+- [`create(input, callback)`](#create)
+- [`mint(input, callback)`](#mint)
+- [`findByAddress(address, callback)`](#findByAddress)
+
+All the methods return a callback. It's also possible to wrap them inside either RX, an async Result or Combine. We only provide this interface since it's the most compatible without forcing any specific framework. 
+
+### create
+
+The `create` method accepts properties that fills `CreateCandyMachineInput` where `price`, `sellerFeeBasisPoints`, and `itemsAvailable` are required. Upon sucessful creation you will get a `CandyMachine` object back.
+
+```swift
+public func create(
+    candyMachine: Account = HotAccount()!,
+    wallet: Account? = nil,
+    payer: Account? = nil,
+    authority: Account? = nil,
+    collection: PublicKey? = nil,
+    tokenMint: PublicKey? = nil,
+    price: UInt64,
+    sellerFeeBasisPoints: UInt16,
+    itemsAvailable: UInt64,
+    symbol: String = "",
+    maxEditionSupply: UInt64 = 0,
+    isMutable: Bool = true,
+    retainAuthority: Bool = true,
+    goLiveDate: Int64? = nil,
+    endSettings: EndSettings? = nil,
+    hiddenSettings: HiddenSettings? = nil,
+    whitelistMintSettings: WhitelistMintSettings? = nil,
+    gatekeeper: GatekeeperConfig? = nil,
+    creatorState: CreatorState? = nil,
+    onComplete: @escaping (Result<CandyMachine, OperationError>) -> Void
+) { ... }
+```
+
+### mint
+
+The `mint` method accepts properties that fills `MintCandyMachineInput` where a `CandyMachine` is required. A `CandyMachine` should first be created on-chain and passed to the `mint` method. Upon sucessful creation you will get a `NFT` object back.
+
+```swift
+public func create(
+        candyMachine: CandyMachine,
+        payer: Account? = nil,
+        newMint: Account = HotAccount()!,
+        newOwner: PublicKey? = nil,
+        newToken: PublicKey? = nil,
+        payerToken: PublicKey? = nil,
+        whitelistToken: PublicKey? = nil,
+        onComplete: @escaping (Result<NFT, OperationError>) -> Void
+) { ... }
+```
+
+### findByAddress
+
+The `findByAddress` method accepts an `address` public key and returns a `CandyMachine` object.
+
+```swift
+let address = PublicKey(string: "5xN42RZCk7wA4GjQU2VVDhda8LBL8fAnrKZK921sybLF")!
+
+metaplex.candyMachine.findByAddress(address) { result in
+    switch result {
+    case .success(let candyMachine):
+        ...
+    case .failure:
+        ...
+    }
+}
+```
+
+### CandyMachine
+
+`CandyMachine` is a wrapper around the auto-generated `Candymachine` object. `CandyMachine` also gives us easy access to the `CandyMachine` address. `CandyMachine` has convenient getters to access properties of `Candymachine`.
+
+```swift
+public struct CandyMachine {
+    private let candyMachine: Candymachine
+    let address: PublicKey
+
+    public init(
+        candyMachine: Candymachine,
+        address: PublicKey
+    ) {
+        self.candyMachine = candyMachine
+        self.address = address
+    }
+
+    public var authority: PublicKey { candyMachine.authority }
+    public var wallet: PublicKey { candyMachine.wallet }
+    public var tokenMint: PublicKey? { candyMachine.tokenMint }
+    public var collectionMint: PublicKey? { nil }
+    public var price: UInt64 { candyMachine.data.price }
+    public var symbol: String { candyMachine.data.symbol }
+    public var sellerFeeBasisPoints: UInt16 { candyMachine.data.sellerFeeBasisPoints }
+    public var isMutable: Bool { candyMachine.data.isMutable }
+    public var retainAuthority: Bool { candyMachine.data.retainAuthority }
+    public var goLiveDate: Int64? { candyMachine.data.goLiveDate }
+    public var maxEditionSupply: UInt64 { candyMachine.data.maxSupply }
+    public var itemsAvailable: UInt64 { candyMachine.data.itemsAvailable }
+    public var endSettings: EndSettings? { candyMachine.data.endSettings }
+    public var hiddenSettings: HiddenSettings? { candyMachine.data.hiddenSettings }
+    public var whitelistMintSettings: WhitelistMintSettings? { candyMachine.data.whitelistMintSettings }
+    public var gatekeeper: GatekeeperConfig? { candyMachine.data.gatekeeper }
+    public var creators: [Creator] { candyMachine.data.creators }
+}
+```
+
 ## Identity
 The current identity of a `Metaplex` instance can be accessed via `metaplex.identity()` and provide information on the wallet we are acting on behalf of when interacting with the SDK.
 

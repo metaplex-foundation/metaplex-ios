@@ -53,6 +53,22 @@ struct TestDataProvider {
         return try? result?.get()
     }
 
+    static func findNft(_ metaplex: Metaplex, mint: PublicKey) -> NFT? {
+        var result: Result<NFT, OperationError>?
+
+        let lock = RunLoopSimpleLock()
+        lock.dispatch {
+            let operation = FindNftByMintOnChainOperationHandler(metaplex: metaplex)
+            operation.handle(operation: FindNftByMintOperation.pure(.success(mint))).run {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+
+        return try? result?.get()
+    }
+
     @discardableResult
     static func airDropFunds(_ metaplex: Metaplex, account publicKey: PublicKey? = nil) -> String? {
         let account = publicKey ?? metaplex.identity().publicKey

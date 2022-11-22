@@ -8,9 +8,6 @@
 import Foundation
 import Solana
 
-let MINT_SIZE: UInt64 = 82
-let ACCOUNT_SIZE: UInt64 = 165
-
 class TokenProgramGpaBuilder: GpaBuilder {
     var connection: Connection
     var programId: PublicKey

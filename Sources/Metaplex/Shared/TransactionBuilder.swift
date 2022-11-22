@@ -34,14 +34,20 @@ class TransactionBuilder {
 
     // MARK: - Fee Payer
 
-    func setFeePayer(_ feePayer: Account) {
+    func setFeePayer(_ feePayer: Account) -> TransactionBuilder {
         self.feePayer = feePayer
+        return self
     }
 
     // MARK: - Instructions
 
     func add(_ instruction: InstructionWithSigner) -> TransactionBuilder {
         instructions.append(instruction)
+        return self
+    }
+
+    func add(_ builder: TransactionBuilder) -> TransactionBuilder {
+        instructions.append(contentsOf: builder.instructions)
         return self
     }
 
