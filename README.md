@@ -336,3 +336,4 @@ As mentioned above, this SDK is still in very early stages. We plan to add a lot
 
 The SDK heavily inspired in the [JS-Next](https://github.com/metaplex-foundation/js-next). The objective of this is to have one Metaplex wide interface for all NFTs. If you use the Js-Next sdk this sdk should be familiar.
 
+
