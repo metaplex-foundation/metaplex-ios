@@ -25,7 +25,7 @@ final class FindNftsByOwnerOnChainOperationHandlerTests: XCTestCase {
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             let operation = FindNftsByOwnerOnChainOperationHandler(metaplex: self!.metaplex)
-            operation.handle(operation: FindNftsByOwnerOperation.pure(.success(PublicKey(string: "Geh5Ss5knQGym81toYGXDbH3MFU2JCMK7E4QyeBHor1b")!))).run {
+            operation.handle(operation: FindNftsByOwnerOperation.pure(.success(TEST_PUBLICKEY))).run {
                 result = $0
                 lock.stop()
             }

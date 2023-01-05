@@ -16,6 +16,22 @@ public class GuestIdentityDriver: IdentityDriver {
         self.publicKey = PublicKey.default
     }
 
+    // MARK: - Sign
+
+    public func sign(serializedMessage: Data) throws -> Data {
+        throw IdentityDriverError.methodNotAvailable
+    }
+
+    public func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void) {
+        onComplete(.failure(IdentityDriverError.methodNotAvailable))
+    }
+
+    public func signAllTransactions(transactions: [Transaction], onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void) {
+        onComplete(.failure(IdentityDriverError.methodNotAvailable))
+    }
+
+    // MARK: - Send
+
     public func sendTransaction(serializedTransaction: String, onComplete: @escaping(Result<TransactionID, IdentityDriverError>) -> Void) {
         self.solanaRPC.sendTransaction(serializedTransaction: serializedTransaction) { result in
             switch result {
@@ -25,13 +41,5 @@ public class GuestIdentityDriver: IdentityDriver {
                 onComplete(.failure(.sendTransactionError(error)))
             }
         }
-    }
-
-    public func signTransaction(transaction: Transaction, onComplete: @escaping (Result<Transaction, IdentityDriverError>) -> Void) {
-        onComplete(.failure(IdentityDriverError.methodNotAvailable))
-    }
-
-    public func signAllTransactions(transactions: [Transaction], onComplete: @escaping (Result<[Transaction?], IdentityDriverError>) -> Void) {
-        onComplete(.failure(IdentityDriverError.methodNotAvailable))
     }
 }

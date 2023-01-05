@@ -18,3 +18,9 @@ extension PublicKey {
     static let systemProgramID =  PublicKey(string: "11111111111111111111111111111111")!
 }
 
+extension PublicKey {
+    static func findAssociatedTokenAccountPda(mint: PublicKey, owner: PublicKey) -> PublicKey? {
+        try? associatedTokenAddress(walletAddress: owner, tokenMintAddress: mint).get()
+    }
+}
+

@@ -15,6 +15,9 @@ public protocol Connection {
                                              decodedTo: T.Type,
                                              config: RequestConfiguration,
                                              onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void)
+    func getProgramAccounts(publicKey: PublicKey,
+                            config: RequestConfiguration,
+                            onComplete: @escaping (Result<[ProgramAccountPureData], Error>) -> Void)
     func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void)
     func getMultipleAccountsInfo<T>(
         accounts: [PublicKey],
@@ -22,6 +25,7 @@ public protocol Connection {
         onComplete: @escaping (Result<[BufferInfo<T>?], Error>) -> Void
     )
     func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void)
+    func getCreatingTokenAccountFee(space: UInt64, onComplete: @escaping (Result<UInt64, Error>) -> Void)
     func createTokenAccount(
         mintAddress: String,
         payer: Account,
@@ -59,6 +63,12 @@ public class SolanaConnectionDriver: Connection {
         api.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, decodedTo: decodedTo, onComplete: onComplete)
     }
 
+    public func getProgramAccounts(publicKey: PublicKey,
+                            config: RequestConfiguration,
+                            onComplete: @escaping (Result<[ProgramAccountPureData], Error>) -> Void) {
+        api.getProgramAccounts(publicKey: publicKey.base58EncodedString, configs: config, onComplete: onComplete)
+    }
+
     public func getAccountInfo<T>(account: PublicKey, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {
         api.getAccountInfo(account: account.base58EncodedString, decodedTo: T.self, onComplete: onComplete)
     }
@@ -68,7 +78,14 @@ public class SolanaConnectionDriver: Connection {
     }
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
-        api.getMinimumBalanceForRentExemption(dataLength: MINT_SIZE, onComplete: onComplete)
+        getCreatingTokenAccountFee(space: ACCOUNT_SIZE, onComplete: onComplete)
+    }
+
+    public func getCreatingTokenAccountFee(
+        space: UInt64,
+        onComplete: @escaping (Result<UInt64, Error>) -> Void
+    ) {
+        api.getMinimumBalanceForRentExemption(dataLength: space, onComplete: onComplete)
     }
 
     public func createTokenAccount(

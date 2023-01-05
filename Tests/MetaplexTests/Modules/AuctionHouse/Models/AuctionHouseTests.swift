@@ -20,6 +20,6 @@ final class AuctionHouseTests: XCTestCase {
         let pda = try? Auctionhouse.pda(creator: creator, treasuryMint: treasuryMint).get()
 
         XCTAssertNotNil(pda)
-        XCTAssertEqual(pda!.base58EncodedString, AuctionHouseTestDataProvider.expectedPda)
+        XCTAssertEqual(pda!.publicKey.base58EncodedString, AuctionHouseTestDataProvider.expectedPublicKey)
     }
 }

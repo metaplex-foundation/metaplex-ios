@@ -18,8 +18,8 @@ final class CreateNftOnChainOperationTests: XCTestCase {
 
     override func setUpWithError() throws {
         let phrase: [String] = "siege amazing camp income refuse struggle feed kingdom lawn champion velvet crystal stomach trend hen uncover roast nasty until hidden crumble city bag minute".components(separatedBy: " ")
-        account = HotAccount(phrase: phrase, network: .devnet)!
-        mintAccount = HotAccount(network: .devnet)
+        account = HotAccount(phrase: phrase)!
+        mintAccount = HotAccount()
 
         let solanaConnection = SolanaConnectionDriver(endpoint: .devnetSolana)
         let solanaIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: account)

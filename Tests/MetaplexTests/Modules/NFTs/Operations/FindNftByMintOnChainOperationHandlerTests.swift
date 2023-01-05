@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Solana
+import TweetNacl
 @testable import Metaplex
 
 final class FindNftByMintOnChainOperationTests: XCTestCase {
