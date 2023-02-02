@@ -19,20 +19,60 @@ public class NftClient {
         let operation = FindNftByMintOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftByMintOperation.pure(.success(mintKey))).run { onComplete($0) }
     }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findByMint(mintKey: PublicKey) async throws -> NFT {
+        try await withCheckedThrowingContinuation { continuation in
+            findByMint(mintKey: mintKey) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
 
     public func findByMetadata(_ metadata: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = FindNftByMetadataOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftByMetadataOperation.pure(.success(metadata))).run { onComplete($0) }
+    }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findByMetadata(metadata: PublicKey) async throws -> NFT {
+        try await withCheckedThrowingContinuation { continuation in
+            findByMetadata(metadata) { result in
+                continuation.resume(with: result)
+            }
+        }
     }
 
     public func findByToken(address: PublicKey, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = FindNftByTokenOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftByTokenOperation.pure(.success(address))).run { onComplete($0) }
     }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findByToken(address: PublicKey) async throws -> NFT {
+        try await withCheckedThrowingContinuation { continuation in
+            findByToken(address: address) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
 
     public func findAllByMintList(mintKeys: [PublicKey], onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByMintListOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftsByMintListOperation.pure(.success(mintKeys))).run { onComplete($0) }
+    }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findAllByMintList(mintKeys: [PublicKey]) async throws -> [NFT?] {
+        try await withCheckedThrowingContinuation { continuation in
+            findAllByMintList(mintKeys: mintKeys) { result in
+                continuation.resume(with: result)
+            }
+        }
     }
 
     public func findAllByCreator(creator: PublicKey, position: Int? = 1, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
@@ -43,6 +83,16 @@ public class NftClient {
                 position: position
             )))).run { onComplete($0) }
     }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findAllByCreator(creator: PublicKey, position: Int? = 1) async throws -> [NFT?] {
+        try await withCheckedThrowingContinuation { continuation in
+            findAllByCreator(creator: creator, position: position) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
 
     public func findAllByCandyMachine(candyMachine: PublicKey, version: UInt8? = 2, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByCandyMachineOnChainOperationHandler(metaplex: self.metaplex)
@@ -52,15 +102,45 @@ public class NftClient {
                 version: version
             )))).run { onComplete($0) }
     }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findAllByCandyMachine(candyMachine: PublicKey, version: UInt8? = 2) async throws -> [NFT?] {
+        try await withCheckedThrowingContinuation { continuation in
+            findAllByCandyMachine(candyMachine: candyMachine, version: version) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
 
     public func findAllByOwner(publicKey: PublicKey, onComplete: @escaping (Result<[NFT?], OperationError>) -> Void) {
         let operation = FindNftsByOwnerOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: FindNftsByOwnerOperation.pure(.success(publicKey))).run { onComplete($0) }
     }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func findAllByOwner(publicKey: PublicKey) async throws -> [NFT?] {
+        try await withCheckedThrowingContinuation { continuation in
+            findAllByOwner(publicKey: publicKey) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
 
     public func createNft(input: CreateNftInput, onComplete: @escaping (Result<NFT, OperationError>) -> Void) {
         let operation = CreateNftOnChainOperationHandler(metaplex: self.metaplex)
         operation.handle(operation: CreateNftOperation.pure(.success(input))).run { onComplete($0) }
+    }
+    
+    @available(macOS 10.15, *)
+    @available(iOS 13.0.0, *)
+    func createNft(input: CreateNftInput) async throws -> NFT {
+        try await withCheckedThrowingContinuation { continuation in
+            createNft(input: input) { result in
+                continuation.resume(with: result)
+            }
+        }
     }
 
     // MARK: - Deprecated
