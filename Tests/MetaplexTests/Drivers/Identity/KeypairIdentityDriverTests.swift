@@ -19,7 +19,7 @@ final class KeypairIdentityDriverTests: XCTestCase {
     let solanaConnection = SolanaConnectionDriver(endpoint: .mainnetBetaSolana)
     var keypairIdentityDriver: KeypairIdentityDriver!
     
-    override func setUp() async throws {
+    override func setUp() {
         keypairIdentityDriver = KeypairIdentityDriver(solanaRPC: solanaConnection.api, account: account)
     }
     
