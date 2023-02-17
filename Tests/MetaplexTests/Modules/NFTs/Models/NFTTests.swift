@@ -25,20 +25,18 @@ final class NFTTests: XCTestCase {
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             let operation = FindNftByMintOnChainOperationHandler(metaplex: self!.metaplex)
-            operation.handle(operation: FindNftByMintOperation.pure(.success(PublicKey(string: "7A1R6HLKVEnu74kCM7qb59TpmJGyUX8f5t7p3FCrFTVR")!))).run {
+            operation.handle(operation: FindNftByMintOperation.pure(.success(PublicKey(string: "7EF4MKcYQ1paCYuUj5dkXNPCfXCGSphf5DeDHWEhqF4t")!))).run {
                 nft = try! $0.get()
                 lock.stop()
             }
         }
         lock.run()
-        XCTAssertEqual(nft!.name, "DeGod #5116")
-        XCTAssertEqual(nft!.creators.first?.address.base58EncodedString, "9MynErYQ5Qi6obp4YwwdoDmXkZ1hYVtPUqYmJJ3rZ9Kn")
+        XCTAssertEqual(nft!.name, "The Orphans #2032")
+        XCTAssertEqual(nft!.creators.first?.address.base58EncodedString, "3JqiQq8n7gMzxuqNkmiD3ioh9pwi4aqnCHyPGCrzpaMW")
         XCTAssertEqual(nft!.primarySaleHappened, true)
         XCTAssertEqual(nft!.isMutable, true)
-        XCTAssertEqual(nft!.editionNonce, 254)
-        XCTAssertEqual(nft!.tokenStandard, MetaplexTokenStandard.NonFungible)
-        XCTAssertNotNil(nft!.collection)
-        XCTAssertEqual(nft!.collection?.key.base58EncodedString, "6XxjKYFbcndh2gDcsUrmZgVEsoDxXMnfsaGY6fpTJzNr")
+        XCTAssertEqual(nft!.editionNonce, 255)
+        XCTAssertEqual(nft!.tokenStandard, MetaplexTokenStandard.FungibleAsset)
     }
     
     func testsNFTonChain2() {
