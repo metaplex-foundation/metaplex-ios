@@ -13,7 +13,7 @@ let package = Package(
             targets: ["Metaplex"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/metaplex-foundation/metaplex-swift-program-library", branch: "1.3.0")
+        .package(url: "https://github.com/metaplex-foundation/metaplex-swift-program-library", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,7 +23,8 @@ let package = Package(
             dependencies: [
                 .product(name: "AuctionHouse", package: "metaplex-swift-program-library"),
                 .product(name: "CandyMachine", package: "metaplex-swift-program-library"),
-                .product(name: "TokenMetadata", package: "metaplex-swift-program-library")
+                .product(name: "TokenMetadata", package: "metaplex-swift-program-library"),
+                .product(name: "CandyMachineCore", package: "metaplex-swift-program-library")
             ]),
         .testTarget(
             name: "MetaplexTests",

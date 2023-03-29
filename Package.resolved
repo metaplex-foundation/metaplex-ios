@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/metaplex-foundation/metaplex-swift-program-library",
       "state" : {
-        "branch" : "1.3.0",
-        "revision" : "df7725a3cc56c7c71a989daee780650b45270fab"
+        "branch" : "main",
+        "revision" : "fe1b91ea8880c0e1f87d54e089f017067e8bd2a2"
       }
     },
     {
