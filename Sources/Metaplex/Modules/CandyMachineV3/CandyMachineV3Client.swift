@@ -17,4 +17,11 @@ public class CandyMachineV3Client {
         self.metaplex = metaplex
     }
     
+    public func findByAddress(
+        _ address: PublicKey,
+        onComplete: @escaping (Result<CandyMachineV3, OperationError>) -> Void
+    ) {
+        let operation = FindCandyMachineV3ByAddressOperationHandler(metaplex: metaplex)
+        operation.handle(operation: FindCandyMachineV3ByAddressOperation.pure(.success(address))).run { onComplete($0) }
+    }
 }
